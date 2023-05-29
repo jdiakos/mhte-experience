@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="dpappas">
+        <sql>
+            -- project definition
+
+            CREATE TABLE project (
+            id bigserial NOT NULL,
+            adam varchar(255) NULL,
+            ape_value float8 NULL,
+            completion_date date NULL,
+            contracting_authority varchar(255) NULL,
+            date_of_signing date NULL,
+            description varchar(255) NULL,
+            estimated_completion_date date NULL,
+            head_authority varchar(255) NULL,
+            initial_contract_budget float8 NULL,
+            initial_contract_value float8 NULL,
+            project_category varchar(255) NULL,
+            protocol_number varchar(255) NULL,
+            receipt_protocol_date date NULL,
+            receipt_protocol_number varchar(255) NULL,
+            responsible_entity varchar(255) NULL,
+            supplementary_value float8 NULL,
+            title varchar(255) NULL,
+            total_value float8 NULL,
+            "type" varchar(255) NULL,
+            CONSTRAINT project_pkey PRIMARY KEY (id),
+            CONSTRAINT uk_csriijpxqvmdj1q6qghpyxk4o UNIQUE (adam),
+            CONSTRAINT uk_ksidbafx63f60usihmncgswb4 UNIQUE (protocol_number)
+            );
+
+
+            -- contract definition
+
+            CREATE TABLE contract (
+            id bigserial NOT NULL,
+            contract_guid varchar(255) NULL,
+            contract_type varchar(255) NULL,
+            contract_value float8 NULL,
+            signing_date date NULL,
+            project_id int8 NULL,
+            CONSTRAINT contract_pkey PRIMARY KEY (id),
+            CONSTRAINT fkiuhnxiug4xixtcq9h6gtycxxh FOREIGN KEY (project_id) REFERENCES project(id)
+            );
+
+
+            -- project_contractor definition
+
+            CREATE TABLE project_contractor (
+            id bigserial NOT NULL,
+            contractor_id int8 NULL,
+            participation_percentage float8 NULL,
+            participation_type varchar(255) NULL,
+            project_id int8 NOT NULL,
+            CONSTRAINT project_contractor_pkey PRIMARY KEY (id),
+            CONSTRAINT fkt7sg49sicadvfomubsi4f379r FOREIGN KEY (project_id) REFERENCES project(id)
+            );
+
+
+            -- project_subcontractor definition
+
+            CREATE TABLE project_subcontractor (
+            id bigserial NOT NULL,
+            contract_date_from date NULL,
+            contract_date_to date NULL,
+            contract_guid varchar(255) NULL,
+            contract_value float8 NULL,
+            participation_type varchar(255) NULL,
+            subcontractor_id int8 NULL,
+            project_id int8 NOT NULL,
+            CONSTRAINT project_subcontractor_pkey PRIMARY KEY (id),
+            CONSTRAINT fkq0twsi5ae14pu804t6imh14vj FOREIGN KEY (project_id) REFERENCES project(id)
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
