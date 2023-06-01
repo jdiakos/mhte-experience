@@ -72,15 +72,19 @@ public class Project implements Serializable {
     private Double totalValue;
 
     @Column(name = "date_of_signing")
+    @Temporal(TemporalType.DATE)
     private LocalDate dateOfSigning;
 
     @Column(name = "estimated_completion_date")
+    @Temporal(TemporalType.DATE)
     private LocalDate estimatedCompletionDate;
 
     @Column(name = "completion_date")
+    @Temporal(TemporalType.DATE)
     private LocalDate completionDate;
 
     @Column(name = "receipt_protocol_date")
+    @Temporal(TemporalType.DATE)
     private LocalDate receiptProtocolDate;
 
     @Column(name = "receipt_protocol_number")
