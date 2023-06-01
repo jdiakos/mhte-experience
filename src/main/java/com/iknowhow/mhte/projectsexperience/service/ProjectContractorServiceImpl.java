@@ -5,6 +5,7 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectContractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectContractorRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ContractorDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ContractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
 
 
     @Override
-    public List<ContractorDTO> getAllContractorsForProject(Long projectId) {
+    public List<ContractorResponseDTO> getAllContractorsForProject(Long projectId) {
         // Not sure if the results should be paginated, there wouldn't be that many contractors in a single project
         projectRepository.findById(projectId).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
@@ -37,7 +38,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
 
         return contractorRepository.findAllByProjectId(projectId)
                 .stream()
-                .map(this::toContractorDTO)
+                .map(this::toContractorResponseDTO)
                 .collect(Collectors.toList());
     }
 
@@ -66,9 +67,10 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
     }
 
 
-    private ContractorDTO toContractorDTO(ProjectContractor contractor) {
-        ContractorDTO dto = new ContractorDTO();
+    private ContractorResponseDTO toContractorResponseDTO(ProjectContractor contractor) {
+        ContractorResponseDTO dto = new ContractorResponseDTO();
 
+        dto.setId(contractor.getId());
         dto.setContractorId(contractor.getContractorId());
         dto.setProjectId(contractor.getProject().getId());
         dto.setParticipationType(contractor.getParticipationType());

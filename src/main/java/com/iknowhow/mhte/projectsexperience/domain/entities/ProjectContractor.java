@@ -18,17 +18,17 @@ public class ProjectContractor implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id", nullable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Project project;
 
-    @Column(name = "contractor_id")
+    @Column(name = "contractor_id", nullable = false, updatable = false)
     private Long contractorId;
 
-    @Column(name = "participation_type")
+    @Column(name = "participation_type", nullable = false)
     private String participationType;
 
-    @Column(name = "participation_percentage")
+    @Column(name = "participation_percentage", nullable = false)
     private Double participationPercentage;
 
     @Override
