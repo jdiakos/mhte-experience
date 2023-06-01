@@ -6,6 +6,7 @@ import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectContractorR
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
     @Override
     public List<ProjectContractorResponseDTO> getAllContractorsForProject(Long projectId) {
         // Not sure if the results should be paginated, there wouldn't be that many contractors in a single project
+        // @TODO -- PAGINATE
         projectRepository.findById(projectId).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
@@ -49,9 +51,11 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
         ProjectContractor contractor = new ProjectContractor();
+        // @TODO -- CHECK IF ALREADY ASSIGNED
         contractor.setContractorId(dto.getContractorId());
         contractor.setProject(project);
         contractor.setParticipationType(dto.getParticipationType());
+        // @TODO -- MUST NOT BE OVER 100%
         contractor.setParticipationPercentage(dto.getParticipationPercentage());
 
         contractorRepository.save(contractor);
@@ -67,13 +71,27 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         return toContractorResponseDTO(projectContractor);
     }
 
-    public void updateProjectContractor() {
+    @Override
+    @Transactional
+    public void updateProjectContractor(Long id, UpdateProjectContractorDTO dto) {
+        ProjectContractor projectContractor = contractorRepository.findById(id).orElseThrow(
+                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_CONTRACTOR_NOT_FOUND)
+        );
 
+        if (dto.getParticipationType() != null) {
+            projectContractor.setParticipationType(dto.getParticipationType());
+        }
+
+        // @TODO -- TOTAL PERCENTAGE IN PROJECT MUST NOT EXCEED 100%
+        if (dto.getParticipationPercentage() != null) {
+            projectContractor.setParticipationPercentage(dto.getParticipationPercentage());
+        }
     }
 
     @Override
+    @Transactional
     public void removeContractorFromProject(Long id) {
-        // @TODO - CHECKS
+        // @TODO - CHECK CONDITIONS FOR REMOVAL
 
         contractorRepository.deleteById(id);
     }

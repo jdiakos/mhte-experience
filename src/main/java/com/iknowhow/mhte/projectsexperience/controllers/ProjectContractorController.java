@@ -2,6 +2,7 @@ package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectContractorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,14 @@ public class ProjectContractorController {
         ProjectContractorResponseDTO response = projectContractorService.getContractorOfProject(id);
 
         return ResponseEntity.ok().body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateContractorOfProject(@PathVariable Long id,
+                                                          @RequestBody UpdateProjectContractorDTO dto) {
+        projectContractorService.updateProjectContractor(id, dto);
+
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
