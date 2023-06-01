@@ -86,6 +86,8 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         if (dto.getParticipationPercentage() != null) {
             projectContractor.setParticipationPercentage(dto.getParticipationPercentage());
         }
+
+        contractorRepository.save(projectContractor);
     }
 
     @Override
