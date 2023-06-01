@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "project_contractor")
@@ -30,4 +31,16 @@ public class ProjectContractor implements Serializable {
     @Column(name = "participation_percentage")
     private Double participationPercentage;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProjectContractor that = (ProjectContractor) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
