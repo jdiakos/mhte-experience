@@ -1,5 +1,5 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
-public class ProjectService {
+public class ProjectServiceImpl {
 
 }
