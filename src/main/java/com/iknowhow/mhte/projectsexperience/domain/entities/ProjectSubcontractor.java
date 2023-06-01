@@ -19,26 +19,26 @@ public class ProjectSubcontractor implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id", nullable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Project project;
 
-    @Column(name = "subcontractor_id")
+    @Column(name = "subcontractor_id", nullable = false, updatable = false)
     private Long subcontractorId;
 
-    @Column(name = "participation_type")
+    @Column(name = "participation_type", nullable = false)
     private String participationType;
 
-    @Column(name = "contract_value")
+    @Column(name = "contract_value", nullable = false)
     private Double contractValue;
 
-    @Column(name = "contract_date_from")
+    @Column(name = "contract_date_from", nullable = false)
     private LocalDate contractDateFrom;
 
-    @Column(name = "contract_date_to")
+    @Column(name = "contract_date_to", nullable = false)
     private LocalDate contractDateTo;
 
-    @Column(name = "contract_guid")
+    @Column(name = "contract_guid", nullable = false, updatable = false)
     private String contractGUID;
 
     @Override

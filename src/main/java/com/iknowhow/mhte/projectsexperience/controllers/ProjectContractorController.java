@@ -1,7 +1,7 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
-import com.iknowhow.mhte.projectsexperience.dto.ContractorDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ContractorResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectContractorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +23,29 @@ public class ProjectContractorController {
 
 
     @GetMapping("/{projectId}/get-all")
-    public ResponseEntity<List<ContractorResponseDTO>> getAllContractorsByProject(@PathVariable Long projectId) {
-        List<ContractorResponseDTO> response = projectContractorService.getAllContractorsForProject(projectId);
+    public ResponseEntity<List<ProjectContractorResponseDTO>> getAllContractorsByProject(@PathVariable Long projectId) {
+        List<ProjectContractorResponseDTO> response = projectContractorService.getAllContractorsForProject(projectId);
 
         return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/assign")
-    public ResponseEntity<Void> assignContractorToProject(@Valid @RequestBody ContractorDTO dto) {
+    public ResponseEntity<Void> assignContractorToProject(@Valid @RequestBody ProjectContractorDTO dto) {
         projectContractorService.assignContractorToProject(dto);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProjectContractorResponseDTO> getContractorForProject(@PathVariable Long id) {
+        ProjectContractorResponseDTO response = projectContractorService.getContractorOfProject(id);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> removeContractorFromProject(@PathVariable Long id) {
+        projectContractorService.removeContractorFromProject(id);
 
         return ResponseEntity.ok().build();
     }
