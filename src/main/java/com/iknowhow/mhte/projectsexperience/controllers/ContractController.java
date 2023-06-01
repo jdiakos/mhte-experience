@@ -1,6 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
-import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
 import com.iknowhow.mhte.projectsexperience.service.ContractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,23 +22,23 @@ public class ContractController {
     public ContractController(ContractService contractService) { this.contractService = contractService; }
 
     @PostMapping(value= "/create-contract", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ContractDTO> createNewContract(@RequestBody ContractDTO contract) {
+    public ResponseEntity<ContractProjectDTO> createNewContract(@RequestBody ContractProjectDTO contract) {
         logger.info("Create new contract");
-        ContractDTO response = contractService.createNewContract(contract);
+        ContractProjectDTO response = contractService.createNewContract(contract);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping(value="/update-contract")
-    public ResponseEntity<ContractDTO> updateContract(@RequestBody ContractDTO contract){
+    public ResponseEntity<ContractProjectDTO> updateContract(@RequestBody ContractProjectDTO contract){
         logger.info("Update contract with id: " + contract.getId());
-        ContractDTO response = contractService.updateContract(contract);
+        ContractProjectDTO response = contractService.updateContract(contract);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping(value="/delete-contract/{id}")
-    public ResponseEntity<ContractDTO> deleteContract(@PathVariable(value="id") String id){
+    public ResponseEntity<ContractProjectDTO> deleteContract(@PathVariable(value="id") String id){
         logger.info("Request to delete contract with id: " + id);
-        ContractDTO response = contractService.deleteContract(id);
+        ContractProjectDTO response = contractService.deleteContract(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

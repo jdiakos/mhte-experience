@@ -1,12 +1,12 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
-import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
 
 public interface ContractService {
 
-    ContractDTO createNewContract(ContractDTO contract);
+    ContractProjectDTO createNewContract(ContractProjectDTO contract);
 
-    ContractDTO updateContract(ContractDTO contractDTO);
+    ContractProjectDTO updateContract(ContractProjectDTO contractDTO);
 
-    ContractDTO deleteContract(String id);
+    ContractProjectDTO deleteContract(String id);
 }

@@ -2,7 +2,7 @@ package com.iknowhow.mhte.projectsexperience.service;
 
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository;
-import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import org.modelmapper.convention.MatchingStrategies;
@@ -26,7 +26,7 @@ public class ContractServiceImpl implements ContractService{
     }
 
     @Override
-    public ContractDTO createNewContract(ContractDTO contract) {
+    public ContractProjectDTO createNewContract(ContractProjectDTO contract) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -43,7 +43,7 @@ public class ContractServiceImpl implements ContractService{
     }
 
     @Override
-    public ContractDTO updateContract(ContractDTO contract) {
+    public ContractProjectDTO updateContract(ContractProjectDTO contract) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -54,17 +54,17 @@ public class ContractServiceImpl implements ContractService{
 
         contractExists = modelMapper.map(contract, Contract.class);
         contractRepository.save(contractExists);
-        return modelMapper.map(contractExists, ContractDTO.class);
+        return modelMapper.map(contractExists, ContractProjectDTO.class);
     }
 
     @Override
     @Transactional
-    public ContractDTO deleteContract(String id) {
+    public ContractProjectDTO deleteContract(String id) {
         Contract contract = contractRepository.findById(Long.parseLong(id)).orElseThrow(() ->
                 new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND));
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        ContractDTO contractDTO = modelMapper.map(contract, ContractDTO.class);
+        ContractProjectDTO contractDTO = modelMapper.map(contract, ContractProjectDTO.class);
         contractRepository.delete(contract);
 
         return contractDTO;
