@@ -26,6 +26,14 @@ public class MhteProjectExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler({MhteProjectsAlreadyAssignedException.class})
+    public ResponseEntity<MhteProjectErrorDTO> handleAlreadyAssignedException(MhteProjectsAlreadyAssignedException ex) {
+        MhteProjectErrorDTO response = new MhteProjectErrorDTO();
+        response.setMessage(ex.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 
     /**
      * VALIDATION EXCEPTIONS
