@@ -15,4 +15,7 @@ public class ProjectSubcontractorController {
     public ProjectSubcontractorController(ProjectSubcontractorService projectSubcontractorService) {
         this.projectSubcontractorService = projectSubcontractorService;
     }
+
+    // enter contractor (anathesi, axia symvasis, date from, date to, contract file)
+
 }
