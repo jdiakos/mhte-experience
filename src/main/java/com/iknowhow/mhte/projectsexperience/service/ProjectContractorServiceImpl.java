@@ -152,7 +152,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                 .mapToDouble(ProjectContractor::getParticipationPercentage)
                 .sum();
 
-        if ((currentPercentage + contractorShare) > 100) {
+        if ((currentPercentage + contractorShare) > 100 && project.getProjectContractors().size() != 1) {
             throw new MhteProjectCustomValidationException(
                     MhteProjectErrorMessage.TOTAL_PERCENTAGE_EXCEEDS_MAX.name()
             );
