@@ -7,10 +7,7 @@ import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
-import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
-import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsAlreadyAssignedException;
-import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
-import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsPercentageException;
+import com.iknowhow.mhte.projectsexperience.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -141,7 +138,9 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
     private void validateProjectParticipationPercentages(Project project, Double contractorShare) {
         // no one contractor's share in a project can exceed 100%
         if (contractorShare > 100) {
-            throw new MhteProjectsPercentageException(MhteProjectErrorMessage.TOTAL_PERCENTAGE_EXCEEDS_MAX.name());
+            throw new MhteProjectCustomValidationException(
+                    MhteProjectErrorMessage.TOTAL_PERCENTAGE_EXCEEDS_MAX.name()
+            );
         }
 
         // for any contractor updates or new additions, we check whether the new total percentage
@@ -154,7 +153,9 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                 .sum();
 
         if ((currentPercentage + contractorShare) > 100) {
-            throw new MhteProjectsPercentageException(MhteProjectErrorMessage.TOTAL_PERCENTAGE_EXCEEDS_MAX.name());
+            throw new MhteProjectCustomValidationException(
+                    MhteProjectErrorMessage.TOTAL_PERCENTAGE_EXCEEDS_MAX.name()
+            );
         }
 
     }
