@@ -4,6 +4,8 @@ import com.iknowhow.mhte.projectsexperience.utils.listeners.SubcontractorAuditLi
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -14,6 +16,7 @@ import java.util.Objects;
 @Table(name = "project_subcontractor")
 @Getter
 @Setter
+@Audited
 @EntityListeners(SubcontractorAuditListener.class)
 public class ProjectSubcontractor implements Serializable {
 
@@ -24,9 +27,11 @@ public class ProjectSubcontractor implements Serializable {
 
     @JoinColumn(name = "project_id", nullable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @NotAudited
     private Project project;
 
     @Column(name = "subcontractor_id", nullable = false, updatable = false)
+    @NotAudited
     private Long subcontractorId;
 
     @Column(name = "participation_type", nullable = false)
@@ -42,9 +47,11 @@ public class ProjectSubcontractor implements Serializable {
     private LocalDate contractDateTo;
 
     @Column(name = "contract_guid", nullable = false, updatable = false)
+    @NotAudited
     private String contractGUID;
 
     @Column(name = "created_date", nullable = false, updatable = false)
+    @NotAudited
     private LocalDateTime dateCreated;
 
     @Column(name = "last_modification_date")
