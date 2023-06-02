@@ -62,7 +62,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                     throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
                 });
 
-        validateProjectParticipationPercentages(dto.getProjectId(), dto.getParticipationPercentage());
+        validateProjectParticipationPercentages(project, dto.getParticipationPercentage());
 
         ProjectContractor contractor = new ProjectContractor();
         contractor.setContractorId(dto.getContractorId());
@@ -90,8 +90,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_CONTRACTOR_NOT_FOUND)
         );
 
-        validateProjectParticipationPercentages(
-                projectContractor.getProject().getId(), dto.getParticipationPercentage());
+        validateProjectParticipationPercentages(projectContractor.getProject(), dto.getParticipationPercentage());
 
         if (dto.getParticipationType() != null) {
             projectContractor.setParticipationType(dto.getParticipationType());
@@ -124,7 +123,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         return dto;
     }
 
-    private void validateProjectParticipationPercentages(Long projectId, Double contractorShare) {
+    private void validateProjectParticipationPercentages(Project project, Double contractorShare) {
         // no one contractor's share in a project can exceed 100%
         if (contractorShare > 100) {
             throw new MhteProjectsPercentageException(MhteProjectErrorMessage.TOTAL_PERCENTAGE_EXCEEDS_MAX.name());
@@ -134,10 +133,6 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         // exceeds 100%. If there is a change in percentages already reaching 100%,
         // the user must first lower one of the existing ones before increasing the other one
         // not the best solution UX-wise, but the only one foolproof I can think right now
-        Project project = projectRepository.findById(projectId).orElseThrow(
-                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND.name())
-        );
-
         double currentPercentage = project.getProjectContractors()
                 .stream()
                 .mapToDouble(ProjectContractor::getParticipationPercentage)
