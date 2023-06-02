@@ -23,7 +23,7 @@ public class MhteProjectExceptionHandler {
     	MhteProjectErrorDTO response = new MhteProjectErrorDTO();
 	    response.setMessage(ex.getMessage());
 
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({MhteProjectsAlreadyAssignedException.class})
@@ -51,6 +51,14 @@ public class MhteProjectExceptionHandler {
                         error.getDefaultMessage()))
         );
 
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler({MhteProjectCustomValidationException.class})
+    public ResponseEntity<MhteProjectErrorDTO> handleCustomValidationExceptions(MhteProjectCustomValidationException ex) {
+        MhteProjectErrorDTO response = new MhteProjectErrorDTO();
+        response.setMessage(ex.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
