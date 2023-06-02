@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.dto.CUDProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectConDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectSearchDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectService;
-import com.iknowhow.mhte.projectsexperience.service.ProjectServiceImpl;
 
 @RestController
 @RequestMapping("/projects")
@@ -46,9 +48,34 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
     
-    @GetMapping("/project-by-contract")
+    @GetMapping("/get-by-contract-id")
     public ResponseEntity<ProjectConDTO> getProjectByContrantId(@RequestParam("id") Long id) {
     	ProjectConDTO project = projectService.getProjectByContractId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(project);
+    }
+    
+    @GetMapping("/get-by-adam")
+    public ResponseEntity<ProjectConDTO> getProjectByAdam(@RequestParam("adam") String id) {
+    	ProjectConDTO project = projectService.getProjectByAdam(id);
+        return ResponseEntity.status(HttpStatus.OK).body(project);
+    }
+    
+    @GetMapping("/get-by-category")
+    public ResponseEntity<Page<ProjectConDTO>> getProjectBycategory(@RequestParam("category") ProjectsCategoryEnum category,
+    		Pageable pageable) {
+    	Page<ProjectConDTO> project = projectService.getProjectByCategory(category, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(project);
+    }
+    
+    @GetMapping("/get-by-protocol")
+    public ResponseEntity<ProjectConDTO> getProjectByProtocolNumber(@RequestParam("protocolNumber") String protocolNumber) {
+        return ResponseEntity.status(HttpStatus.OK).body(projectService.getProjectByProtocolNumber(protocolNumber));
+    }
+    
+    @GetMapping("/get-by-entity")
+    public ResponseEntity<Page<ProjectConDTO>> getProjectByResponsibleEntity(@RequestParam("entity") String entity,
+    		Pageable pageable) {
+    	Page<ProjectConDTO> project = projectService.getProjectByResponsibleEntity(entity, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
     
@@ -65,6 +92,13 @@ public class ProjectController {
     @DeleteMapping(value = "/project/{id}")
     public ResponseEntity<CUDProjectDTO> updateProject(@PathVariable(value="id") Long id){
     	return ResponseEntity.status(HttpStatus.OK).body(projectService.deleteProject(id));
-    } 
+    }
+    
+    @PostMapping("/search")
+    public ResponseEntity<Page<ProjectConDTO>> searchForProjects(@RequestBody ProjectSearchDTO dto, Pageable pageable) {
+        logger.info("Search for users");
+        Page<ProjectConDTO> result = projectService.search(dto, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 
 }
