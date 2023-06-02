@@ -10,6 +10,7 @@ import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsAlreadyAssignedException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
+import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsPercentageException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,11 +62,12 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                     throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
                 });
 
+        validateProjectParticipationPercentages(dto.getProjectId(), dto.getParticipationPercentage());
+
         ProjectContractor contractor = new ProjectContractor();
         contractor.setContractorId(dto.getContractorId());
         contractor.setProject(project);
         contractor.setParticipationType(dto.getParticipationType());
-        // @TODO -- MUST NOT BE OVER 100%
         contractor.setParticipationPercentage(dto.getParticipationPercentage());
 
         contractorRepository.save(contractor);
@@ -88,11 +90,12 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_CONTRACTOR_NOT_FOUND)
         );
 
+        validateProjectParticipationPercentages(
+                projectContractor.getProject().getId(), dto.getParticipationPercentage());
+
         if (dto.getParticipationType() != null) {
             projectContractor.setParticipationType(dto.getParticipationType());
         }
-
-        // @TODO -- TOTAL PERCENTAGE IN PROJECT MUST NOT EXCEED 100%
         if (dto.getParticipationPercentage() != null) {
             projectContractor.setParticipationPercentage(dto.getParticipationPercentage());
         }
@@ -119,5 +122,30 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         dto.setParticipationPercentage(contractor.getParticipationPercentage());
 
         return dto;
+    }
+
+    private void validateProjectParticipationPercentages(Long projectId, Double contractorShare) {
+        // no one contractor's share in a project can exceed 100%
+        if (contractorShare > 100) {
+            throw new MhteProjectsPercentageException(MhteProjectErrorMessage.TOTAL_PERCENTAGE_EXCEEDS_MAX.name());
+        }
+
+        // for any contractor updates or new additions, we check whether the new total percentage
+        // exceeds 100%. If there is a change in percentages already reaching 100%,
+        // the user must first lower one of the existing ones before increasing the other one
+        // not the best solution UX-wise, but the only one foolproof I can think right now
+        Project project = projectRepository.findById(projectId).orElseThrow(
+                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND.name())
+        );
+
+        double currentPercentage = project.getProjectContractors()
+                .stream()
+                .mapToDouble(ProjectContractor::getParticipationPercentage)
+                .sum();
+
+        if ((currentPercentage + contractorShare) > 100) {
+            throw new MhteProjectsPercentageException(MhteProjectErrorMessage.TOTAL_PERCENTAGE_EXCEEDS_MAX.name());
+        }
+
     }
 }

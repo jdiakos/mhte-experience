@@ -38,6 +38,15 @@ public class MhteProjectExceptionHandler {
     /**
      * VALIDATION EXCEPTIONS
      */
+    @ExceptionHandler({MhteProjectsPercentageException.class})
+    public ResponseEntity<MhteProjectErrorDTO> handlePercentageException(MhteProjectsPercentageException ex) {
+        MhteProjectErrorDTO response = new MhteProjectErrorDTO();
+        response.setMessage(ex.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<MhteProjectErrorDTO> handleFieldValidationException(MethodArgumentNotValidException ex) {
         MhteProjectErrorDTO response = new MhteProjectErrorDTO();
