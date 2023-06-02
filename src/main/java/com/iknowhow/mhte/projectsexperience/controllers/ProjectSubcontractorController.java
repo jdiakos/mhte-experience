@@ -23,7 +23,7 @@ public class ProjectSubcontractorController {
         this.projectSubcontractorService = projectSubcontractorService;
     }
 
-    @GetMapping("/search-by-params")
+    @PostMapping("/search-by-params")
     public ResponseEntity<?> searchSubcontractorByParams() {
         // @TODO -- PLACEHOLDER: PENDING MICROSERVICE TO IMPLEMENT
         Page<?> response = projectSubcontractorService.searchProjectSubcontractors();

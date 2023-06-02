@@ -24,7 +24,7 @@ public class ProjectContractorController {
         this.projectContractorService = projectContractorService;
     }
 
-    @GetMapping("/search-by-params")
+    @PostMapping("/search-by-params")
     public ResponseEntity<?> searchContractorsByParams() {
         // @TODO -- PLACEHOLDER: PENDING MICROSERVICE TO IMPLEMENT
         Page<?> response = projectContractorService.searchProjectContractors();
