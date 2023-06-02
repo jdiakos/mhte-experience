@@ -16,5 +16,7 @@ public interface ProjectService {
 	ProjectConDTO updateProject(CUDProjectDTO dto);
 	
 	CUDProjectDTO deleteProject(Long id);
+	
+	ProjectConDTO getProjectByContractId(Long id);
 
 }

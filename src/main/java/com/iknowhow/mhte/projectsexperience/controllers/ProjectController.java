@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.iknowhow.mhte.projectsexperience.dto.CUDProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectConDTO;
@@ -42,6 +43,12 @@ public class ProjectController {
     @GetMapping("/project/{id}")
     public ResponseEntity<ProjectConDTO> getProjectById(@PathVariable(value="id") Long id) {
     	ProjectConDTO project = projectService.getProjectById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(project);
+    }
+    
+    @GetMapping("/project-by-contract")
+    public ResponseEntity<ProjectConDTO> getProjectByContrantId(@RequestParam("id") Long id) {
+    	ProjectConDTO project = projectService.getProjectByContractId(id);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
     

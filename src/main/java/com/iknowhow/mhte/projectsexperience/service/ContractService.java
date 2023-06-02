@@ -18,7 +18,5 @@ public interface ContractService {
 
     List<ContractResponseDTO> getAllContractsByProject(Long projectId);
 
-    ContractProjectDTO getProject(Long contractId);
-
     Page<ContractProjectDTO> fetchAllContractsPaginated(Pageable page);
 }

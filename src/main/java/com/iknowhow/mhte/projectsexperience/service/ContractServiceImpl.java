@@ -6,6 +6,7 @@ import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository
 import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
+import com.iknowhow.mhte.projectsexperience.exception.MhteProjectCustomValidationException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import org.modelmapper.convention.MatchingStrategies;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +40,9 @@ public class ContractServiceImpl implements ContractService{
 
     @Override
     public ContractProjectDTO createNewContract(ContractProjectDTO contract) {
+    	if(!negativeNumberValidator(contract.getContractValue())) {
+    		throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+    	}
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -47,14 +52,16 @@ public class ContractServiceImpl implements ContractService{
             Contract savedContract = contractRepository.save(newContract);
             contract.setId(savedContract.getId());
         } catch (Exception ex) {
-            throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONSTRAINT_VALIDATION_ERROR);
+        	throw ex;
         }
-
         return contract;
     }
 
     @Override
     public ContractProjectDTO updateContract(ContractProjectDTO contract) {
+    	if(!negativeNumberValidator(contract.getContractValue())) {
+    		throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+    	}
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -93,18 +100,17 @@ public class ContractServiceImpl implements ContractService{
     }
 
     @Override
-    public ContractProjectDTO getProject(Long contractId) {
-        Contract contract = contractRepository.findById(contractId).orElseThrow(() -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND));
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        return modelMapper.map(contract, ContractProjectDTO.class);
-    }
-
-    @Override
     public Page<ContractProjectDTO> fetchAllContractsPaginated(Pageable page){
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return contractRepository.findAll(page).map(contract -> modelMapper.map(contract, ContractProjectDTO.class));
+    }
+    
+    private boolean negativeNumberValidator(Double n) {
+    	if(n>0) {
+    		return true;
+    	}
+    	return false;
     }
 
     private ContractResponseDTO toContractResponseDTO(Contract contract) {

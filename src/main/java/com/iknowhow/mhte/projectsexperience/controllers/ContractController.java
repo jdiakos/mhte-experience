@@ -2,7 +2,6 @@ package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
 import com.iknowhow.mhte.projectsexperience.service.ContractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,13 +51,6 @@ public class ContractController {
     public ResponseEntity<List<ContractResponseDTO>> getAllContractsByProject(@PathVariable(value="projectId") Long projectId){
         logger.info("Fetching all contracts of project with id: " + projectId);
         List<ContractResponseDTO> response = contractService.getAllContractsByProject(projectId);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    @GetMapping(value="/{contractId}/get-project")
-    public ResponseEntity<ContractProjectDTO> getProject(@PathVariable(value="contractId") Long contractId){
-        logger.info("Getting project of contract with id: " + contractId);
-        ContractProjectDTO response = contractService.getProject(contractId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

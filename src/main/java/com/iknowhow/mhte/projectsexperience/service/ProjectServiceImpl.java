@@ -50,6 +50,15 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
+    public ProjectConDTO getProjectByContractId(Long id) {
+    	logger.info("get project by contract id service");
+    	ModelMapper loose = utils.initModelMapperLoose();
+    	return projectRepo.findByContracts_Id(id).map(project -> loose.map(project, ProjectConDTO.class)).orElseThrow(()->
+    		new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
+    	);
+    }
+    
+    @Override
     public CUDProjectDTO addNewProject(CUDProjectDTO dto) {
     	logger.info("add new project service");
     	ModelMapper strict = utils.initModelMapperStrict();

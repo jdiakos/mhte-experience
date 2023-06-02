@@ -11,5 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface ProjectRepository extends JpaRepository<Project, Long>{
 	
 	Optional<Project> findByAdam(String adam);
+	
+	Optional<Project> findByContracts_Id(Long contractId);
 
 }
