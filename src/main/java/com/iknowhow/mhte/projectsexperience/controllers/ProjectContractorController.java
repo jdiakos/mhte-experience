@@ -6,6 +6,8 @@ import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectContractorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +24,19 @@ public class ProjectContractorController {
         this.projectContractorService = projectContractorService;
     }
 
+    @GetMapping("/search-by-params")
+    public ResponseEntity<?> searchContractorsByParams() {
+        // @TODO -- PLACEHOLDER: PENDING MICROSERVICE TO IMPLEMENT
+        Page<?> response = projectContractorService.searchProjectContractors();
+
+        return null;
+    }
 
     @GetMapping("/{projectId}/get-all")
-    public ResponseEntity<List<ProjectContractorResponseDTO>> getAllContractorsByProject(@PathVariable Long projectId) {
-        List<ProjectContractorResponseDTO> response = projectContractorService.getAllContractorsForProject(projectId);
+    public ResponseEntity<Page<ProjectContractorResponseDTO>> getAllContractorsByProject(@PathVariable Long projectId,
+                                                                                         Pageable pageable) {
+        Page<ProjectContractorResponseDTO> response =
+                projectContractorService.getAllContractorsForProject(projectId, pageable);
 
         return ResponseEntity.ok().body(response);
     }

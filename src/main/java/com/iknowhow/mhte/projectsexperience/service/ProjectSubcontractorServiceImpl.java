@@ -10,11 +10,11 @@ import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectSubcontractorDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorService {
@@ -29,16 +29,23 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         this.projectRepository = projectRepository;
     }
 
+
     @Override
-    public List<ProjectSubcontractorResponseDTO> getAllSubcontractorsForProject(Long projectId) {
-        // @TODO - PAGINATION
+    public Page<?> searchProjectSubcontractors() {
+        // @TODO -- PLACEHOLDER -- MICROSERVICE
+        // @TODO -- QUERYDSL SEARCH WITH MEEP, Name, TaxId that fetches a DTO from another Microservice
+        // @TODO -- Paginated DTOs return fields: MEEP, Name, TaxId, LegalType, Address, Series, DegreeValidUntil
+
+        return null;
+    }
+
+    @Override
+    public Page<ProjectSubcontractorResponseDTO> getAllSubcontractorsForProject(Long projectId, Pageable pageable) {
         projectRepository.findById(projectId).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
-        return subcontractorRepository.findAllByProjectId(projectId)
-                .stream()
-                .map(this::toSubcontractorResponseDTO)
-                .collect(Collectors.toList());
+        return subcontractorRepository.findAllByProjectId(projectId, pageable)
+                .map(this::toSubcontractorResponseDTO);
     }
 
     @Override

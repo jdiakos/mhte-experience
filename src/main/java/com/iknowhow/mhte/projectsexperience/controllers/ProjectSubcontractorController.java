@@ -6,10 +6,11 @@ import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectSubcontractorDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectSubcontractorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/subcontractor")
@@ -22,12 +23,20 @@ public class ProjectSubcontractorController {
         this.projectSubcontractorService = projectSubcontractorService;
     }
 
-    @GetMapping("/{projectId}/get-all")
-    public ResponseEntity<List<ProjectSubcontractorResponseDTO>> getAllSubcontractorsByProject(
-            @PathVariable Long projectId) {
+    @GetMapping("/search-by-params")
+    public ResponseEntity<?> searchSubcontractorByParams() {
+        // @TODO -- PLACEHOLDER: PENDING MICROSERVICE TO IMPLEMENT
+        Page<?> response = projectSubcontractorService.searchProjectSubcontractors();
 
-        List<ProjectSubcontractorResponseDTO> response =
-                projectSubcontractorService.getAllSubcontractorsForProject(projectId);
+        return null;
+    }
+
+    @GetMapping("/{projectId}/get-all")
+    public ResponseEntity<Page<ProjectSubcontractorResponseDTO>> getAllSubcontractorsByProject(
+            @PathVariable Long projectId, Pageable pageable) {
+
+        Page<ProjectSubcontractorResponseDTO> response =
+                projectSubcontractorService.getAllSubcontractorsForProject(projectId, pageable);
 
         return ResponseEntity.ok().body(response);
     }

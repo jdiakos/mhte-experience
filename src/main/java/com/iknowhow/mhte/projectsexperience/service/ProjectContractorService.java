@@ -3,12 +3,15 @@ package com.iknowhow.mhte.projectsexperience.service;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 public interface ProjectContractorService {
 
-    List<ProjectContractorResponseDTO> getAllContractorsForProject(Long projectId);
+    Page<?> searchProjectContractors();
+
+    Page<ProjectContractorResponseDTO> getAllContractorsForProject(Long projectId, Pageable pageable);
 
     ProjectContractorResponseDTO getContractorOfProject(Long id);
 

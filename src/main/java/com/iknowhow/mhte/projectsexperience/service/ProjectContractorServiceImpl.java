@@ -10,11 +10,11 @@ import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProjectContractorServiceImpl implements ProjectContractorService {
@@ -29,19 +29,24 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         this.projectRepository = projectRepository;
     }
 
+    @Override
+    public Page<?> searchProjectContractors() {
+        // @TODO -- PLACEHOLDER -- MICROSERVICE
+        // @TODO -- QUERYDSL SEARCH WITH MEEP, Name, TaxId that fetches a DTO from another Microservice
+        // @TODO -- Paginated DTOs return fields: MEEP, Name, TaxId, LegalType, Address, Series, DegreeValidUntil
+
+        return null;
+    }
+
 
     @Override
-    public List<ProjectContractorResponseDTO> getAllContractorsForProject(Long projectId) {
-        // Not sure if the results should be paginated, there wouldn't be that many contractors in a single project
-        // @TODO -- PAGINATE
+    public Page<ProjectContractorResponseDTO> getAllContractorsForProject(Long projectId, Pageable pageable) {
+        // @TODO -- VARIOUS FIELDS INCLUDING name, taxId, type etc. must be filled from another MICROSERVICE
         projectRepository.findById(projectId).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
-
-        return contractorRepository.findAllByProjectId(projectId)
-                .stream()
-                .map(this::toContractorResponseDTO)
-                .collect(Collectors.toList());
+        return contractorRepository.findAllByProjectId(pageable, projectId)
+                .map(this::toContractorResponseDTO);
     }
 
     @Override
