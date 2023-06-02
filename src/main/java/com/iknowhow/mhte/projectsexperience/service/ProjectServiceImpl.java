@@ -7,14 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
-import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository;
-import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectContractorRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
-import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectSubcontractorRepository;
 import com.iknowhow.mhte.projectsexperience.dto.CUDProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectConDTO;
+import com.iknowhow.mhte.projectsexperience.exception.MhteProjectCustomValidationException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
@@ -25,21 +22,12 @@ public class ProjectServiceImpl implements ProjectService {
     Logger logger = LoggerFactory.getLogger(ProjectServiceImpl.class);
 	
     private final ProjectRepository projectRepo;
-    private final ProjectContractorRepository contractorRepo;
-    private final ContractRepository contractRepo;
-    private final ProjectSubcontractorRepository subContractorRepo;
     private final Utils utils;
 
     @Autowired
     public ProjectServiceImpl(ProjectRepository projectRepo,
-    		ProjectContractorRepository contractorRepo,
-    		ContractRepository contractRepo,
-    		ProjectSubcontractorRepository subContractorRepo,
     		Utils utils) {
         this.projectRepo = projectRepo;
-        this.contractorRepo = contractorRepo;
-        this.contractRepo = contractRepo;
-        this.subContractorRepo = subContractorRepo;
         this.utils = utils;
     }
     
@@ -66,6 +54,9 @@ public class ProjectServiceImpl implements ProjectService {
     	logger.info("add new project service");
     	ModelMapper strict = utils.initModelMapperStrict();
     	ModelMapper loose = utils.initModelMapperLoose();
+    	if(!validateProject(dto)) {
+    		throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+    	}
     	Project newProject = strict.map(dto, Project.class);
     	try {
     		projectRepo.save(newProject);
@@ -75,9 +66,9 @@ public class ProjectServiceImpl implements ProjectService {
     				ex.getCause().getCause() != null && 
     				ex.getCause().getCause().getMessage().contains("violates unique constraint")) {
     			if(ex.getCause().getCause().getMessage().contains("adam")) {
-    				throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.ADAM_ALREADY_EXISTS);
+    				throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.ADAM_ALREADY_EXISTS);
 				} else {
-					throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROTOCOL_NUMBER_ALREADY_EXISTS);
+					throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.PROTOCOL_NUMBER_ALREADY_EXISTS);
 				}
     		}else {
     			throw new MhteProjectsNotFoundException(ex.getMessage());
@@ -90,7 +81,9 @@ public class ProjectServiceImpl implements ProjectService {
     	logger.info("update project service");
 
     	ModelMapper loose = utils.initModelMapperLoose();
-
+    	if(!validateProject(dto)) {
+    		throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+    	}
         Project projectExists = projectRepo.findByAdam(dto.getAdam()).orElseThrow(()->
         	new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
         );
@@ -115,5 +108,16 @@ public class ProjectServiceImpl implements ProjectService {
         CUDProjectDTO response = strict.map(projectExists, CUDProjectDTO.class);
         projectRepo.delete(projectExists);
         return response;
+    }
+    
+    private boolean validateProject(CUDProjectDTO dto) {
+    	if(dto.getInitialContractBudget() > 0 &&
+    			dto.getInitialContractValue() > 0 &&
+    			dto.getSupplementaryContractValue() > 0 &&
+    			dto.getApeValue() > 0 &&
+    			dto.getTotalValue() > 0) {
+    		return true;
+    	}
+    	return false;
     }
 }
