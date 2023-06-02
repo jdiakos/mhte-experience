@@ -84,25 +84,43 @@
 			CONSTRAINT project_subcontractor_pkey PRIMARY KEY (id),
             CONSTRAINT fkq0twsi5ae14pu804t6imh14vj FOREIGN KEY (project_id) REFERENCES project(id) ON DELETE CASCADE
             );
+            
+            --revinfo sequence
+            
+            CREATE SEQUENCE IF NOT EXISTS revinfo_seq
+			    INCREMENT 50
+			    START 1
+			    MINVALUE 1
+			    MAXVALUE 9223372036854775807
+			    CACHE 1;
+            
+            --revinfo table for audit purposes
+            
+            CREATE TABLE IF NOT EXISTS revinfo(
+			    rev integer NOT NULL,
+			    revtstmp bigint,
+			    CONSTRAINT revinfo_pkey PRIMARY KEY (rev)
+			);
 
 			-- project contractor audit table definition
+			
 			CREATE TABLE project_contractor_aud (
 				id bigint  NOT NULL,
-				rev INTEGER NOT NULL
-				CONSTRAINT fk7jfmu2u12wt681wmy1p2hwod3 REFERENCES revinfo,
+				rev INTEGER NOT NULL,
 				revtype SMALLINT,
 				last_modification_date TIMESTAMP(6),
 				last_modified_by VARCHAR(255),
 				participation_percentage DOUBLE PRECISION,
 				participation_type VARCHAR(255),
-				PRIMARY KEY (rev, id)
+				PRIMARY KEY (rev, id),
+				CONSTRAINT fk7jfmu2u12wt681wmy1p2hwod3 FOREIGN KEY(rev) REFERENCES revinfo(rev)
 			);
 
 			-- project subcontractor audit table definition
+			
 			CREATE TABLE project_subcontractor_aud (
 				id bigint  NOT NULL,
-				rev INTEGER NOT NULL
-				CONSTRAINT fksgtpwk9bo6mkmm9pmps1u7uhh REFERENCES revinfo,
+				rev INTEGER NOT NULL,
 				revtype SMALLINT,
 				contract_date_from DATE,
 				contract_date_to DATE,
@@ -110,7 +128,8 @@
 				last_modification_date TIMESTAMP(6),
 				last_modified_by VARCHAR(255),
 				participation_type VARCHAR(255),
-				PRIMARY KEY (rev, id)
+				PRIMARY KEY (rev, id),
+				CONSTRAINT fksgtpwk9bo6mkmm9pmps1u7uhh FOREIGN KEY(rev) REFERENCES revinfo(rev)
 			);
 
 
