@@ -1,6 +1,8 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
 import com.iknowhow.mhte.projectsexperience.service.ContractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/contract")
@@ -39,6 +43,13 @@ public class ContractController {
     public ResponseEntity<ContractProjectDTO> deleteContract(@PathVariable(value="id") String id){
         logger.info("Request to delete contract with id: " + id);
         ContractProjectDTO response = contractService.deleteContract(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value="/{projectId}/get-all")
+    public ResponseEntity<List<ContractResponseDTO>> getAllContractsByProject(@PathVariable(value="projectId") Long projectId){
+        logger.info("Fetching all contracts of project with id: " + projectId);
+        List<ContractResponseDTO> response = contractService.getAllContractsByProject(projectId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
