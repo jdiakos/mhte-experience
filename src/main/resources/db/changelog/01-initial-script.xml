@@ -59,6 +59,9 @@
 	            participation_percentage float8 NULL,
 	            participation_type varchar(255) NULL,
 	            project_id int8 NOT NULL,
+	            created_date timestamp NOT NULL,
+	            last_modification_date timestamp NOT NULL,
+	            last_modified_by varchar(255) NOT NULL
             CONSTRAINT project_contractor_pkey PRIMARY KEY (id),
             CONSTRAINT fkt7sg49sicadvfomubsi4f379r FOREIGN KEY (project_id) REFERENCES project(id) ON DELETE CASCADE
             );
@@ -75,7 +78,10 @@
 	            participation_type varchar(255) NULL,
 	            subcontractor_id int8 NULL,
 	            project_id int8 NOT NULL,
-            CONSTRAINT project_subcontractor_pkey PRIMARY KEY (id),
+				created_date timestamp NOT NULL,
+				last_modification_date timestamp NOT NULL,
+				last_modified_by varchar(255) NOT NULL
+			CONSTRAINT project_subcontractor_pkey PRIMARY KEY (id),
             CONSTRAINT fkq0twsi5ae14pu804t6imh14vj FOREIGN KEY (project_id) REFERENCES project(id) ON DELETE CASCADE
             );
         </sql>
