@@ -16,6 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Objects;
+
 
 @Service
 public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorService {
@@ -89,10 +92,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
-        subcontractorRepository.findBySubcontractorIdAndProjectId(dto.getSubcontractorId(), dto.getProjectId())
-                .ifPresent(subcontractor -> {
-                    throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
-                });
+        validateAlreadyAssignedSubcontractor(project.getProjectSubcontractors(), dto);
 
         ProjectSubcontractor subcontractor = new ProjectSubcontractor();
         subcontractor.setSubcontractorId(dto.getSubcontractorId());
@@ -128,5 +128,20 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         dto.setContractGUID(subcontractor.getContractGUID());
 
         return dto;
+    }
+
+    private void validateAlreadyAssignedSubcontractor(
+            List<ProjectSubcontractor> currentSubcontractors, ProjectSubcontractorDTO dto) {
+
+        // check whether the current contractors contained the contractors to be assigned
+        List<ProjectSubcontractor> subcontractorList = currentSubcontractors
+                .stream()
+                .filter(subcontractor -> Objects.equals(subcontractor.getSubcontractorId(), dto.getSubcontractorId()))
+                .filter(subcontractor -> Objects.equals(subcontractor.getProject().getId(), dto.getProjectId()))
+                .toList();
+
+        if (!subcontractorList.isEmpty()) {
+            throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
+        }
     }
 }

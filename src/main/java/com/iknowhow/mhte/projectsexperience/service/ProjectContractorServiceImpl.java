@@ -17,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Objects;
+
 
 @Service
 public class ProjectContractorServiceImpl implements ProjectContractorService {
@@ -57,11 +60,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
-        contractorRepository.findByContractorIdAndProjectId(dto.getContractorId(), dto.getProjectId())
-                .ifPresent(contractor -> {
-                    throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
-                });
-
+        validateAlreadyAssignedContractor(project.getProjectContractors(), dto);
         validateProjectParticipationPercentages(project, dto.getParticipationPercentage());
 
         ProjectContractor contractor = new ProjectContractor();
@@ -121,6 +120,22 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         dto.setParticipationPercentage(contractor.getParticipationPercentage());
 
         return dto;
+    }
+
+    private void validateAlreadyAssignedContractor(
+            List<ProjectContractor> currentContractors, ProjectContractorDTO dto) {
+
+        // check whether the current contractors contained the contractors to be assigned
+        List<ProjectContractor> contractorList = currentContractors
+                .stream()
+                .filter(contractor -> Objects.equals(contractor.getContractorId(), dto.getContractorId()))
+                .filter(contractor -> Objects.equals(contractor.getProject().getId(), dto.getProjectId()))
+                .toList();
+
+        if (!contractorList.isEmpty()) {
+            throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
+        }
+
     }
 
     private void validateProjectParticipationPercentages(Project project, Double contractorShare) {
