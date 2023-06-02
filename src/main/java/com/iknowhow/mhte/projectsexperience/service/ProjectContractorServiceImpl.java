@@ -8,6 +8,7 @@ import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
+import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsAlreadyAssignedException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,8 +56,12 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
+        contractorRepository.findByContractorIdAndProjectId(dto.getContractorId(), dto.getProjectId())
+                .ifPresent(contractor -> {
+                    throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
+                });
+
         ProjectContractor contractor = new ProjectContractor();
-        // @TODO -- CHECK IF ALREADY ASSIGNED
         contractor.setContractorId(dto.getContractorId());
         contractor.setProject(project);
         contractor.setParticipationType(dto.getParticipationType());

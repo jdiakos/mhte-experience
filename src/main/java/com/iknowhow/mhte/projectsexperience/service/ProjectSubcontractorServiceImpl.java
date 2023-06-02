@@ -8,6 +8,7 @@ import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectSubcontractorDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
+import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsAlreadyAssignedException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 
     @Override
     public Page<ProjectSubcontractorResponseDTO> getAllSubcontractorsForProject(Long projectId, Pageable pageable) {
+        // @TODO -- VARIOUS FIELDS INCLUDING name, taxId, type etc. must be filled from another MICROSERVICE
         projectRepository.findById(projectId).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
@@ -87,8 +89,12 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
+        subcontractorRepository.findBySubcontractorIdAndProjectId(dto.getSubcontractorId(), dto.getProjectId())
+                .ifPresent(subcontractor -> {
+                    throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
+                });
+
         ProjectSubcontractor subcontractor = new ProjectSubcontractor();
-        // @TODO - CHECK IF ASSIGNED
         subcontractor.setSubcontractorId(dto.getSubcontractorId());
         subcontractor.setProject(project);
         subcontractor.setContractValue(dto.getContractValue());

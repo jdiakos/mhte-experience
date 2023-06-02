@@ -7,11 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface ProjectContractorRepository extends JpaRepository<ProjectContractor, Long> {
 
     Page<ProjectContractor> findAllByProjectId(Pageable pageable, Long projectId);
+
+    Optional<ProjectContractor> findByContractorIdAndProjectId(Long contractorId, Long projectId);
 
 }
