@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class CUDProjectDTO {
 	
-    private ProjectsCategoryEnum projectCategoy;
+    private ProjectsCategoryEnum projectCategory;
     private String adam;
     private String protocolNumber;
     private String title;

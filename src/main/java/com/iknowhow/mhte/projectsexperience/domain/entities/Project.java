@@ -22,7 +22,7 @@ public class Project implements Serializable {
 
     @Column(name = "project_category")
     @Enumerated(EnumType.STRING)
-    private ProjectsCategoryEnum projectCategoy;
+    private ProjectsCategoryEnum projectCategory;
 
     @Column(name = "adam", unique = true)
     private String adam;
