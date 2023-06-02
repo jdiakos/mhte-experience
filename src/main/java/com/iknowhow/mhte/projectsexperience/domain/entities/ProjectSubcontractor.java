@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -50,10 +52,12 @@ public class ProjectSubcontractor implements Serializable {
     @NotAudited
     private String contractGUID;
 
+    @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)
     @NotAudited
     private LocalDateTime dateCreated;
 
+    @LastModifiedDate
     @Column(name = "last_modification_date")
     private LocalDateTime lastModificationDate;
 
