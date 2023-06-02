@@ -7,6 +7,8 @@ import com.iknowhow.mhte.projectsexperience.service.ContractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +42,7 @@ public class ContractController {
     }
 
     @DeleteMapping(value="/delete-contract/{id}")
-    public ResponseEntity<ContractProjectDTO> deleteContract(@PathVariable(value="id") String id){
+    public ResponseEntity<ContractProjectDTO> deleteContract(@PathVariable(value="id") Long id){
         logger.info("Request to delete contract with id: " + id);
         ContractProjectDTO response = contractService.deleteContract(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -50,6 +52,20 @@ public class ContractController {
     public ResponseEntity<List<ContractResponseDTO>> getAllContractsByProject(@PathVariable(value="projectId") Long projectId){
         logger.info("Fetching all contracts of project with id: " + projectId);
         List<ContractResponseDTO> response = contractService.getAllContractsByProject(projectId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value="/{contractId}/get-project")
+    public ResponseEntity<ContractProjectDTO> getProject(@PathVariable(value="contractId") Long contractId){
+        logger.info("Getting project of contract with id: " + contractId);
+        ContractProjectDTO response = contractService.getProject(contractId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping(value="/all")
+    public ResponseEntity<Page<ContractProjectDTO>> fetchAllContractsPaginated(Pageable pageable) {
+        logger.info("Fetch all contract paginated");
+        Page<ContractProjectDTO> response = contractService.fetchAllContractsPaginated(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

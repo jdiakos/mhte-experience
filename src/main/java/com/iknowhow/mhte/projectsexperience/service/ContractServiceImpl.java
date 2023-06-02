@@ -2,18 +2,18 @@ package com.iknowhow.mhte.projectsexperience.service;
 
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
-import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectContractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ContractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import org.modelmapper.convention.MatchingStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +47,7 @@ public class ContractServiceImpl implements ContractService{
             Contract savedContract = contractRepository.save(newContract);
             contract.setId(savedContract.getId());
         } catch (Exception ex) {
-            //throw new MhteProjectExceptionHandler(ex.getMessage())
+            throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONSTRAINT_VALIDATION_ERROR);
         }
 
         return contract;
@@ -71,8 +71,8 @@ public class ContractServiceImpl implements ContractService{
 
     @Override
     @Transactional
-    public ContractProjectDTO deleteContract(String id) {
-        Contract contract = contractRepository.findById(Long.parseLong(id)).orElseThrow(() ->
+    public ContractProjectDTO deleteContract(Long id) {
+        Contract contract = contractRepository.findById(id).orElseThrow(() ->
                 new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND));
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -92,6 +92,20 @@ public class ContractServiceImpl implements ContractService{
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public ContractProjectDTO getProject(Long contractId) {
+        Contract contract = contractRepository.findById(contractId).orElseThrow(() -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND));
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        return modelMapper.map(contract, ContractProjectDTO.class);
+    }
+
+    @Override
+    public Page<ContractProjectDTO> fetchAllContractsPaginated(Pageable page){
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+        return contractRepository.findAll(page).map(contract -> modelMapper.map(contract, ContractProjectDTO.class));
+    }
 
     private ContractResponseDTO toContractResponseDTO(Contract contract) {
         ContractResponseDTO dto = new ContractResponseDTO();
