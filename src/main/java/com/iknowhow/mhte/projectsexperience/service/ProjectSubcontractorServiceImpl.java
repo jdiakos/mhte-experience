@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,6 +83,8 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
             projectSubcontractor.setContractDateTo(dto.getContractDateTo());
         }
 
+        projectSubcontractor.setLastModifiedBy("OBELIX"); // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME
+
         subcontractorRepository.save(projectSubcontractor);
 
     }
@@ -102,6 +105,9 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         subcontractor.setContractDateFrom(dto.getContractDateFrom());
         subcontractor.setContractDateTo(dto.getContractDateTo());
         subcontractor.setContractGUID(dto.getContractGUID());
+
+        subcontractor.setDateCreated(LocalDateTime.now());
+        subcontractor.setLastModifiedBy("ASTERIX"); // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME
 
         subcontractorRepository.save(subcontractor);
 

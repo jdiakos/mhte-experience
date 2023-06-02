@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,6 +67,9 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         contractor.setParticipationType(dto.getParticipationType());
         contractor.setParticipationPercentage(dto.getParticipationPercentage());
 
+        contractor.setDateCreated(LocalDateTime.now());
+        contractor.setLastModifiedBy("ASTERIX"); // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME
+
         contractorRepository.save(contractor);
 
     }
@@ -94,6 +98,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         if (dto.getParticipationPercentage() != null) {
             projectContractor.setParticipationPercentage(dto.getParticipationPercentage());
         }
+        projectContractor.setLastModifiedBy("OBELIX"); // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME
 
         contractorRepository.save(projectContractor);
     }
