@@ -34,8 +34,13 @@ public class WebSecurityConfig {
     // @TODO -- IMPLEMENT USER PRINCIPAL
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.cors().and().csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        return http
+                .cors()
+                .and()
+                .csrf()
+                .disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(authJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
@@ -47,6 +52,7 @@ public class WebSecurityConfig {
 
     @Bean
     public AuthTokenFilter authJwtTokenFilter() {
+
         return new AuthTokenFilter();
     }
 //    @Bean
