@@ -8,13 +8,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
+import com.iknowhow.mhte.projectsexperience.domain.entities.QProject;
+import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.CUDProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectConDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectSearchDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectCustomValidationException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
+import com.querydsl.core.BooleanBuilder;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -36,7 +40,6 @@ public class ProjectServiceImpl implements ProjectService {
     	logger.info("fetch all projects service");
     	ModelMapper loose = utils.initModelMapperLoose();
         return projectRepo.findAll(page).map(project -> loose.map(project, ProjectConDTO.class));
-
     }
     
     @Override
@@ -56,6 +59,36 @@ public class ProjectServiceImpl implements ProjectService {
     	return projectRepo.findByContracts_Id(id).map(project -> loose.map(project, ProjectConDTO.class)).orElseThrow(()->
     		new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
     	);
+    }
+    
+    @Override
+    public ProjectConDTO getProjectByAdam(String adam) {
+    	logger.info("get project by adam service");
+    	ModelMapper loose = utils.initModelMapperLoose();
+    	return projectRepo.findByAdam(adam).map(project -> loose.map(project, ProjectConDTO.class)).orElseThrow(()->
+    		new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
+    	);
+    };
+    
+    @Override
+    public Page<ProjectConDTO> getProjectByCategory(ProjectsCategoryEnum category, Pageable page) {
+    	logger.info("get project by category service");
+    	ModelMapper loose = utils.initModelMapperLoose();
+    	return projectRepo.findByProjectCategory(category, page).map(project -> loose.map(project, ProjectConDTO.class));
+    }
+    
+    @Override
+    public ProjectConDTO getProjectByProtocolNumber(String number) {
+    	logger.info("get project by category service");
+    	ModelMapper loose = utils.initModelMapperLoose();
+    	return loose.map(projectRepo.findByProtocolNumber(number), ProjectConDTO.class);
+    }
+    
+    @Override
+    public Page<ProjectConDTO> getProjectByResponsibleEntity(String entity, Pageable page) {
+    	logger.info("get project by category service");
+    	ModelMapper loose = utils.initModelMapperLoose();
+    	return projectRepo.findByResponsibleEntity(entity, page).map(project -> loose.map(project, ProjectConDTO.class));
     }
     
     @Override
@@ -117,6 +150,32 @@ public class ProjectServiceImpl implements ProjectService {
         CUDProjectDTO response = strict.map(projectExists, CUDProjectDTO.class);
         projectRepo.delete(projectExists);
         return response;
+    }
+    
+    @Override
+    public Page<ProjectConDTO> search(ProjectSearchDTO dto, Pageable pageable) {
+        QProject qProject = QProject.project;
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (dto.getAdam() != null) {
+            booleanBuilder.and(qProject.adam.eq(dto.getAdam()));
+        }
+
+        if (dto.getProtocolNumber() != null) {
+            booleanBuilder.and(qProject.protocolNumber.eq(dto.getProtocolNumber()));
+        }
+
+        if (dto.getResponsibleEntity() != null) {
+            booleanBuilder.and(qProject.responsibleEntity.eq(dto.getResponsibleEntity()));
+        }
+
+        if (dto.getProjectCategory() != null) {
+            booleanBuilder.and(qProject.projectCategory.eq(dto.getProjectCategory()));
+        }
+        
+        ModelMapper modelMapper = utils.initModelMapperLoose();
+        return projectRepo.findAll(booleanBuilder, pageable)
+                .map(project -> modelMapper.map(project, ProjectConDTO.class));
     }
     
     private boolean validateProject(CUDProjectDTO dto) {
