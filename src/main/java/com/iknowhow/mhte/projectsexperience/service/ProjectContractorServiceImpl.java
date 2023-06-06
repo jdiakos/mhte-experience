@@ -1,5 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectContractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectContractorRepository;
@@ -54,7 +55,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
 
     @Override
     @Transactional
-    public void assignContractorToProject(ProjectContractorDTO dto) {
+    public void assignContractorToProject(ProjectContractorDTO dto, MhteUserPrincipal userPrincipal) {
         Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
@@ -68,7 +69,9 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         contractor.setParticipationPercentage(dto.getParticipationPercentage());
 
         contractor.setDateCreated(LocalDateTime.now());
-        contractor.setLastModifiedBy("ASTERIX"); // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME
+        // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
+        contractor.setLastModifiedBy("ASTERIX");
+//        contractor.setLastModifiedBy(userPrincipal.getUsername());
 
         contractorRepository.save(contractor);
 
@@ -85,7 +88,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
 
     @Override
     @Transactional
-    public void updateProjectContractor(Long id, UpdateProjectContractorDTO dto) {
+    public void updateProjectContractor(Long id, UpdateProjectContractorDTO dto, MhteUserPrincipal userPrincipal) {
         ProjectContractor projectContractor = contractorRepository.findById(id).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_CONTRACTOR_NOT_FOUND)
         );
@@ -98,7 +101,9 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         if (dto.getParticipationPercentage() != null) {
             projectContractor.setParticipationPercentage(dto.getParticipationPercentage());
         }
-        projectContractor.setLastModifiedBy("OBELIX"); // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME
+        // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
+        projectContractor.setLastModifiedBy("OBELIX");
+//        projectContractor.setLastModifiedBy(userPrincipal.getUsername());
 
         contractorRepository.save(projectContractor);
     }

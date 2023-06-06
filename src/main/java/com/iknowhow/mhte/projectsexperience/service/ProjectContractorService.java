@@ -1,5 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
@@ -15,9 +16,9 @@ public interface ProjectContractorService {
 
     ProjectContractorResponseDTO getContractorOfProject(Long id);
 
-    void updateProjectContractor(Long id, UpdateProjectContractorDTO dto);
+    void updateProjectContractor(Long id, UpdateProjectContractorDTO dto, MhteUserPrincipal userPrincipal);
 
-    void assignContractorToProject(ProjectContractorDTO dto);
+    void assignContractorToProject(ProjectContractorDTO dto, MhteUserPrincipal userPrincipal);
 
     void removeContractorFromProject(Long id);
 

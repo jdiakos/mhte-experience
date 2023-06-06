@@ -15,6 +15,7 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // @TODO - IMPLEMENT ACTUAL SECURITY
         return http
                 .cors()
                 .and()

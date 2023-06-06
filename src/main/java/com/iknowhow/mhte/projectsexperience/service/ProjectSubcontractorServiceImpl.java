@@ -1,5 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
@@ -65,7 +66,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 
     @Override
     @Transactional
-    public void updateProjectSubcontractor(Long id, UpdateProjectSubcontractorDTO dto) {
+    public void updateProjectSubcontractor(Long id, UpdateProjectSubcontractorDTO dto, MhteUserPrincipal userPrincipal) {
         ProjectSubcontractor projectSubcontractor = subcontractorRepository.findById(id).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_SUBCONTRACTOR_NOT_FOUND)
         );
@@ -83,7 +84,9 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
             projectSubcontractor.setContractDateTo(dto.getContractDateTo());
         }
 
-        projectSubcontractor.setLastModifiedBy("OBELIX"); // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME
+        // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
+        projectSubcontractor.setLastModifiedBy("OBELIX");
+//        projectSubcontractor.setLastModifiedBy(userPrincipal.getUsername());
 
         subcontractorRepository.save(projectSubcontractor);
 
@@ -91,7 +94,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 
     @Override
     @Transactional
-    public void assignSubcontractorToProject(ProjectSubcontractorDTO dto) {
+    public void assignSubcontractorToProject(ProjectSubcontractorDTO dto, MhteUserPrincipal userPrincipal) {
         Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
@@ -107,7 +110,9 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         subcontractor.setContractGUID(dto.getContractGUID());
 
         subcontractor.setDateCreated(LocalDateTime.now());
-        subcontractor.setLastModifiedBy("ASTERIX"); // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME
+        // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
+        subcontractor.setLastModifiedBy("ASTERIX");
+//        subcontractor.setLastModifiedBy(userPrincipal.getUsername());
 
         subcontractorRepository.save(subcontractor);
 

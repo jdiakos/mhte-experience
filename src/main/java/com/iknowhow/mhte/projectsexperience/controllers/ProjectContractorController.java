@@ -1,5 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
+import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,8 +44,9 @@ public class ProjectContractorController {
     }
 
     @PostMapping("/assign")
-    public ResponseEntity<Void> assignContractorToProject(@Valid @RequestBody ProjectContractorDTO dto) {
-        projectContractorService.assignContractorToProject(dto);
+    public ResponseEntity<Void> assignContractorToProject(@Valid @RequestBody ProjectContractorDTO dto,
+                                                          @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
+        projectContractorService.assignContractorToProject(dto, userPrincipal);
 
         return ResponseEntity.ok().build();
     }
@@ -57,8 +60,9 @@ public class ProjectContractorController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateContractorOfProject(@PathVariable Long id,
-                                                          @RequestBody UpdateProjectContractorDTO dto) {
-        projectContractorService.updateProjectContractor(id, dto);
+                                                          @RequestBody UpdateProjectContractorDTO dto,
+                                                          @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
+        projectContractorService.updateProjectContractor(id, dto, userPrincipal);
 
         return ResponseEntity.ok().build();
     }

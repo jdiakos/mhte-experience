@@ -1,5 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
+import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectSubcontractorDTO;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -42,8 +44,9 @@ public class ProjectSubcontractorController {
     }
 
     @PostMapping("/assign")
-    public ResponseEntity<Void> assignSubcontractorToProject(@Valid @RequestBody ProjectSubcontractorDTO dto) {
-        projectSubcontractorService.assignSubcontractorToProject(dto);
+    public ResponseEntity<Void> assignSubcontractorToProject(@Valid @RequestBody ProjectSubcontractorDTO dto,
+                                                             @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
+        projectSubcontractorService.assignSubcontractorToProject(dto, userPrincipal);
 
         return ResponseEntity.ok().build();
     }
@@ -57,8 +60,9 @@ public class ProjectSubcontractorController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateSubcontractorOfProject(@PathVariable Long id,
-                                                             @RequestBody UpdateProjectSubcontractorDTO dto) {
-        projectSubcontractorService.updateProjectSubcontractor(id, dto);
+                                                             @RequestBody UpdateProjectSubcontractorDTO dto,
+                                                             @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
+        projectSubcontractorService.updateProjectSubcontractor(id, dto, userPrincipal);
 
         return ResponseEntity.ok().build();
     }
