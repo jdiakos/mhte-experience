@@ -156,7 +156,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         // for any contractor updates or new additions, we check whether the new total percentage
         // exceeds 100%. If there is a change in percentages already reaching 100%,
         // the user must first lower one of the existing ones before increasing the other one
-        // not the best solution UX-wise, but the only one foolproof I can think right now
+        // not the best solution UX-wise, but the only one foolproof I can think of right now
         double currentPercentage = project.getProjectContractors()
                 .stream()
                 .mapToDouble(ProjectContractor::getParticipationPercentage)
