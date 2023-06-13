@@ -146,7 +146,7 @@ public class ContractServiceImpl implements ContractService{
         System.out.println("REACHED");
         ObjectStore os = filenetConfig.getObjectStore();
 
-        String name = "testDocument";
+        String name = null;
         // PLACEHOLDER
         Document document = Factory.Document.createInstance(os, name);
         System.out.println("---------------------------------------------");

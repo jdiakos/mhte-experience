@@ -13,6 +13,8 @@ import javax.security.auth.Subject;
 @Component
 public class FilenetConfig {
 
+//    Logger logger = Logger.getLogger(FilenetConfig.class);
+
     @Value("${app.filenet.url}")
     private String uri;
     @Value("${app.filenet.username}")
@@ -23,11 +25,15 @@ public class FilenetConfig {
     private String objectStoreName;
 
     public Connection getConnection() {
-        Connection connection = Factory.Connection.getConnection(uri);
-        Subject subject = UserContext.createSubject(connection, username, password, null);
-        UserContext.get().pushSubject(subject);
-
-        return connection;
+        try {
+            Connection connection = Factory.Connection.getConnection(uri);
+            Subject subject = UserContext.createSubject(connection, username, password, null);
+            UserContext.get().pushSubject(subject);
+            return connection;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Domain getDomain() {
