@@ -23,6 +23,7 @@
         <app.postgresql.version>42.3.7</app.postgresql.version>
         <app.db2.version>4.19.66</app.db2.version>
         <app.java-jwt.version>4.4.0</app.java-jwt.version>
+        <app.filenet.jace.version>5.5.3</app.filenet.jace.version>
     </properties>
 
     <repositories>
@@ -158,6 +159,12 @@
             <groupId>com.iknowhow.mhte</groupId>
             <artifactId>auth-security</artifactId>
             <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.filenet</groupId>
+            <artifactId>jace</artifactId>
+            <version>${app.filenet.jace.version}</version>
         </dependency>
     </dependencies>
 
