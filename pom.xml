@@ -21,8 +21,17 @@
         <app.springdoc.version>1.7.0</app.springdoc.version>
         <app.jib.version>3.3.1</app.jib.version>
         <app.postgresql.version>42.3.7</app.postgresql.version>
+        <app.db2.version>4.19.66</app.db2.version>
         <app.java-jwt.version>4.4.0</app.java-jwt.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>ikh</id>
+            <!--            <url>https://nexus.iknowhow.com/repository/ikh/</url>-->
+            <url>http://192.168.209.12:8081/repository/ikh/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
 
@@ -86,6 +95,23 @@
             <version>${app.postgresql.version}</version>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- DB2 -->
+
+        <dependency>
+            <groupId>com.ibm.db2</groupId>
+            <artifactId>db2jcc4</artifactId>
+            <scope>runtime</scope>
+            <version>${app.db2.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.db2</groupId>
+            <artifactId>db2jcc_license_cu</artifactId>
+            <scope>runtime</scope>
+            <version>${app.db2.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
