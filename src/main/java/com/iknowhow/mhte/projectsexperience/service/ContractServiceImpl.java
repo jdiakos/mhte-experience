@@ -1,5 +1,12 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.filenet.api.collection.ContentElementList;
+import com.filenet.api.constants.RefreshMode;
+import com.filenet.api.core.ContentTransfer;
+import com.filenet.api.core.Document;
+import com.filenet.api.core.Factory;
+import com.filenet.api.core.ObjectStore;
+import com.iknowhow.mhte.projectsexperience.configuration.FilenetConfig;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository;
@@ -20,9 +27,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,20 +38,17 @@ public class ContractServiceImpl implements ContractService{
 
     private final ContractRepository contractRepository;
     private final ProjectRepository projectRepository;
+    private final FilenetConfig filenetConfig;
 
     @Autowired
     public ContractServiceImpl(ContractRepository contractRepository,
-                               ProjectRepository projectRepository){
+                               ProjectRepository projectRepository,
+                               FilenetConfig filenetConfig){
         this.contractRepository = contractRepository;
         this.projectRepository = projectRepository;
+        this.filenetConfig = filenetConfig;
     }
     
-    @Override
-    public void uploadFile(ContractProjectDTO contract, MultipartFile document) {
-    	System.out.println("im in");
-    	System.out.println(document.getOriginalFilename());
-    }
-
     @Override
     public ContractProjectDTO createNewContract(ContractProjectDTO contract) {
     	if(!negativeNumberValidator(contract.getContractValue())) {
@@ -121,6 +124,13 @@ public class ContractServiceImpl implements ContractService{
     	return false;
     }
 
+    @Override
+    public void uploadFile(ContractProjectDTO contract, MultipartFile document) {
+        System.out.println("im in");
+        System.out.println(document.getOriginalFilename());
+        uploadToFileNet(document);
+    }
+
     private ContractResponseDTO toContractResponseDTO(Contract contract) {
         ContractResponseDTO dto = new ContractResponseDTO();
 
@@ -130,5 +140,35 @@ public class ContractServiceImpl implements ContractService{
         dto.setSigningDate(contract.getSigningDate());
 
         return dto;
+    }
+
+    private void uploadToFileNet(MultipartFile file) {
+        System.out.println("REACHED");
+        ObjectStore os = filenetConfig.getObjectStore();
+
+        String name = "testDocument";
+        // PLACEHOLDER
+        Document document = Factory.Document.createInstance(os, name);
+        System.out.println("---------------------------------------------");
+        System.out.println(file.getContentType());
+        document.set_MimeType(file.getContentType());
+        document = copyFileToDocument(document, file);
+        document.save(RefreshMode.NO_REFRESH);
+
+    }
+
+    private Document copyFileToDocument(Document document, MultipartFile file) {
+        ContentTransfer ctObject = Factory.ContentTransfer.createInstance();
+        ContentElementList cteList = Factory.ContentElement.createList();
+        final double[] contentSize = {0d};
+        try {
+            ctObject.setCaptureSource(file.getInputStream());
+        } catch (Exception e) {
+            System.out.println("ERROR!");
+        }
+        cteList.add(ctObject);
+        document.set_ContentElements(cteList);
+
+        return document;
     }
 }
