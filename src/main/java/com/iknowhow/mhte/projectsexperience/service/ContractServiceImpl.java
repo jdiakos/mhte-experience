@@ -18,9 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.io.File;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +38,12 @@ public class ContractServiceImpl implements ContractService{
                                ProjectRepository projectRepository){
         this.contractRepository = contractRepository;
         this.projectRepository = projectRepository;
+    }
+    
+    @Override
+    public void uploadFile(ContractProjectDTO contract, MultipartFile document) {
+    	System.out.println("im in");
+    	System.out.println(document.getOriginalFilename());
     }
 
     @Override

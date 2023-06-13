@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,6 +32,13 @@ public class ContractController {
         logger.info("Create new contract");
         ContractProjectDTO response = contractService.createNewContract(contract);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    
+    @PostMapping(value= "/save-file")
+    public ResponseEntity<String> uploadFile(@RequestPart("contract") ContractProjectDTO contract, 
+    		@RequestPart("file") MultipartFile document) {
+        contractService.uploadFile(contract, document);
+        return ResponseEntity.status(HttpStatus.CREATED).body("ok");
     }
 
     @PutMapping(value="/update-contract")
