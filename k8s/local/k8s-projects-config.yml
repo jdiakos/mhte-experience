@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mhte-projects-config
+data:
+  # Spring configuration
+  spring.datasource.url: "jdbc:db2://dev-docker.corp.iknowhow.com:50000/MHTE:currentSchema=MHTE_PROJECTS_EXPERIENCE;currentFunctionPath=MHTE_PROJECTS_EXPERIENCE;"
+  spring.datasource.username: "db2inst1"
+  spring.datasource.password: "P@ssw0rd"
+  spring.jpa.hibernate.ddl-auto: "none"
+  spring.jpa.properties.hibernate.default_schema: "mhte_projects_experience"
+  hibernate.default_schema: "mhte_projects_experience"
+  spring.liquibase.enabled: "true"

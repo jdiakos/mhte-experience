@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: projects-experience
+  name: projects-experience
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: projects-experience
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: projects-experience
+    spec:
+      containers:
+      - image: docker-registry.iknowhow.com/mhte-projects-experience
+        name: projects-experience
+        ports:
+          - containerPort: 8080
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: microk8s
+            # Global Config
+          - name: APP_TAXIS_JWT_SECRET
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-config
+                key: app.taxis.jwt.secret
+          - name: APP_TAXIS_JWT_ISSUER
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-config
+                key: app.taxis.jwt.issuer
+          - name: APP_TAXIS_EXPIRES_SEC
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-config
+                key: app.taxis.jwt.expiresSec
+
+          # Mhte Projects Config
+          - name: APP_PROJECTS_DB_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-projects-config
+                key: spring.datasource.url
+          - name: APP_PROJECTS_DB_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-projects-config
+                key: spring.datasource.username
+          - name: APP_PROJECTS_DB_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-projects-config
+                key: spring.datasource.password
+          - name: APP_PROJECTS_DB_DDL_AUTO
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-projects-config
+                key: spring.jpa.hibernate.ddl-auto
+          - name: APP_PROJECTS_DB_SCHEMA
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-projects-config
+                key: spring.jpa.properties.hibernate.default_schema
+          - name: APP_PROJECTS_HIBERNATE_DB_SCHEMA
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-projects-config
+                key: hibernate.default_schema
+          - name: APP_PROJECTS_LIQUIBASE_ENABLED
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-projects-config
+                key: spring.liquibase.enabled
+        resources: {}
+      volumes:
+        - name: global-config-volume
+          configMap:
+            name: mhte-config
+        - name: projects-config-volume
+          configMap:
+            name: mhte-projects-config
+status: {}

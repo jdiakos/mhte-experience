@@ -1,0 +1,26 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: mhte-projects-experience
+build:
+  artifacts:
+    - image: mhte-projects-experience
+      jib:
+        project: com.iknowhow.mhte:projects-experience
+manifests:
+  rawYaml:
+    - k8s/base/k8s-*
+    - k8s/local/k8s-*
+profiles:
+  - name: microk8s
+    build:
+      artifacts:
+        - image: docker-registry.iknowhow.com/mhte-projects-experience
+          jib:
+            project: com.iknowhow.mhte:projects-experience
+            args:
+              - -Djib.allowInsecureRegistries=true
+    manifests:
+      rawYaml:
+        - k8s/base/k8s-*
+        - k8s/microk8s/k8s-*
