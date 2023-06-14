@@ -110,13 +110,6 @@ public class ContractServiceImpl implements ContractService {
         return contractRepository.findAll(page).map(contract -> modelMapper.map(contract, ContractProjectDTO.class));
     }
 
-    private boolean negativeNumberValidator(Double n) {
-        if (n > 0) {
-            return true;
-        }
-        return false;
-    }
-
     @Override
     @Transactional
     public void uploadFile(ContractProjectDTO dto, MultipartFile document) {
@@ -127,17 +120,6 @@ public class ContractServiceImpl implements ContractService {
         String guid = fileNetService.uploadFileToFilenet(contract.getProject().getProtocolNumber(), document);
         contract.setContractGUID(guid);
         contractRepository.save(contract);
-    }
-
-    private ContractResponseDTO toContractResponseDTO(Contract contract) {
-        ContractResponseDTO dto = new ContractResponseDTO();
-
-        dto.setId(contract.getId());
-        dto.setContractType(contract.getContractType());
-        dto.setContractValue(contract.getContractValue());
-        dto.setSigningDate(contract.getSigningDate());
-
-        return dto;
     }
 
     @Override
@@ -157,4 +139,23 @@ public class ContractServiceImpl implements ContractService {
         contract.setContractGUID(null);
         contractRepository.save(contract);
     }
+
+    private boolean negativeNumberValidator(Double n) {
+        if (n > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private ContractResponseDTO toContractResponseDTO(Contract contract) {
+        ContractResponseDTO dto = new ContractResponseDTO();
+
+        dto.setId(contract.getId());
+        dto.setContractType(contract.getContractType());
+        dto.setContractValue(contract.getContractValue());
+        dto.setSigningDate(contract.getSigningDate());
+
+        return dto;
+    }
+
 }
