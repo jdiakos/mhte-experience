@@ -131,16 +131,21 @@ public class ContractServiceImpl implements ContractService{
 
     @Override
     public void uploadFile(ContractProjectDTO contract, MultipartFile document) {
+        String guid = "{43D95B95-B58E-C2F0-84B7-88B914D00000}";
+        deleteDocumentByGUID(guid);
+//        Document doc = fetchByGUID(guid);
+//        System.out.println(doc.get_Name());
+
 //        fetchFolder("ΜΗΤΕ");
-        try {
-            uploadToFileNet(document);
+//        try {
+//            uploadToFileNet(document);
 //            fetchDocument(document.getOriginalFilename());
 //        } catch (Exception e) {
 //            logger.error(e.getMessage());
 //        }
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+//        } catch (IOException e) {
+//            logger.error(e.getMessage());
+//        }
     }
 
     private ContractResponseDTO toContractResponseDTO(Contract contract) {
@@ -172,6 +177,7 @@ public class ContractServiceImpl implements ContractService{
 
             document.checkin(AutoClassify.DO_NOT_AUTO_CLASSIFY, CheckinType.MAJOR_VERSION);
             document.save(RefreshMode.REFRESH);
+            System.out.println(document.get_Id());
 
             Folder folder = fetchFolder("ΜΗΤΕ");
             ReferentialContainmentRelationship rcr = folder.file(
@@ -187,19 +193,16 @@ public class ContractServiceImpl implements ContractService{
 
     }
 
-    private void fetchDocument(String filename) {
+    private Document fetchByGUID(String guid) {
         ObjectStore objectStore = filenetConfig.getObjectStore();
-        String query = "SELECT * FROM Document WHERE DocumentTitle = '" + filename + "'";
-        SearchSQL searchSQL = new SearchSQL(query);
-        SearchScope searchScope = new SearchScope(objectStore);
-//        IndependentObjectSet results = searchScope.fetchObjects(searchSQL, null, new PropertyFilter(), Boolean.FALSE);
-        RepositoryRowSet rows = searchScope.fetchRows(searchSQL, null, new PropertyFilter(), Boolean.FALSE);
-//        System.out.println(rows);
-        for(Iterator<?> iterator = rows.iterator(); iterator.hasNext();) {
-            RepositoryRow row = (RepositoryRow) iterator.next();
-            System.out.println(row.getProperties());
-        }
+        return Factory.Document.fetchInstance(objectStore, guid, null);
+    }
 
+    private void deleteDocumentByGUID(String guid) {
+        ObjectStore objectStore = filenetConfig.getObjectStore();
+        Document document = Factory.Document.fetchInstance(objectStore, guid, null);
+        document.delete();
+        document.save(RefreshMode.REFRESH);
     }
 
 
