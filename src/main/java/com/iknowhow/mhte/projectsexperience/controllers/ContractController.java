@@ -9,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -76,7 +74,18 @@ public class ContractController {
         DownloadFileDTO dto = contractService.downloadFile(guid);
         logger.info(dto.getFilename());
 
-        return ResponseEntity.ok().body(dto.getFile());
+        ContentDisposition contentDisposition = ContentDisposition
+                .builder("attachment")
+                .filename(dto.getFilename())
+                .build();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentDisposition(contentDisposition);
+
+        return ResponseEntity.ok()
+                .headers(httpHeaders)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(dto.getFile());
     }
 
     @DeleteMapping("/delete-file/{contractId}/{guid}")
