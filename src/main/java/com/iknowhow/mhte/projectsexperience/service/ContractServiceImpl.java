@@ -1,16 +1,5 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
-import com.filenet.api.collection.ContentElementList;
-import com.filenet.api.collection.IndependentObjectSet;
-import com.filenet.api.collection.RepositoryRowSet;
-import com.filenet.api.constants.*;
-import com.filenet.api.core.*;
-import com.filenet.api.exception.EngineRuntimeException;
-import com.filenet.api.property.PropertyFilter;
-import com.filenet.api.query.RepositoryRow;
-import com.filenet.api.query.SearchSQL;
-import com.filenet.api.query.SearchScope;
-import com.iknowhow.mhte.projectsexperience.configuration.FilenetConfig;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository;
@@ -31,53 +20,51 @@ import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ContractServiceImpl implements ContractService{
+public class ContractServiceImpl implements ContractService {
 
     Logger logger = LoggerFactory.getLogger(ContractServiceImpl.class);
 
     private final ContractRepository contractRepository;
     private final ProjectRepository projectRepository;
-    private final FilenetConfig filenetConfig;
+    private final FileNetService fileNetService;
 
     @Autowired
     public ContractServiceImpl(ContractRepository contractRepository,
                                ProjectRepository projectRepository,
-                               FilenetConfig filenetConfig){
+                               FileNetService fileNetService) {
         this.contractRepository = contractRepository;
         this.projectRepository = projectRepository;
-        this.filenetConfig = filenetConfig;
+        this.fileNetService = fileNetService;
     }
-    
+
     @Override
     public ContractProjectDTO createNewContract(ContractProjectDTO contract) {
-    	if(!negativeNumberValidator(contract.getContractValue())) {
-    		throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
-    	}
+        if (!negativeNumberValidator(contract.getContractValue())) {
+            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+        }
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         Contract newContract = modelMapper.map(contract, Contract.class);
 
-        try{
+        try {
             Contract savedContract = contractRepository.save(newContract);
             contract.setId(savedContract.getId());
         } catch (Exception ex) {
-        	throw ex;
+            throw ex;
         }
         return contract;
     }
 
     @Override
     public ContractProjectDTO updateContract(ContractProjectDTO contract) {
-    	if(!negativeNumberValidator(contract.getContractValue())) {
-    		throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
-    	}
+        if (!negativeNumberValidator(contract.getContractValue())) {
+            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+        }
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -116,36 +103,29 @@ public class ContractServiceImpl implements ContractService{
     }
 
     @Override
-    public Page<ContractProjectDTO> fetchAllContractsPaginated(Pageable page){
+    public Page<ContractProjectDTO> fetchAllContractsPaginated(Pageable page) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return contractRepository.findAll(page).map(contract -> modelMapper.map(contract, ContractProjectDTO.class));
     }
-    
+
     private boolean negativeNumberValidator(Double n) {
-    	if(n>0) {
-    		return true;
-    	}
-    	return false;
+        if (n > 0) {
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void uploadFile(ContractProjectDTO contract, MultipartFile document) {
-        String guid = "{43D95B95-B58E-C2F0-84B7-88B914D00000}";
-        deleteDocumentByGUID(guid);
-//        Document doc = fetchByGUID(guid);
-//        System.out.println(doc.get_Name());
+    @Transactional
+    public void uploadFile(ContractProjectDTO dto, MultipartFile document) {
+        Contract contract = contractRepository.findById(dto.getId()).orElseThrow(
+                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND)
+        );
 
-//        fetchFolder("ΜΗΤΕ");
-//        try {
-//            uploadToFileNet(document);
-//            fetchDocument(document.getOriginalFilename());
-//        } catch (Exception e) {
-//            logger.error(e.getMessage());
-//        }
-//        } catch (IOException e) {
-//            logger.error(e.getMessage());
-//        }
+        String guid = fileNetService.uploadFileToFilenet(document);
+        contract.setContractGUID(guid);
+        contractRepository.save(contract);
     }
 
     private ContractResponseDTO toContractResponseDTO(Contract contract) {
@@ -157,64 +137,6 @@ public class ContractServiceImpl implements ContractService{
         dto.setSigningDate(contract.getSigningDate());
 
         return dto;
-    }
-
-    private void uploadToFileNet(MultipartFile file) throws IOException {
-        try {
-            ObjectStore os = filenetConfig.getObjectStore();
-
-            String name = "DOCUMENT";
-            Document document = Factory.Document.createInstance(os, name);
-            document.getProperties().putValue("DocumentTitle", file.getOriginalFilename());
-
-            ContentElementList contentElementList = Factory.ContentElement.createList();
-            ContentTransfer contentTransfer = Factory.ContentTransfer.createInstance();
-            contentTransfer.setCaptureSource(file.getInputStream());
-            contentTransfer.set_ContentType(file.getContentType());
-            contentElementList.add(contentTransfer);
-
-            document.set_ContentElements(contentElementList);
-
-            document.checkin(AutoClassify.DO_NOT_AUTO_CLASSIFY, CheckinType.MAJOR_VERSION);
-            document.save(RefreshMode.REFRESH);
-            System.out.println(document.get_Id());
-
-            Folder folder = fetchFolder("ΜΗΤΕ");
-            ReferentialContainmentRelationship rcr = folder.file(
-                    document, AutoUniqueName.AUTO_UNIQUE, "TEST", DefineSecurityParentage.DO_NOT_DEFINE_SECURITY_PARENTAGE
-            );
-            rcr.save(RefreshMode.REFRESH);
-
-
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            throw e;
-        }
-
-    }
-
-    private Document fetchByGUID(String guid) {
-        ObjectStore objectStore = filenetConfig.getObjectStore();
-        return Factory.Document.fetchInstance(objectStore, guid, null);
-    }
-
-    private void deleteDocumentByGUID(String guid) {
-        ObjectStore objectStore = filenetConfig.getObjectStore();
-        Document document = Factory.Document.fetchInstance(objectStore, guid, null);
-        document.delete();
-        document.save(RefreshMode.REFRESH);
-    }
-
-
-    private Folder fetchFolder(String folderName) {
-        try {
-            Folder folder = Factory.Folder.fetchInstance(filenetConfig.getObjectStore(), "/" + folderName, null);
-//            logger.info("NAME " + folder.get_FolderName());
-            return folder;
-        } catch (EngineRuntimeException e) {
-            logger.error(e.getMessage());
-            throw e;
-        }
     }
 
 }

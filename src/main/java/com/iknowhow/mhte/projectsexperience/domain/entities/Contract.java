@@ -37,7 +37,7 @@ public class Contract implements Serializable {
     private LocalDate signingDate;
 
     @Column(name = "contract_guid")
-    private String contractGUID = UUID.randomUUID().toString();
+    private String contractGUID;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
