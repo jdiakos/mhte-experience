@@ -93,7 +93,7 @@ public class FileNetServiceImpl implements FileNetService {
         Document document = Factory.Document.fetchInstance(objectStore, guid, null);
         document.delete();
         document.save(RefreshMode.REFRESH);
-        logger.info("DELETED DOCUMENT FROM FILENET WITH ID " + document.get_Id());
+       // logger.info("DELETED DOCUMENT FROM FILENET WITH ID " + document.get_Id());
     }
 
     private Folder fetchFolder(String folderName) {
