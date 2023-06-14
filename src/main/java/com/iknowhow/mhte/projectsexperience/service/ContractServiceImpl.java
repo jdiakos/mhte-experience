@@ -1,11 +1,9 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
 import com.filenet.api.collection.ContentElementList;
-import com.filenet.api.constants.RefreshMode;
-import com.filenet.api.core.ContentTransfer;
-import com.filenet.api.core.Document;
-import com.filenet.api.core.Factory;
-import com.filenet.api.core.ObjectStore;
+import com.filenet.api.constants.*;
+import com.filenet.api.core.*;
+import com.filenet.api.exception.EngineRuntimeException;
 import com.iknowhow.mhte.projectsexperience.configuration.FilenetConfig;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
@@ -128,7 +126,13 @@ public class ContractServiceImpl implements ContractService{
     public void uploadFile(ContractProjectDTO contract, MultipartFile document) {
         System.out.println("im in");
         System.out.println(document.getOriginalFilename());
-        uploadToFileNet(document);
+
+//        fetchFolder("MHTE");
+        try {
+            uploadToFileNet(document);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     private ContractResponseDTO toContractResponseDTO(Contract contract) {
@@ -142,33 +146,41 @@ public class ContractServiceImpl implements ContractService{
         return dto;
     }
 
-    private void uploadToFileNet(MultipartFile file) {
-        System.out.println("REACHED");
-        ObjectStore os = filenetConfig.getObjectStore();
-
-        String name = null;
-        // PLACEHOLDER
-        Document document = Factory.Document.createInstance(os, name);
-        System.out.println("---------------------------------------------");
-        System.out.println(file.getContentType());
-        document.set_MimeType(file.getContentType());
-        document = copyFileToDocument(document, file);
-        document.save(RefreshMode.NO_REFRESH);
-
-    }
-
-    private Document copyFileToDocument(Document document, MultipartFile file) {
-        ContentTransfer ctObject = Factory.ContentTransfer.createInstance();
-        ContentElementList cteList = Factory.ContentElement.createList();
-        final double[] contentSize = {0d};
+    private void uploadToFileNet(MultipartFile file) throws IOException {
         try {
-            ctObject.setCaptureSource(file.getInputStream());
-        } catch (Exception e) {
-            System.out.println("ERROR!");
-        }
-        cteList.add(ctObject);
-        document.set_ContentElements(cteList);
+            ObjectStore os = filenetConfig.getObjectStore();
 
-        return document;
+            String name = "DOCUMENT";
+            Document document = Factory.Document.createInstance(os, name);
+            document.getProperties().putValue("DocumentTitle", file.getOriginalFilename());
+
+            ContentElementList contentElementList = Factory.ContentElement.createList();
+            ContentTransfer contentTransfer = Factory.ContentTransfer.createInstance();
+            contentTransfer.setCaptureSource(file.getInputStream());
+            contentTransfer.set_ContentType(file.getContentType());
+            contentElementList.add(contentTransfer);
+
+            document.set_ContentElements(contentElementList);
+            document.checkin(AutoClassify.DO_NOT_AUTO_CLASSIFY, CheckinType.MAJOR_VERSION);
+            document.save(RefreshMode.REFRESH);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
+
     }
+
+
+    private Folder fetchFolder(String folderName) {
+        try {
+            Folder folder = Factory.Folder.fetchInstance(filenetConfig.getObjectStore(), "/" + folderName, null);
+            logger.info("NAME " + folder.get_FolderName());
+            return folder;
+        } catch (EngineRuntimeException e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
+    }
+
 }
