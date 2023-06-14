@@ -6,6 +6,7 @@ import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository
 import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectCustomValidationException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
@@ -123,7 +124,7 @@ public class ContractServiceImpl implements ContractService {
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND)
         );
 
-        String guid = fileNetService.uploadFileToFilenet(document);
+        String guid = fileNetService.uploadFileToFilenet(contract.getProject().getProtocolNumber(), document);
         contract.setContractGUID(guid);
         contractRepository.save(contract);
     }
@@ -139,4 +140,21 @@ public class ContractServiceImpl implements ContractService {
         return dto;
     }
 
+    @Override
+    public DownloadFileDTO downloadFile(String guid) {
+
+        return fileNetService.fetchByGuid(guid);
+    }
+
+    @Override
+    @Transactional
+    public void deleteFile(Long contractId, String guid) {
+        Contract contract = contractRepository.findById(contractId).orElseThrow(
+                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND)
+        );
+
+        fileNetService.deleteDocumentByGuid(guid);
+        contract.setContractGUID(null);
+        contractRepository.save(contract);
+    }
 }

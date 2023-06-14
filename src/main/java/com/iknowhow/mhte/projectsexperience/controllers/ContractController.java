@@ -2,6 +2,7 @@ package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import com.iknowhow.mhte.projectsexperience.service.ContractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,5 +68,23 @@ public class ContractController {
         logger.info("Fetch all contract paginated");
         Page<ContractProjectDTO> response = contractService.fetchAllContractsPaginated(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/download-file/{guid}")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable("guid") String guid) {
+        logger.info("Downloading file");
+        DownloadFileDTO dto = contractService.downloadFile(guid);
+        logger.info(dto.getFilename());
+
+        return ResponseEntity.ok().body(dto.getFile());
+    }
+
+    @DeleteMapping("/delete-file/{contractId}/{guid}")
+    public ResponseEntity<Void> deleteFile(@PathVariable("contractId") Long contractId,
+                                           @PathVariable("guid") String guid) {
+        logger.info("Deleting file");
+        contractService.deleteFile(contractId, guid);
+
+        return ResponseEntity.ok().build();
     }
 }

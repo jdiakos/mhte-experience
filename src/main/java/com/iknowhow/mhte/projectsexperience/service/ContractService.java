@@ -2,6 +2,7 @@ package com.iknowhow.mhte.projectsexperience.service;
 
 import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,4 +22,9 @@ public interface ContractService {
     Page<ContractProjectDTO> fetchAllContractsPaginated(Pageable page);
     
     void uploadFile(ContractProjectDTO contract, MultipartFile document);
+
+    DownloadFileDTO downloadFile(String guid);
+
+    void deleteFile(Long contractId, String guid);
+
 }

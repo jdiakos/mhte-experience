@@ -1,14 +1,15 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileNetService {
 
     // upload file to filenet
-    String uploadFileToFilenet(MultipartFile file);
+    String uploadFileToFilenet(String projectProtocolNo, MultipartFile file);
 
     // fetch file from filenet by guid
-    void fetchByGuid(String guid);
+    DownloadFileDTO fetchByGuid(String guid);
 
     // delete file from filenet by guid
     void deleteDocumentByGuid(String guid);

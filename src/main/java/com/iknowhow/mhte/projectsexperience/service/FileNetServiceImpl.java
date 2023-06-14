@@ -4,12 +4,18 @@ import com.filenet.api.collection.ContentElementList;
 import com.filenet.api.constants.*;
 import com.filenet.api.core.*;
 import com.filenet.api.exception.EngineRuntimeException;
+import com.filenet.api.exception.ExceptionCode;
 import com.iknowhow.mhte.projectsexperience.configuration.FilenetConfig;
+import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
 
 @Service
 public class FileNetServiceImpl implements FileNetService {
@@ -24,7 +30,7 @@ public class FileNetServiceImpl implements FileNetService {
     }
 
     @Override
-    public String uploadFileToFilenet(MultipartFile file) {
+    public String uploadFileToFilenet(String projectProtocolNo, MultipartFile file) {
         ObjectStore objectStore = filenetConfig.getObjectStore();
         // @TODO -- PLACEHOLDER
         String name = "DOCUMENT";
@@ -46,6 +52,7 @@ public class FileNetServiceImpl implements FileNetService {
 
             // @TODO -- PLACEHOLDER
             Folder folder = fetchFolder("ΜΗΤΕ");
+//            Folder folder = fetchFolder(projectProtocolNo);
             ReferentialContainmentRelationship rcr = folder.file(
                     document, AutoUniqueName.AUTO_UNIQUE, "TEST", DefineSecurityParentage.DO_NOT_DEFINE_SECURITY_PARENTAGE
             );
@@ -60,10 +67,24 @@ public class FileNetServiceImpl implements FileNetService {
     }
 
     @Override
-    public void fetchByGuid(String guid) {
+    public DownloadFileDTO fetchByGuid(String guid) {
+        DownloadFileDTO dto = new DownloadFileDTO();
+
         ObjectStore objectStore = filenetConfig.getObjectStore();
         Document document = Factory.Document.fetchInstance(objectStore, guid, null);
-        logger.info(String.valueOf(document.get_Id()));
+        ContentElementList ctl = document.get_ContentElements();
+
+        for (Object obj : ctl) {
+            ContentTransfer ct = (ContentTransfer) obj;
+            try {
+                dto.setFile(ct.accessContentStream().readAllBytes());
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+            }
+        }
+        dto.setFilename(document.get_Name());
+
+        return dto;
     }
 
     @Override
@@ -81,7 +102,16 @@ public class FileNetServiceImpl implements FileNetService {
             return Factory.Folder.fetchInstance(filenetConfig.getObjectStore(), "/" + folderName, null);
         } catch (EngineRuntimeException e) {
             // @TODO: CREATE FOLDER IF NOT EXISTS
-            logger.error(e.getMessage());
+            if (e.getExceptionCode() == ExceptionCode.E_OBJECT_NOT_FOUND) {
+                folder = Factory.Folder.createInstance(filenetConfig.getObjectStore(), "/" + folderName, null);
+                folder.getProperties().putValue("FolderName", folderName);
+                folder.set_Parent(Factory.Folder.fetchInstance(filenetConfig.getObjectStore(), "/ΜΗΤΕ", null));
+                folder.save(RefreshMode.REFRESH);
+                return folder;
+            }
+            else {
+                logger.error(e.getMessage());
+            }
         }
 
         return null;
