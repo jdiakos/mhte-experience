@@ -1,9 +1,15 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
 import com.filenet.api.collection.ContentElementList;
+import com.filenet.api.collection.IndependentObjectSet;
+import com.filenet.api.collection.RepositoryRowSet;
 import com.filenet.api.constants.*;
 import com.filenet.api.core.*;
 import com.filenet.api.exception.EngineRuntimeException;
+import com.filenet.api.property.PropertyFilter;
+import com.filenet.api.query.RepositoryRow;
+import com.filenet.api.query.SearchSQL;
+import com.filenet.api.query.SearchScope;
 import com.iknowhow.mhte.projectsexperience.configuration.FilenetConfig;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
@@ -26,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -124,12 +131,13 @@ public class ContractServiceImpl implements ContractService{
 
     @Override
     public void uploadFile(ContractProjectDTO contract, MultipartFile document) {
-        System.out.println("im in");
-        System.out.println(document.getOriginalFilename());
-
-//        fetchFolder("MHTE");
+//        fetchFolder("ΜΗΤΕ");
         try {
             uploadToFileNet(document);
+//            fetchDocument(document.getOriginalFilename());
+//        } catch (Exception e) {
+//            logger.error(e.getMessage());
+//        }
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -161,8 +169,16 @@ public class ContractServiceImpl implements ContractService{
             contentElementList.add(contentTransfer);
 
             document.set_ContentElements(contentElementList);
+
             document.checkin(AutoClassify.DO_NOT_AUTO_CLASSIFY, CheckinType.MAJOR_VERSION);
             document.save(RefreshMode.REFRESH);
+
+            Folder folder = fetchFolder("ΜΗΤΕ");
+            ReferentialContainmentRelationship rcr = folder.file(
+                    document, AutoUniqueName.AUTO_UNIQUE, "TEST", DefineSecurityParentage.DO_NOT_DEFINE_SECURITY_PARENTAGE
+            );
+            rcr.save(RefreshMode.REFRESH);
+
 
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -171,11 +187,26 @@ public class ContractServiceImpl implements ContractService{
 
     }
 
+    private void fetchDocument(String filename) {
+        ObjectStore objectStore = filenetConfig.getObjectStore();
+        String query = "SELECT * FROM Document WHERE DocumentTitle = '" + filename + "'";
+        SearchSQL searchSQL = new SearchSQL(query);
+        SearchScope searchScope = new SearchScope(objectStore);
+//        IndependentObjectSet results = searchScope.fetchObjects(searchSQL, null, new PropertyFilter(), Boolean.FALSE);
+        RepositoryRowSet rows = searchScope.fetchRows(searchSQL, null, new PropertyFilter(), Boolean.FALSE);
+//        System.out.println(rows);
+        for(Iterator<?> iterator = rows.iterator(); iterator.hasNext();) {
+            RepositoryRow row = (RepositoryRow) iterator.next();
+            System.out.println(row.getProperties());
+        }
+
+    }
+
 
     private Folder fetchFolder(String folderName) {
         try {
             Folder folder = Factory.Folder.fetchInstance(filenetConfig.getObjectStore(), "/" + folderName, null);
-            logger.info("NAME " + folder.get_FolderName());
+//            logger.info("NAME " + folder.get_FolderName());
             return folder;
         } catch (EngineRuntimeException e) {
             logger.error(e.getMessage());
