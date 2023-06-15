@@ -8,6 +8,8 @@ import com.filenet.api.exception.ExceptionCode;
 import com.iknowhow.mhte.projectsexperience.configuration.FilenetConfig;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
+import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
+import com.iknowhow.mhte.projectsexperience.exception.MhteProjectFileNetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +66,7 @@ public class FileNetServiceImpl implements FileNetService {
             logger.error(e.getMessage());
         }
 
-        throw new RuntimeException();
+        throw new MhteProjectFileNetException(MhteProjectErrorMessage.FILE_CANNOT_BE_UPLOADED.name());
     }
 
     @Override
@@ -110,7 +112,7 @@ public class FileNetServiceImpl implements FileNetService {
             }
         }
 
-        throw new RuntimeException();
+        throw new MhteProjectFileNetException(MhteProjectErrorMessage.FILENET_FOLDER_ERROR.name());
     }
 
 }

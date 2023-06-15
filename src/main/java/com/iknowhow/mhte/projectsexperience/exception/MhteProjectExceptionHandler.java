@@ -63,6 +63,17 @@ public class MhteProjectExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * FILENET EXCEPTIONS
+     */
+    @ExceptionHandler({MhteProjectFileNetException.class})
+    public ResponseEntity<MhteProjectErrorDTO> handleFileNetException(MhteProjectFileNetException e) {
+        MhteProjectErrorDTO response = new MhteProjectErrorDTO();
+        response.setMessage(e.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     /**
      * GENERIC EXCEPTIONS
