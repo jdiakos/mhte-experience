@@ -6,6 +6,7 @@ import com.filenet.api.core.*;
 import com.filenet.api.exception.EngineRuntimeException;
 import com.filenet.api.exception.ExceptionCode;
 import com.iknowhow.mhte.projectsexperience.configuration.FilenetConfig;
+import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +31,17 @@ public class FileNetServiceImpl implements FileNetService {
     }
 
     @Override
-    public String uploadFileToFilenet(String projectProtocolNo, MultipartFile file) {
+    public String uploadFileToFilenet(Contract contract, MultipartFile file, String username) {
         ObjectStore objectStore = filenetConfig.getObjectStore();
-        // @TODO -- PLACEHOLDER
-        String name = "DOCUMENT";
+
+        String name = "MHTEDoc";
 
         try {
             Document document = Factory.Document.createInstance(objectStore, name);
             document.getProperties().putValue("DocumentTitle", file.getOriginalFilename());
+            document.getProperties().putValue("ProtocolNumber", contract.getProject().getProtocolNumber());
+            document.getProperties().putValue("ADAM", contract.getProject().getAdam());
+            document.getProperties().putValue("MHTEUser", username);
 
             ContentElementList ctList = Factory.ContentElement.createList();
             ContentTransfer contentTransfer = Factory.ContentTransfer.createInstance();

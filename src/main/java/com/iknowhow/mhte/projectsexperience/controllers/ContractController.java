@@ -1,5 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
+import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,9 +36,11 @@ public class ContractController {
     }
     
     @PostMapping(value= "/save-file")
-    public ResponseEntity<String> uploadFile(@RequestPart("contract") ContractProjectDTO contract, 
-    		@RequestPart("file") MultipartFile document) {
-        contractService.uploadFile(contract, document);
+    public ResponseEntity<String> uploadFile(@RequestPart("contract") ContractProjectDTO contract,
+                                             @RequestPart("file") MultipartFile document, @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
+        //@TODO - CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
+        contractService.uploadFile(contract, document, "test_user");
+        //contractService.uploadFile(contract, document, userPrincipal.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body("ok");
     }
 

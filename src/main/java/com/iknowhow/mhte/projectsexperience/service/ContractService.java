@@ -1,5 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
@@ -21,7 +22,7 @@ public interface ContractService {
 
     Page<ContractProjectDTO> fetchAllContractsPaginated(Pageable page);
     
-    void uploadFile(ContractProjectDTO contract, MultipartFile document);
+    void uploadFile(ContractProjectDTO contract, MultipartFile document, String username);
 
     DownloadFileDTO downloadFile(String guid);
 

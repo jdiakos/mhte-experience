@@ -1,5 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository;
@@ -112,12 +113,12 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     @Transactional
-    public void uploadFile(ContractProjectDTO dto, MultipartFile document) {
+    public void uploadFile(ContractProjectDTO dto, MultipartFile document, String username) {
         Contract contract = contractRepository.findById(dto.getId()).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND)
         );
 
-        String guid = fileNetService.uploadFileToFilenet(contract.getProject().getProtocolNumber(), document);
+        String guid = fileNetService.uploadFileToFilenet(contract, document, username);
         contract.setContractGUID(guid);
         contractRepository.save(contract);
     }
