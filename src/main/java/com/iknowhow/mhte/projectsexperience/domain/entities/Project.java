@@ -90,6 +90,6 @@ public class Project implements Serializable {
     @Column(name = "receipt_protocol_number")
     private String receiptProtocolNumber;
 
-    @Column(name = "type")
+    @Column(name = "\"type\"")
     private String type;
 }
