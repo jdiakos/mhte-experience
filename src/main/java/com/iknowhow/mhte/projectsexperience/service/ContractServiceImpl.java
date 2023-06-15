@@ -23,6 +23,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,9 @@ public class ContractServiceImpl implements ContractService {
         contract.setContractValue(dto.getContractValue());
         contract.setSigningDate(dto.getSigningDate());
         contract.setProject(project);
+        contract.setDateCreated(LocalDateTime.now());
+        // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+        contract.setLastModifiedBy("JULIUS CAESAR");
 
         contractRepository.save(contract);
         ContractDTO response = utils.initModelMapperStrict().map(contract, ContractDTO.class);
@@ -71,6 +75,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    @Transactional
     public ContractDTO updateContract(ContractDTO contract) {
         if (!negativeNumberValidator(contract.getContractValue())) {
             throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
@@ -85,6 +90,8 @@ public class ContractServiceImpl implements ContractService {
         Project current = (contractExists.getProject() == null) ? null : contractExists.getProject();
         contractExists = modelMapper.map(contract, Contract.class);
         contractExists.setProject(current);
+        // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+        contractExists.setLastModifiedBy("CLEOPATRA");
         contractRepository.save(contractExists);
         return modelMapper.map(contractExists, ContractDTO.class);
     }
