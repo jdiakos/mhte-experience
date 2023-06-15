@@ -139,11 +139,14 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     @Transactional
-    public void deleteFile(Long contractId, String guid) {
+    public void deleteFile(Long contractId, String guid, MhteUserPrincipal userPrincipal) {
         Contract contract = contractRepository.findById(contractId).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND)
         );
 
+        // @TODO - PLACEHOLDER: CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
+        contract.setLastModifiedBy("MAJESTIX");
+//        contract.setLastModifiedBy(userPrincipal.getUsername());
         contract.setContractGUID(null);
         contractRepository.save(contract);
     }

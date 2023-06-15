@@ -94,9 +94,10 @@ public class ContractController {
 
     @DeleteMapping("/delete-file/{contractId}/{guid}")
     public ResponseEntity<Void> deleteFile(@PathVariable("contractId") Long contractId,
-                                           @PathVariable("guid") String guid) {
+                                           @PathVariable("guid") String guid,
+                                           @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
         logger.info("Deleting file");
-        contractService.deleteFile(contractId, guid);
+        contractService.deleteFile(contractId, guid, userPrincipal);
 
         return ResponseEntity.ok().build();
     }

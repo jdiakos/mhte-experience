@@ -6,7 +6,7 @@ import jakarta.persistence.PreUpdate;
 
 import java.time.LocalDateTime;
 
-public class ContractorAuditListener {
+public class ProjectContractorAuditListener {
 
     @PrePersist
     public void setCreatedOn(ProjectContractor projectContractor) {

@@ -1,6 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.domain.entities;
 
-import com.iknowhow.mhte.projectsexperience.utils.listeners.ContractorAuditListener;
+import com.iknowhow.mhte.projectsexperience.utils.listeners.ProjectContractorAuditListener;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Audited
-@EntityListeners(ContractorAuditListener.class)
+@EntityListeners(ProjectContractorAuditListener.class)
 public class ProjectContractor implements Serializable {
 
     @Id

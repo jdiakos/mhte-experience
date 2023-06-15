@@ -48,6 +48,9 @@
 	            contract_value float8 NULL,
 	            signing_date date NULL,
 	            project_id int8 NULL,
+				created_date timestamp NOT NULL,
+				last_modification_date timestamp NOT NULL,
+				last_modified_by varchar(255) NOT NULL,
             CONSTRAINT contract_pkey PRIMARY KEY (id),
             CONSTRAINT fkiuhnxiug4xixtcq9h6gtycxxh FOREIGN KEY (project_id) REFERENCES project(id) ON DELETE CASCADE
             );
@@ -124,6 +127,18 @@
 				PRIMARY KEY (rev, id),
 				CONSTRAINT fksgtpwk9bo6mkmm9pmps1u7uhh FOREIGN KEY(rev) REFERENCES revinfo(rev)
 			);
+
+			-- contract audit table definition
+			CREATE TABLE contract_aud (
+			    id bigint NOT NULL,
+			    rev INTEGER NOT NULL,
+			    revtype SMALLINT,
+			    contract_guid VARCHAR(255),
+				last_modification_date TIMESTAMP(6),
+				last_modified_by VARCHAR(255),
+				PRIMARY KEY (rev, id),
+				CONSTRAINT fkdwmknd8t7wjk072bg4ka0gtnb FOREIGN KEY (rev) REFERENCES revinfo(rev)
+			)
 
 
 		</sql>

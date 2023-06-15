@@ -1,20 +1,27 @@
 package com.iknowhow.mhte.projectsexperience.domain.entities;
 
 import com.iknowhow.mhte.projectsexperience.domain.enums.ContractTypeEnum;
+import com.iknowhow.mhte.projectsexperience.utils.listeners.ContractAuditListener;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "contract")
 @Getter
 @Setter
+@Audited
+@EntityListeners(ContractAuditListener.class)
 public class Contract implements Serializable {
 
     @Id
@@ -25,15 +32,18 @@ public class Contract implements Serializable {
     @NotNull
     @Column(name = "contract_type")
     @Enumerated(EnumType.STRING)
+    @NotAudited
     private ContractTypeEnum contractType;
 
     @NotNull
     @Column(name = "contract_value")
+    @NotAudited
     private Double contractValue;
 
     @NotNull
     @Temporal(TemporalType.DATE)
-    @Column(name = "signing_date")
+    @Column(name = "signing_date", updatable = false)
+    @NotAudited
     private LocalDate signingDate;
 
     @Column(name = "contract_guid")
@@ -41,7 +51,20 @@ public class Contract implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
+    @NotAudited
     private Project project;
+
+    @CreatedDate
+    @Column(name = "created_date", nullable = false, updatable = false)
+    @NotAudited
+    private LocalDateTime dateCreated;
+
+    @LastModifiedDate
+    @Column(name = "last_modification_date")
+    private LocalDateTime lastModificationDate;
+
+    @Column(name = "last_modified_by", nullable = false)
+    private String lastModifiedBy;
 
 
     @Override

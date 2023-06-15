@@ -1,5 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
@@ -25,6 +26,6 @@ public interface ContractService {
 
     DownloadFileDTO downloadFile(String guid);
 
-    void deleteFile(Long contractId, String guid);
+    void deleteFile(Long contractId, String guid, MhteUserPrincipal userPrincipal);
 
 }
