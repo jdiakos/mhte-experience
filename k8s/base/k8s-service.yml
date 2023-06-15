@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: projects-experience-service
+  labels:
+    name: projects-experience
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: projects-experience
+  type: LoadBalancer

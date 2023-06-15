@@ -1,7 +1,7 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
-import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import com.iknowhow.mhte.projectsexperience.service.ContractService;
@@ -29,14 +29,14 @@ public class ContractController {
     public ContractController(ContractService contractService) { this.contractService = contractService; }
 
     @PostMapping(value= "/create-contract", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ContractProjectDTO> createNewContract(@RequestBody ContractProjectDTO contract) {
+    public ResponseEntity<ContractDTO> createNewContract(@RequestBody ContractDTO contract) {
         logger.info("Create new contract");
-        ContractProjectDTO response = contractService.createNewContract(contract);
+        ContractDTO response = contractService.createNewContract(contract);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
     @PostMapping(value= "/save-file")
-    public ResponseEntity<String> uploadFile(@RequestPart("contract") ContractProjectDTO contract,
+    public ResponseEntity<String> uploadFile(@RequestPart("contract") ContractDTO contract,
                                              @RequestPart("file") MultipartFile document, @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
         //@TODO - CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
         contractService.uploadFile(contract, document, "test_user");
@@ -45,16 +45,16 @@ public class ContractController {
     }
 
     @PutMapping(value="/update-contract")
-    public ResponseEntity<ContractProjectDTO> updateContract(@RequestBody ContractProjectDTO contract){
+    public ResponseEntity<ContractDTO> updateContract(@RequestBody ContractDTO contract){
         logger.info("Update contract with id: " + contract.getId());
-        ContractProjectDTO response = contractService.updateContract(contract);
+        ContractDTO response = contractService.updateContract(contract);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping(value="/delete-contract/{id}")
-    public ResponseEntity<ContractProjectDTO> deleteContract(@PathVariable(value="id") Long id){
+    public ResponseEntity<ContractDTO> deleteContract(@PathVariable(value="id") Long id){
         logger.info("Request to delete contract with id: " + id);
-        ContractProjectDTO response = contractService.deleteContract(id);
+        ContractDTO response = contractService.deleteContract(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -66,9 +66,9 @@ public class ContractController {
     }
 
     @GetMapping(value="/all")
-    public ResponseEntity<Page<ContractProjectDTO>> fetchAllContractsPaginated(Pageable pageable) {
+    public ResponseEntity<Page<ContractDTO>> fetchAllContractsPaginated(Pageable pageable) {
         logger.info("Fetch all contract paginated");
-        Page<ContractProjectDTO> response = contractService.fetchAllContractsPaginated(pageable);
+        Page<ContractDTO> response = contractService.fetchAllContractsPaginated(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -100,4 +100,5 @@ public class ContractController {
 
         return ResponseEntity.ok().build();
     }
+
 }

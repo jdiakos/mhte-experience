@@ -12,8 +12,4 @@ public interface FileNetService {
     // fetch file from filenet by guid
     DownloadFileDTO fetchByGuid(String guid);
 
-    // delete file from filenet by guid
-    void deleteDocumentByGuid(String guid);
-
-
 }

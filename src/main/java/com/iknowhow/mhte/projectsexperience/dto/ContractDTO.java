@@ -18,5 +18,7 @@ public class ContractDTO {
     private Double contractValue;
     @NotNull
     private LocalDate signingDate;
+    @NotNull
+    private Long projectId;
 
 }

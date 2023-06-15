@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
 
 @Service
 public class FileNetServiceImpl implements FileNetService {
@@ -54,9 +52,8 @@ public class FileNetServiceImpl implements FileNetService {
             document.checkin(AutoClassify.DO_NOT_AUTO_CLASSIFY, CheckinType.MAJOR_VERSION);
             document.save(RefreshMode.REFRESH);
 
-            // @TODO -- PLACEHOLDER
-            Folder folder = fetchFolder("ΜΗΤΕ");
-//            Folder folder = fetchFolder(projectProtocolNo);
+            // ASSIGN TO FOLDER - IF FOLDER DOES NOT EXIST, CREATE BASED ON PROJECT ADAM
+            Folder folder = fetchFolder(objectStore, contract.getProject().getAdam());
             ReferentialContainmentRelationship rcr = folder.file(
                     document, AutoUniqueName.AUTO_UNIQUE, "TEST", DefineSecurityParentage.DO_NOT_DEFINE_SECURITY_PARENTAGE
             );
@@ -67,7 +64,7 @@ public class FileNetServiceImpl implements FileNetService {
             logger.error(e.getMessage());
         }
 
-        return null;
+        throw new RuntimeException();
     }
 
     @Override
@@ -91,25 +88,20 @@ public class FileNetServiceImpl implements FileNetService {
         return dto;
     }
 
-    @Override
-    public void deleteDocumentByGuid(String guid) {
-        ObjectStore objectStore = filenetConfig.getObjectStore();
-        Document document = Factory.Document.fetchInstance(objectStore, guid, null);
-        document.delete();
-        document.save(RefreshMode.REFRESH);
-       // logger.info("DELETED DOCUMENT FROM FILENET WITH ID " + document.get_Id());
-    }
 
-    private Folder fetchFolder(String folderName) {
+    private Folder fetchFolder(ObjectStore objectStore, String folderName) {
         Folder folder;
         try {
-            return Factory.Folder.fetchInstance(filenetConfig.getObjectStore(), "/" + folderName, null);
+
+            return Factory.Folder.fetchInstance(objectStore, "/ΜΗΤΕ/" + folderName, null);
+
         } catch (EngineRuntimeException e) {
-            // @TODO: CREATE FOLDER IF NOT EXISTS
+
+            // IF SUBFOLDER DOES NOT EXIST, CREATE IT
             if (e.getExceptionCode() == ExceptionCode.E_OBJECT_NOT_FOUND) {
-                folder = Factory.Folder.createInstance(filenetConfig.getObjectStore(), "/" + folderName, null);
-                folder.getProperties().putValue("FolderName", folderName);
-                folder.set_Parent(Factory.Folder.fetchInstance(filenetConfig.getObjectStore(), "/ΜΗΤΕ", null));
+                folder = Factory.Folder.createInstance(objectStore, null);
+                folder.set_FolderName(folderName);
+                folder.set_Parent(Factory.Folder.fetchInstance(objectStore, "/ΜΗΤΕ", null));
                 folder.save(RefreshMode.REFRESH);
                 return folder;
             }
@@ -118,6 +110,7 @@ public class FileNetServiceImpl implements FileNetService {
             }
         }
 
-        return null;
+        throw new RuntimeException();
     }
+
 }

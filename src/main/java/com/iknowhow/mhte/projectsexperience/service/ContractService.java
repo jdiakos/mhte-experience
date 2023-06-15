@@ -1,7 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
-import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
-import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import org.springframework.data.domain.Page;
@@ -12,17 +11,17 @@ import java.util.List;
 
 public interface ContractService {
 
-    ContractProjectDTO createNewContract(ContractProjectDTO contract);
+    ContractDTO createNewContract(ContractDTO contract);
 
-    ContractProjectDTO updateContract(ContractProjectDTO contractDTO);
+    ContractDTO updateContract(ContractDTO contractDTO);
 
-    ContractProjectDTO deleteContract(Long id);
+    ContractDTO deleteContract(Long id);
 
     List<ContractResponseDTO> getAllContractsByProject(Long projectId);
 
-    Page<ContractProjectDTO> fetchAllContractsPaginated(Pageable page);
+    Page<ContractDTO> fetchAllContractsPaginated(Pageable page);
     
-    void uploadFile(ContractProjectDTO contract, MultipartFile document, String username);
+    void uploadFile(ContractDTO contract, MultipartFile file, String username);
 
     DownloadFileDTO downloadFile(String guid);
 

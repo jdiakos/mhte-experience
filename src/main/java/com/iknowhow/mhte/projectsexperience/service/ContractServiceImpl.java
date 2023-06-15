@@ -4,13 +4,14 @@ import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository;
-import com.iknowhow.mhte.projectsexperience.dto.ContractProjectDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectCustomValidationException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
+import com.iknowhow.mhte.projectsexperience.utils.Utils;
 import org.modelmapper.convention.MatchingStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,37 +34,44 @@ public class ContractServiceImpl implements ContractService {
     private final ContractRepository contractRepository;
     private final ProjectRepository projectRepository;
     private final FileNetService fileNetService;
+    private final Utils utils;
 
     @Autowired
     public ContractServiceImpl(ContractRepository contractRepository,
                                ProjectRepository projectRepository,
-                               FileNetService fileNetService) {
+                               FileNetService fileNetService,
+                               Utils utils) {
         this.contractRepository = contractRepository;
         this.projectRepository = projectRepository;
         this.fileNetService = fileNetService;
+        this.utils = utils;
     }
 
     @Override
-    public ContractProjectDTO createNewContract(ContractProjectDTO contract) {
-        if (!negativeNumberValidator(contract.getContractValue())) {
+    @Transactional
+    public ContractDTO createNewContract(ContractDTO dto) {
+        if (!negativeNumberValidator(dto.getContractValue())) {
             throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
         }
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
+                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
+        );
 
-        Contract newContract = modelMapper.map(contract, Contract.class);
+        Contract contract = new Contract();
+        contract.setContractType(dto.getContractType());
+        contract.setContractValue(dto.getContractValue());
+        contract.setSigningDate(dto.getSigningDate());
+        contract.setProject(project);
 
-        try {
-            Contract savedContract = contractRepository.save(newContract);
-            contract.setId(savedContract.getId());
-        } catch (Exception ex) {
-            throw ex;
-        }
-        return contract;
+        contractRepository.save(contract);
+        ContractDTO response = utils.initModelMapperStrict().map(contract, ContractDTO.class);
+        response.setProjectId(dto.getProjectId());
+
+        return response;
     }
 
     @Override
-    public ContractProjectDTO updateContract(ContractProjectDTO contract) {
+    public ContractDTO updateContract(ContractDTO contract) {
         if (!negativeNumberValidator(contract.getContractValue())) {
             throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
         }
@@ -78,17 +86,17 @@ public class ContractServiceImpl implements ContractService {
         contractExists = modelMapper.map(contract, Contract.class);
         contractExists.setProject(current);
         contractRepository.save(contractExists);
-        return modelMapper.map(contractExists, ContractProjectDTO.class);
+        return modelMapper.map(contractExists, ContractDTO.class);
     }
 
     @Override
     @Transactional
-    public ContractProjectDTO deleteContract(Long id) {
+    public ContractDTO deleteContract(Long id) {
         Contract contract = contractRepository.findById(id).orElseThrow(() ->
                 new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND));
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        ContractProjectDTO contractDTO = modelMapper.map(contract, ContractProjectDTO.class);
+        ContractDTO contractDTO = modelMapper.map(contract, ContractDTO.class);
         contractRepository.delete(contract);
 
         return contractDTO;
@@ -105,20 +113,20 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Page<ContractProjectDTO> fetchAllContractsPaginated(Pageable page) {
+    public Page<ContractDTO> fetchAllContractsPaginated(Pageable page) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-        return contractRepository.findAll(page).map(contract -> modelMapper.map(contract, ContractProjectDTO.class));
+        return contractRepository.findAll(page).map(contract -> modelMapper.map(contract, ContractDTO.class));
     }
 
     @Override
     @Transactional
-    public void uploadFile(ContractProjectDTO dto, MultipartFile document, String username) {
+    public void uploadFile(ContractDTO dto, MultipartFile file, String username) {
         Contract contract = contractRepository.findById(dto.getId()).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND)
         );
 
-        String guid = fileNetService.uploadFileToFilenet(contract, document, username);
+        String guid = fileNetService.uploadFileToFilenet(contract, file, username);
         contract.setContractGUID(guid);
         contractRepository.save(contract);
     }
@@ -136,10 +144,10 @@ public class ContractServiceImpl implements ContractService {
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND)
         );
 
-        fileNetService.deleteDocumentByGuid(guid);
         contract.setContractGUID(null);
         contractRepository.save(contract);
     }
+
 
     private boolean negativeNumberValidator(Double n) {
         if (n > 0) {
