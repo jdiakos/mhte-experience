@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(value = "users", url = "${app.feign-names.users}")
+@FeignClient(value = "${app.feign-names.users.name}", url = "${app.feign-names.users.url}")
 public interface UsersManagementFeignClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/principal")
