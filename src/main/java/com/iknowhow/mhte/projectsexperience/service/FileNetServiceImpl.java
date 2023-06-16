@@ -13,6 +13,7 @@ import com.iknowhow.mhte.projectsexperience.exception.MhteProjectFileNetExceptio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +23,9 @@ import java.io.IOException;
 public class FileNetServiceImpl implements FileNetService {
 
     Logger logger = LoggerFactory.getLogger(FileNetServiceImpl.class);
+
+    @Value("${app.filenet.folder.root}")
+    private String rootFolder;
 
     private final FilenetConfig filenetConfig;
 
@@ -95,7 +99,7 @@ public class FileNetServiceImpl implements FileNetService {
         Folder folder;
         try {
 
-            return Factory.Folder.fetchInstance(objectStore, "/ΜΗΤΕ/" + folderName, null);
+            return Factory.Folder.fetchInstance(objectStore, rootFolder + "/" + folderName, null);
 
         } catch (EngineRuntimeException e) {
 
@@ -103,7 +107,7 @@ public class FileNetServiceImpl implements FileNetService {
             if (e.getExceptionCode() == ExceptionCode.E_OBJECT_NOT_FOUND) {
                 folder = Factory.Folder.createInstance(objectStore, null);
                 folder.set_FolderName(folderName);
-                folder.set_Parent(Factory.Folder.fetchInstance(objectStore, "/ΜΗΤΕ", null));
+                folder.set_Parent(Factory.Folder.fetchInstance(objectStore, rootFolder, null));
                 folder.save(RefreshMode.REFRESH);
                 return folder;
             }
