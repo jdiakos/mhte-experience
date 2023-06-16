@@ -98,7 +98,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
-        validateAlreadyAssignedSubcontractor(project.getProjectSubcontractors(), dto);
+//        validateAlreadyAssignedSubcontractor(project.getProjectSubcontractors(), dto);
 
         ProjectSubcontractor subcontractor = new ProjectSubcontractor();
         subcontractor.setSubcontractorId(dto.getSubcontractorId());

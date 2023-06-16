@@ -59,8 +59,8 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
-        validateAlreadyAssignedContractor(project.getProjectContractors(), dto);
-        validateProjectParticipationPercentages(project, dto.getParticipationPercentage());
+//        validateAlreadyAssignedContractor(project.getProjectContractors(), dto);
+//        validateProjectParticipationPercentages(project, dto.getParticipationPercentage());
 
         ProjectContractor contractor = new ProjectContractor();
         contractor.setContractorId(dto.getContractorId());

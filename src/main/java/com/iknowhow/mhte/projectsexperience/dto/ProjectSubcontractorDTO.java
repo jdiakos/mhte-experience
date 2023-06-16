@@ -25,6 +25,6 @@ public class ProjectSubcontractorDTO {
 //    @Temporal(TemporalType.DATE)
     private LocalDate contractDateTo;
 //    @NotBlank
-    private String contractGUID;
+//    private String contractGUID;
 
 }
