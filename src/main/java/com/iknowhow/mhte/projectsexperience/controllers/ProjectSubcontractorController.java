@@ -44,13 +44,13 @@ public class ProjectSubcontractorController {
     }
 
     // @TODO - REMOVE ON REFACTOR
-    @PostMapping("/assign")
-    public ResponseEntity<Void> assignSubcontractorToProject(@Valid @RequestBody ProjectSubcontractorDTO dto,
-                                                             @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
-        projectSubcontractorService.assignSubcontractorToProject(dto, userPrincipal);
-
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/assign")
+//    public ResponseEntity<Void> assignSubcontractorToProject(@Valid @RequestBody ProjectSubcontractorDTO dto,
+//                                                             @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
+//        projectSubcontractorService.assignSubcontractorToProject(dto, userPrincipal);
+//
+//        return ResponseEntity.ok().build();
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjectSubcontractorResponseDTO> getSubcontractorForProject(@PathVariable Long id) {

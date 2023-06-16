@@ -27,6 +27,9 @@ public class FileNetServiceImpl implements FileNetService {
     @Value("${app.filenet.folder.root}")
     private String rootFolder;
 
+    @Value(("${app.filenet.folder.root.subcontractors}"))
+    private String subcontractorFolder;
+
     private final FilenetConfig filenetConfig;
 
     @Autowired

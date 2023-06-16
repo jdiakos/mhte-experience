@@ -96,11 +96,11 @@ public class ProjectController {
     }
 
     // @TODO - REMOVE ON REFACTOR
-    @PostMapping(value = "/add-project")
-    public ResponseEntity<Void> addNewProject(@RequestBody CUDProjectDTO project){
-        projectService.addNewProject(project);
-    	return ResponseEntity.status(HttpStatus.OK).build();
-    }
+//    @PostMapping(value = "/add-project")
+//    public ResponseEntity<Void> addNewProject(@RequestBody CUDProjectDTO project){
+//        projectService.addNewProject(project);
+//    	return ResponseEntity.status(HttpStatus.OK).build();
+//    }
     
     @PutMapping(value = "/update-project")
     public ResponseEntity<ProjectConDTO> updateProject(@RequestBody CUDProjectDTO project){
@@ -108,7 +108,7 @@ public class ProjectController {
     }
     
     @DeleteMapping(value = "/project/{id}")
-    public ResponseEntity<CUDProjectDTO> updateProject(@PathVariable(value="id") Long id){
+    public ResponseEntity<CUDProjectDTO> deleteProject(@PathVariable(value="id") Long id){
     	return ResponseEntity.status(HttpStatus.OK).body(projectService.deleteProject(id));
     }
     
