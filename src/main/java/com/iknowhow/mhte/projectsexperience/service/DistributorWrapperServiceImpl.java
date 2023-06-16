@@ -1,5 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,8 @@ public class DistributorWrapperServiceImpl implements DistributorWrapperService 
         this.projectSubcontractorService = projectSubcontractorService;
     }
 
+    @Override
+    public void createProject(ProjectMasterDTO dto) {
 
+    }
 }
