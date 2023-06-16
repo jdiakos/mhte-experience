@@ -94,7 +94,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public CUDProjectDTO addNewProject(CUDProjectDTO dto) {
+    public Project addNewProject(CUDProjectDTO dto) {
     	logger.info("add new project service");
     	ModelMapper strict = utils.initModelMapperStrict();
     	ModelMapper loose = utils.initModelMapperLoose();
@@ -106,8 +106,8 @@ public class ProjectServiceImpl implements ProjectService {
             newProject.setDateCreated(LocalDateTime.now());
             //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
             newProject.setLastModifiedBy("dude");
-    		projectRepo.save(newProject);
-    		return loose.map(newProject, CUDProjectDTO.class);
+    		return projectRepo.save(newProject);
+//    		return loose.map(newProject, CUDProjectDTO.class);
     	} catch (Exception ex) {
     		if(ex.getCause() != null && 
     				ex.getCause().getCause() != null && 

@@ -1,5 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,7 +17,7 @@ public interface ProjectService {
 	
 	ProjectConDTO getProjectByAdam(String adam);
 	
-	CUDProjectDTO addNewProject(CUDProjectDTO dto);
+	Project addNewProject(CUDProjectDTO dto);
 	
 	ProjectConDTO updateProject(CUDProjectDTO dto);
 	

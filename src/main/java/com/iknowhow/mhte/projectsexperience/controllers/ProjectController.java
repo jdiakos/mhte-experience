@@ -88,16 +88,18 @@ public class ProjectController {
 
     // @TODO -- DON'T FORGET TO ADD THE FILE UPLOADS!!!!
     @PostMapping("/create-project")
-    public ResponseEntity<Void> createProject(@RequestBody ProjectMasterDTO dto) {
-        distributorWrapperService.createProject(dto);
+    public ResponseEntity<Void> createProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal,
+                                              @RequestBody ProjectMasterDTO dto) {
+        distributorWrapperService.createProject(dto, userPrincipal);
 
         return ResponseEntity.ok().build();
     }
 
     // @TODO - REMOVE ON REFACTOR
     @PostMapping(value = "/add-project")
-    public ResponseEntity<CUDProjectDTO> addNewProject(@RequestBody CUDProjectDTO project){
-    	return ResponseEntity.status(HttpStatus.OK).body(projectService.addNewProject(project));
+    public ResponseEntity<Void> addNewProject(@RequestBody CUDProjectDTO project){
+        projectService.addNewProject(project);
+    	return ResponseEntity.status(HttpStatus.OK).build();
     }
     
     @PutMapping(value = "/update-project")
