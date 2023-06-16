@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class ProjectMasterDTO {
 
-    // GENERAL DATA
+    // PROJECT DESCRIPTION DATA
     private ProjectsCategoryEnum projectCategory;
     private String adam;
     private String protocolNumber;

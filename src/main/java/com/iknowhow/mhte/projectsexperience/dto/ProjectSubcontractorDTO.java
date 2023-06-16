@@ -11,21 +11,20 @@ import java.time.LocalDate;
 @Data
 public class ProjectSubcontractorDTO {
 
-    @NotNull
     private Long projectId;
-    @NotNull
+//    @NotNull
     private Long subcontractorId;
-    @NotBlank
+//    @NotBlank
     private String participationType;
-    @NotNull
+//    @NotNull
     private Double contractValue;
-    @NotNull
-    @Temporal(TemporalType.DATE)
+//    @NotNull
+//    @Temporal(TemporalType.DATE)
     private LocalDate contractDateFrom;
-    @NotNull
-    @Temporal(TemporalType.DATE)
+//    @NotNull
+//    @Temporal(TemporalType.DATE)
     private LocalDate contractDateTo;
-    @NotBlank
+//    @NotBlank
     private String contractGUID;
 
 }

@@ -28,6 +28,7 @@ public class ContractController {
     @Autowired
     public ContractController(ContractService contractService) { this.contractService = contractService; }
 
+    // @TODO - REMOVE ON REFACTOR
     @PostMapping(value= "/create-contract", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ContractDTO> createNewContract(@RequestBody ContractDTO contract) {
         logger.info("Create new contract");

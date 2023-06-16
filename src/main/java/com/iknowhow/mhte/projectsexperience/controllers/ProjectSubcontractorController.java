@@ -43,6 +43,7 @@ public class ProjectSubcontractorController {
         return ResponseEntity.ok().body(response);
     }
 
+    // @TODO - REMOVE ON REFACTOR
     @PostMapping("/assign")
     public ResponseEntity<Void> assignSubcontractorToProject(@Valid @RequestBody ProjectSubcontractorDTO dto,
                                                              @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {

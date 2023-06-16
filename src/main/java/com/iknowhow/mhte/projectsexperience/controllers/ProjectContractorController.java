@@ -43,6 +43,7 @@ public class ProjectContractorController {
         return ResponseEntity.ok().body(response);
     }
 
+    // @TODO - REMOVE ON REFACTOR
     @PostMapping("/assign")
     public ResponseEntity<Void> assignContractorToProject(@Valid @RequestBody ProjectContractorDTO dto,
                                                           @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {

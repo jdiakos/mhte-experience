@@ -56,14 +56,14 @@ public class FileNetServiceImpl implements FileNetService {
             document.set_ContentElements(ctList);
 
             document.checkin(AutoClassify.DO_NOT_AUTO_CLASSIFY, CheckinType.MAJOR_VERSION);
-            document.save(RefreshMode.REFRESH);
+            document.save(RefreshMode.NO_REFRESH);
 
             // ASSIGN TO FOLDER - IF FOLDER DOES NOT EXIST, CREATE BASED ON PROJECT ADAM
             Folder folder = fetchFolder(objectStore, contract.getProject().getAdam());
             ReferentialContainmentRelationship rcr = folder.file(
                     document, AutoUniqueName.AUTO_UNIQUE, "TEST", DefineSecurityParentage.DO_NOT_DEFINE_SECURITY_PARENTAGE
             );
-            rcr.save(RefreshMode.REFRESH);
+            rcr.save(RefreshMode.NO_REFRESH);
 
             return document.get_Id().toString();
         } catch (Exception e) {
@@ -108,7 +108,7 @@ public class FileNetServiceImpl implements FileNetService {
                 folder = Factory.Folder.createInstance(objectStore, null);
                 folder.set_FolderName(folderName);
                 folder.set_Parent(Factory.Folder.fetchInstance(objectStore, rootFolder, null));
-                folder.save(RefreshMode.REFRESH);
+                folder.save(RefreshMode.NO_REFRESH);
                 return folder;
             }
             else {

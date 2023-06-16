@@ -1,6 +1,8 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
+import com.iknowhow.mhte.projectsexperience.service.DistributorWrapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +34,13 @@ public class ProjectController {
     Logger logger = LoggerFactory.getLogger(ProjectController.class);
 	
 	private final ProjectService projectService;
+    private final DistributorWrapperService distributorWrapperService;
 
     @Autowired
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService,
+                             DistributorWrapperService distributorWrapperService) {
         this.projectService = projectService;
+        this.distributorWrapperService = distributorWrapperService;
     }
     
     @GetMapping("/all")
@@ -51,7 +56,7 @@ public class ProjectController {
     }
     
     @GetMapping("/get-by-contract-id")
-    public ResponseEntity<ProjectConDTO> getProjectByContrantId(@RequestParam("id") Long id) {
+    public ResponseEntity<ProjectConDTO> getProjectByContractId(@RequestParam("id") Long id) {
     	ProjectConDTO project = projectService.getProjectByContractId(id);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
@@ -63,7 +68,7 @@ public class ProjectController {
     }
     
     @GetMapping("/get-by-category")
-    public ResponseEntity<Page<ProjectConDTO>> getProjectBycategory(@RequestParam("category") ProjectsCategoryEnum category,
+    public ResponseEntity<Page<ProjectConDTO>> getProjectByCategory(@RequestParam("category") ProjectsCategoryEnum category,
     		Pageable pageable) {
     	Page<ProjectConDTO> project = projectService.getProjectByCategory(category, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(project);
@@ -81,6 +86,14 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
 
+    @PostMapping("/create-project")
+    public ResponseEntity<Void> createProject(@RequestBody ProjectMasterDTO dto) {
+        distributorWrapperService.createProject(dto);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // @TODO - REMOVE ON REFACTOR
     @PostMapping(value = "/add-project")
     public ResponseEntity<CUDProjectDTO> addNewProject(@RequestBody CUDProjectDTO project){
     	return ResponseEntity.status(HttpStatus.OK).body(projectService.addNewProject(project));
