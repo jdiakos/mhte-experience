@@ -79,8 +79,6 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
 
-    //@TODO - set created_date and last_modified_by when adding or updating a project
-
     @PostMapping(value = "/add-project")
     public ResponseEntity<CUDProjectDTO> addNewProject(@RequestBody CUDProjectDTO project){
     	return ResponseEntity.status(HttpStatus.OK).body(projectService.addNewProject(project));

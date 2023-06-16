@@ -20,6 +20,8 @@ import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundExcept
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
 import com.querydsl.core.BooleanBuilder;
 
+import java.time.LocalDateTime;
+
 @Service
 public class ProjectServiceImpl implements ProjectService {
 	
@@ -101,6 +103,9 @@ public class ProjectServiceImpl implements ProjectService {
     	}
     	Project newProject = strict.map(dto, Project.class);
     	try {
+            newProject.setDateCreated(LocalDateTime.now());
+            //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+            newProject.setLastModifiedBy("dude");
     		projectRepo.save(newProject);
     		return loose.map(newProject, CUDProjectDTO.class);
     	} catch (Exception ex) {
@@ -133,6 +138,8 @@ public class ProjectServiceImpl implements ProjectService {
         Long id = projectExists.getId();
         projectExists = loose.map(dto, Project.class);
         projectExists.setId(id);
+        //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+        projectExists.setLastModifiedBy("dude");
         projectRepo.save(projectExists);
         ProjectConDTO response = loose.map(projectExists, ProjectConDTO.class);
         return response;
@@ -148,6 +155,8 @@ public class ProjectServiceImpl implements ProjectService {
         	new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
         );
         CUDProjectDTO response = strict.map(projectExists, CUDProjectDTO.class);
+        //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+        projectExists.setLastModifiedBy("dude");
         projectRepo.delete(projectExists);
         return response;
     }

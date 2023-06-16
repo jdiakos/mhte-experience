@@ -64,7 +64,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setSigningDate(dto.getSigningDate());
         contract.setProject(project);
         contract.setDateCreated(LocalDateTime.now());
-        // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+        //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
         contract.setLastModifiedBy("JULIUS CAESAR");
 
         contractRepository.save(contract);
@@ -90,7 +90,7 @@ public class ContractServiceImpl implements ContractService {
         Project current = (contractExists.getProject() == null) ? null : contractExists.getProject();
         contractExists = modelMapper.map(contract, Contract.class);
         contractExists.setProject(current);
-        // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+        //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
         contractExists.setLastModifiedBy("CLEOPATRA");
         contractRepository.save(contractExists);
         return modelMapper.map(contractExists, ContractDTO.class);
