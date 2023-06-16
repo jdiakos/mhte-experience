@@ -18,6 +18,9 @@ public class JwtUtils {
     @Value("${app.taxis.jwt.secret}")
     private String jwtSecret;
 
+    @Value("${app.taxis.jwt.issuer}")
+    private String jwtIssuer;
+
     public String getUsernameFromJwtToken(String jwtToken) {
 
         return decodedJWT(jwtToken).getSubject();
@@ -34,7 +37,7 @@ public class JwtUtils {
         try {
             Algorithm algorithm = Algorithm.HMAC512(jwtSecret);
             JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer("TEST")
+                    .withIssuer(jwtIssuer)
                     .build();
             decodedJWT = verifier.verify(jwtToken);
         } catch (JWTVerificationException e) {
