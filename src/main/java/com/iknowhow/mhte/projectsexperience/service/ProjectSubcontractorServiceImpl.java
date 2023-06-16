@@ -107,7 +107,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         subcontractor.setParticipationType(dto.getParticipationType());
         subcontractor.setContractDateFrom(dto.getContractDateFrom());
         subcontractor.setContractDateTo(dto.getContractDateTo());
-        subcontractor.setContractGUID(dto.getContractGUID());
+//        subcontractor.setContractGUID(dto.getContractGUID());
 
         subcontractor.setDateCreated(LocalDateTime.now());
         // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
@@ -136,7 +136,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         dto.setParticipationType(subcontractor.getParticipationType());
         dto.setContractDateFrom(subcontractor.getContractDateFrom());
         dto.setContractDateTo(subcontractor.getContractDateTo());
-        dto.setContractGUID(subcontractor.getContractGUID());
+//        dto.setContractGUID(subcontractor.getContractGUID());
 
         return dto;
     }
