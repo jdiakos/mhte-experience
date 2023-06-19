@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface ContractService {
 
-    ContractDTO createNewContract(ContractDTO contract, Project project);
+    void createNewContract(ContractDTO contract, Project project);
 
     ContractDTO updateContract(ContractDTO contractDTO);
 

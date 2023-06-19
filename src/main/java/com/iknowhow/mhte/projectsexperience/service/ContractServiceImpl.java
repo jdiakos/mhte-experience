@@ -50,7 +50,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     @Transactional
-    public ContractDTO createNewContract(ContractDTO dto, Project project) {
+    public void createNewContract(ContractDTO dto, Project project) {
         if (!negativeNumberValidator(dto.getContractValue())) {
             throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
         }
@@ -65,10 +65,6 @@ public class ContractServiceImpl implements ContractService {
         contract.setLastModifiedBy("JULIUS CAESAR");
 
         contractRepository.save(contract);
-        ContractDTO response = utils.initModelMapperStrict().map(contract, ContractDTO.class);
-        response.setProjectId(dto.getProjectId());
-
-        return response;
     }
 
     @Override
