@@ -2,6 +2,7 @@ package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.dto.CUDProjectDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectConDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSearchDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectService;
 
@@ -40,59 +41,59 @@ public class ProjectController {
     }
     
     @GetMapping("/all")
-    public ResponseEntity<Page<ProjectConDTO>> getProjects(Pageable page) {
-    	Page<ProjectConDTO> projects = projectService.fetchAllProjects(page);
+    public ResponseEntity<Page<ProjectResponseDTO>> getProjects(Pageable page) {
+    	Page<ProjectResponseDTO> projects = projectService.fetchAllProjects(page);
         return ResponseEntity.status(HttpStatus.OK).body(projects);
     }
 
     @GetMapping("/project/{id}")
-    public ResponseEntity<ProjectConDTO> getProjectById(@PathVariable(value="id") Long id) {
-    	ProjectConDTO project = projectService.getProjectById(id);
+    public ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable(value="id") Long id) {
+    	ProjectResponseDTO project = projectService.getProjectById(id);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
     
     @GetMapping("/get-by-contract-id")
-    public ResponseEntity<ProjectConDTO> getProjectByContractId(@RequestParam("id") Long id) {
-    	ProjectConDTO project = projectService.getProjectByContractId(id);
+    public ResponseEntity<ProjectResponseDTO> getProjectByContractId(@RequestParam("id") Long id) {
+    	ProjectResponseDTO project = projectService.getProjectByContractId(id);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
     
     @GetMapping("/get-by-adam")
-    public ResponseEntity<ProjectConDTO> getProjectByAdam(@RequestParam("adam") String id) {
-    	ProjectConDTO project = projectService.getProjectByAdam(id);
+    public ResponseEntity<ProjectResponseDTO> getProjectByAdam(@RequestParam("adam") String id) {
+    	ProjectResponseDTO project = projectService.getProjectByAdam(id);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
     
     @GetMapping("/get-by-category")
-    public ResponseEntity<Page<ProjectConDTO>> getProjectByCategory(@RequestParam("category") ProjectsCategoryEnum category,
-    		Pageable pageable) {
-    	Page<ProjectConDTO> project = projectService.getProjectByCategory(category, pageable);
+    public ResponseEntity<Page<ProjectResponseDTO>> getProjectByCategory(@RequestParam("category") ProjectsCategoryEnum category,
+                                                                         Pageable pageable) {
+    	Page<ProjectResponseDTO> project = projectService.getProjectByCategory(category, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
     
     @GetMapping("/get-by-protocol")
-    public ResponseEntity<ProjectConDTO> getProjectByProtocolNumber(@RequestParam("protocolNumber") String protocolNumber) {
+    public ResponseEntity<ProjectResponseDTO> getProjectByProtocolNumber(@RequestParam("protocolNumber") String protocolNumber) {
         return ResponseEntity.status(HttpStatus.OK).body(projectService.getProjectByProtocolNumber(protocolNumber));
     }
     
     @GetMapping("/get-by-entity")
-    public ResponseEntity<Page<ProjectConDTO>> getProjectByResponsibleEntity(@RequestParam("entity") String entity,
-    		Pageable pageable) {
-    	Page<ProjectConDTO> project = projectService.getProjectByResponsibleEntity(entity, pageable);
+    public ResponseEntity<Page<ProjectResponseDTO>> getProjectByResponsibleEntity(@RequestParam("entity") String entity,
+                                                                                  Pageable pageable) {
+    	Page<ProjectResponseDTO> project = projectService.getProjectByResponsibleEntity(entity, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
 
     // @TODO -- DON'T FORGET TO ADD THE FILE UPLOADS!!!!
     @PostMapping("/create-project")
     public ResponseEntity<Void> createProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal,
-                                              @RequestBody ProjectMasterDTO dto) {
+                                              @Valid  @RequestBody ProjectMasterDTO dto) {
         projectService.createProject(dto, userPrincipal);
 
         return ResponseEntity.ok().build();
     }
 
     @PutMapping(value = "/update-project")
-    public ResponseEntity<ProjectConDTO> updateProject(@RequestBody CUDProjectDTO project){
+    public ResponseEntity<ProjectResponseDTO> updateProject(@RequestBody CUDProjectDTO project){
     	return ResponseEntity.status(HttpStatus.OK).body(projectService.updateProject(project));
     }
     
@@ -102,9 +103,9 @@ public class ProjectController {
     }
     
     @PostMapping("/search")
-    public ResponseEntity<Page<ProjectConDTO>> searchForProjects(@RequestBody ProjectSearchDTO dto, Pageable pageable) {
+    public ResponseEntity<Page<ProjectResponseDTO>> searchForProjects(@RequestBody ProjectSearchDTO dto, Pageable pageable) {
         logger.info("Search for users");
-        Page<ProjectConDTO> result = projectService.search(dto, pageable);
+        Page<ProjectResponseDTO> result = projectService.search(dto, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

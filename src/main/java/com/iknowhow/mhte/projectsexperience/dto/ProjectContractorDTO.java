@@ -8,11 +8,11 @@ import lombok.Data;
 public class ProjectContractorDTO {
 
     private Long projectId;
-//    @NotNull
+    @NotNull
     private Long contractorId;
-//    @NotBlank
+    @NotBlank
     private String participationType;
-//    @NotNull
+    @NotNull
     private Double participationPercentage;
 
 }

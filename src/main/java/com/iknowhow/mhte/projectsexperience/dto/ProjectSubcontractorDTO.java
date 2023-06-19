@@ -1,7 +1,5 @@
 package com.iknowhow.mhte.projectsexperience.dto;
 
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -12,17 +10,15 @@ import java.time.LocalDate;
 public class ProjectSubcontractorDTO {
 
     private Long projectId;
-//    @NotNull
+    @NotNull
     private Long subcontractorId;
-//    @NotBlank
+    @NotBlank
     private String participationType;
-//    @NotNull
+    @NotNull
     private Double contractValue;
-//    @NotNull
-//    @Temporal(TemporalType.DATE)
+    @NotNull
     private LocalDate contractDateFrom;
-//    @NotNull
-//    @Temporal(TemporalType.DATE)
+    @NotNull
     private LocalDate contractDateTo;
 //    @NotBlank
 //    private String contractGUID;

@@ -6,7 +6,7 @@ import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import lombok.Data;
 
 @Data
-public class ProjectConDTO {
+public class ProjectResponseDTO {
 	
 	private Long id;
     private ProjectsCategoryEnum projectCategory;

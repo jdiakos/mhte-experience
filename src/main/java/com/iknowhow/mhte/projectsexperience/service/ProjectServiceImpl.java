@@ -48,59 +48,59 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public Page<ProjectConDTO> fetchAllProjects(Pageable page){
+    public Page<ProjectResponseDTO> fetchAllProjects(Pageable page){
     	logger.info("fetch all projects service");
     	ModelMapper loose = utils.initModelMapperLoose();
-        return projectRepo.findAll(page).map(project -> loose.map(project, ProjectConDTO.class));
+        return projectRepo.findAll(page).map(project -> loose.map(project, ProjectResponseDTO.class));
     }
     
     @Override
-    public ProjectConDTO getProjectById(Long id) {
+    public ProjectResponseDTO getProjectById(Long id) {
     	logger.info("get project by id service");
     	ModelMapper loose = utils.initModelMapperLoose();
-    	ProjectConDTO response = projectRepo.findById(id).map(project -> 
-    		loose.map(project, ProjectConDTO.class)).orElseThrow(() -> 
+    	ProjectResponseDTO response = projectRepo.findById(id).map(project ->
+    		loose.map(project, ProjectResponseDTO.class)).orElseThrow(() ->
     			new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
     	return response;
     }
     
     @Override
-    public ProjectConDTO getProjectByContractId(Long id) {
+    public ProjectResponseDTO getProjectByContractId(Long id) {
     	logger.info("get project by contract id service");
     	ModelMapper loose = utils.initModelMapperLoose();
-    	return projectRepo.findByContracts_Id(id).map(project -> loose.map(project, ProjectConDTO.class)).orElseThrow(()->
+    	return projectRepo.findByContracts_Id(id).map(project -> loose.map(project, ProjectResponseDTO.class)).orElseThrow(()->
     		new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
     	);
     }
     
     @Override
-    public ProjectConDTO getProjectByAdam(String adam) {
+    public ProjectResponseDTO getProjectByAdam(String adam) {
     	logger.info("get project by adam service");
     	ModelMapper loose = utils.initModelMapperLoose();
-    	return projectRepo.findByAdam(adam).map(project -> loose.map(project, ProjectConDTO.class)).orElseThrow(()->
+    	return projectRepo.findByAdam(adam).map(project -> loose.map(project, ProjectResponseDTO.class)).orElseThrow(()->
     		new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
     	);
     };
     
     @Override
-    public Page<ProjectConDTO> getProjectByCategory(ProjectsCategoryEnum category, Pageable page) {
+    public Page<ProjectResponseDTO> getProjectByCategory(ProjectsCategoryEnum category, Pageable page) {
     	logger.info("get project by category service");
     	ModelMapper loose = utils.initModelMapperLoose();
-    	return projectRepo.findByProjectCategory(category, page).map(project -> loose.map(project, ProjectConDTO.class));
+    	return projectRepo.findByProjectCategory(category, page).map(project -> loose.map(project, ProjectResponseDTO.class));
     }
     
     @Override
-    public ProjectConDTO getProjectByProtocolNumber(String number) {
+    public ProjectResponseDTO getProjectByProtocolNumber(String number) {
     	logger.info("get project by category service");
     	ModelMapper loose = utils.initModelMapperLoose();
-    	return loose.map(projectRepo.findByProtocolNumber(number), ProjectConDTO.class);
+    	return loose.map(projectRepo.findByProtocolNumber(number), ProjectResponseDTO.class);
     }
     
     @Override
-    public Page<ProjectConDTO> getProjectByResponsibleEntity(String entity, Pageable page) {
+    public Page<ProjectResponseDTO> getProjectByResponsibleEntity(String entity, Pageable page) {
     	logger.info("get project by category service");
     	ModelMapper loose = utils.initModelMapperLoose();
-    	return projectRepo.findByResponsibleEntity(entity, page).map(project -> loose.map(project, ProjectConDTO.class));
+    	return projectRepo.findByResponsibleEntity(entity, page).map(project -> loose.map(project, ProjectResponseDTO.class));
     }
 
     @Override
@@ -162,7 +162,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public ProjectConDTO updateProject(CUDProjectDTO dto) {
+    public ProjectResponseDTO updateProject(CUDProjectDTO dto) {
     	logger.info("update project service");
 
     	ModelMapper loose = utils.initModelMapperLoose();
@@ -179,7 +179,7 @@ public class ProjectServiceImpl implements ProjectService {
         //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
         projectExists.setLastModifiedBy("dude");
         projectRepo.save(projectExists);
-        ProjectConDTO response = loose.map(projectExists, ProjectConDTO.class);
+        ProjectResponseDTO response = loose.map(projectExists, ProjectResponseDTO.class);
         return response;
     }
 
@@ -200,7 +200,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public Page<ProjectConDTO> search(ProjectSearchDTO dto, Pageable pageable) {
+    public Page<ProjectResponseDTO> search(ProjectSearchDTO dto, Pageable pageable) {
         QProject qProject = QProject.project;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
@@ -222,7 +222,7 @@ public class ProjectServiceImpl implements ProjectService {
         
         ModelMapper modelMapper = utils.initModelMapperLoose();
         return projectRepo.findAll(booleanBuilder, pageable)
-                .map(project -> modelMapper.map(project, ProjectConDTO.class));
+                .map(project -> modelMapper.map(project, ProjectResponseDTO.class));
     }
     
     private boolean validateProject(CUDProjectDTO dto) {

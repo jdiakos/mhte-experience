@@ -6,10 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FileNetService {
 
-    // upload file to filenet
     String uploadFileToFilenet(Project project, MultipartFile file, String username);
 
-    // fetch file from filenet by guid
     DownloadFileDTO fetchByGuid(String guid);
 
 }
