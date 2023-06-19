@@ -1,5 +1,7 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
+import com.iknowhow.mhte.projectsexperience.dto.*;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +13,6 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.QProject;
 import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
-import com.iknowhow.mhte.projectsexperience.dto.CUDProjectDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectConDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectSearchDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectCustomValidationException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
@@ -21,6 +20,7 @@ import com.iknowhow.mhte.projectsexperience.utils.Utils;
 import com.querydsl.core.BooleanBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -29,12 +29,22 @@ public class ProjectServiceImpl implements ProjectService {
 	
     private final ProjectRepository projectRepo;
     private final Utils utils;
+    private final ContractService contractService;
+    private final ProjectContractorService projectContractorService;
+    private final ProjectSubcontractorService projectSubcontractorService;
+
 
     @Autowired
     public ProjectServiceImpl(ProjectRepository projectRepo,
-    		Utils utils) {
+                              Utils utils,
+                              ContractService contractService,
+                              ProjectContractorService projectContractorService,
+                              ProjectSubcontractorService projectSubcontractorService) {
         this.projectRepo = projectRepo;
         this.utils = utils;
+        this.contractService = contractService;
+        this.projectContractorService = projectContractorService;
+        this.projectSubcontractorService = projectSubcontractorService;
     }
     
     @Override
@@ -92,9 +102,37 @@ public class ProjectServiceImpl implements ProjectService {
     	ModelMapper loose = utils.initModelMapperLoose();
     	return projectRepo.findByResponsibleEntity(entity, page).map(project -> loose.map(project, ProjectConDTO.class));
     }
-    
+
     @Override
-    public Project addNewProject(CUDProjectDTO dto) {
+    public void createProject(ProjectMasterDTO dto, MhteUserPrincipal userPrincipal) {
+
+        CUDProjectDTO cudProjectDTO = utils.initModelMapperStrict().map(dto, CUDProjectDTO.class);
+        Project project = addNewProject(cudProjectDTO);
+        logger.info("PROJECT ADDED");
+
+        List<ProjectContractorDTO> projectContractorDTOs = dto.getProjectContractors();
+        projectContractorDTOs.forEach(contractorDTO ->
+                projectContractorService.assignContractorToProject(contractorDTO, project, userPrincipal)
+        );
+        logger.info("PROJECT CONTRACTORS ADDED");
+
+        // @TODO - SAVE FILES
+        List<ProjectSubcontractorDTO> projectSubcontractorDTOs = dto.getProjectSubcontractors();
+        projectSubcontractorDTOs.forEach(subcontractorDTO ->
+                projectSubcontractorService.assignSubcontractorToProject(subcontractorDTO, project, userPrincipal)
+        );
+        logger.info("PROJECT SUBCONTRACTORS ADDED");
+
+        // @TODO - SAVE FILES
+        List<ContractDTO> contractDTOs = dto.getContracts();
+        contractDTOs.forEach(contractDTO ->
+                contractService.createNewContract(contractDTO, project)
+        );
+        logger.info("CONTRACTS ADDED");
+
+    }
+
+    private Project addNewProject(CUDProjectDTO dto) {
 //    	logger.info("add new project service");
     	ModelMapper strict = utils.initModelMapperStrict();
 //    	ModelMapper loose = utils.initModelMapperLoose();

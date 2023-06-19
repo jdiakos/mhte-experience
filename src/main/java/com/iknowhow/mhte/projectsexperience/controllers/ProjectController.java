@@ -2,7 +2,6 @@ package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
-import com.iknowhow.mhte.projectsexperience.service.DistributorWrapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +33,10 @@ public class ProjectController {
     Logger logger = LoggerFactory.getLogger(ProjectController.class);
 	
 	private final ProjectService projectService;
-    private final DistributorWrapperService distributorWrapperService;
 
     @Autowired
-    public ProjectController(ProjectService projectService,
-                             DistributorWrapperService distributorWrapperService) {
+    public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
-        this.distributorWrapperService = distributorWrapperService;
     }
     
     @GetMapping("/all")
@@ -90,7 +86,7 @@ public class ProjectController {
     @PostMapping("/create-project")
     public ResponseEntity<Void> createProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal,
                                               @RequestBody ProjectMasterDTO dto) {
-        distributorWrapperService.createProject(dto, userPrincipal);
+        projectService.createProject(dto, userPrincipal);
 
         return ResponseEntity.ok().build();
     }

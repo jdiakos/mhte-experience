@@ -1,6 +1,8 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
+import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,7 +19,7 @@ public interface ProjectService {
 	
 	ProjectConDTO getProjectByAdam(String adam);
 	
-	Project addNewProject(CUDProjectDTO dto);
+	void createProject(ProjectMasterDTO dto, MhteUserPrincipal userPrincipal);
 	
 	ProjectConDTO updateProject(CUDProjectDTO dto);
 	
