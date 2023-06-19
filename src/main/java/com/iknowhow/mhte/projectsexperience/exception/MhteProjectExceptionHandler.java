@@ -2,6 +2,7 @@ package com.iknowhow.mhte.projectsexperience.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +31,14 @@ public class MhteProjectExceptionHandler {
     public ResponseEntity<MhteProjectErrorDTO> handleAlreadyAssignedException(MhteProjectsAlreadyAssignedException ex) {
         MhteProjectErrorDTO response = new MhteProjectErrorDTO();
         response.setMessage(ex.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<MhteProjectErrorDTO> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        MhteProjectErrorDTO response = new MhteProjectErrorDTO();
+        response.setMessage(MhteProjectErrorMessage.DATABASE_DATA_INTEGRITY_VIOLATION.name());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

@@ -104,9 +104,18 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void createProject(ProjectMasterDTO dto, MhteUserPrincipal userPrincipal) {
+//        if(!validateProject(dto)) {
+//            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+//        }
 
-        CUDProjectDTO cudProjectDTO = utils.initModelMapperStrict().map(dto, CUDProjectDTO.class);
-        Project project = addNewProject(cudProjectDTO);
+        Project project = utils.initModelMapperStrict().map(dto, Project.class);
+
+        project.setDateCreated(LocalDateTime.now());
+        //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+        project.setLastModifiedBy("dude");
+//        project.setLastModifiedBy(userPrincipal.getUsername());
+
+        projectRepo.save(project);
         logger.info("PROJECT ADDED");
 
         projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal);
@@ -122,35 +131,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     }
 
-    private Project addNewProject(CUDProjectDTO dto) {
-//    	logger.info("add new project service");
-    	ModelMapper strict = utils.initModelMapperStrict();
-//    	ModelMapper loose = utils.initModelMapperLoose();
-    	if(!validateProject(dto)) {
-    		throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
-    	}
-    	Project newProject = strict.map(dto, Project.class);
-    	try {
-            newProject.setDateCreated(LocalDateTime.now());
-            //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-            newProject.setLastModifiedBy("dude");
-    		return projectRepo.save(newProject);
-//    		return loose.map(newProject, CUDProjectDTO.class);
-    	} catch (Exception ex) {
-    		if(ex.getCause() != null && 
-    				ex.getCause().getCause() != null && 
-    				ex.getCause().getCause().getMessage().contains("violates unique constraint")) {
-    			if(ex.getCause().getCause().getMessage().contains("adam")) {
-    				throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.ADAM_ALREADY_EXISTS);
-				} else {
-					throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.PROTOCOL_NUMBER_ALREADY_EXISTS);
-				}
-    		} else {
-    			throw new MhteProjectsNotFoundException(ex.getMessage());
-    		}
-    	}
-    }
-    
     @Override
     public ProjectResponseDTO updateProject(CUDProjectDTO dto) {
     	logger.info("update project service");
