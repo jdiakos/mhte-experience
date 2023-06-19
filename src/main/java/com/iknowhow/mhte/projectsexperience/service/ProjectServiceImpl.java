@@ -18,6 +18,7 @@ import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
 import com.querydsl.core.BooleanBuilder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -103,6 +104,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public void createProject(ProjectMasterDTO dto, MhteUserPrincipal userPrincipal) {
 //        if(!validateProject(dto)) {
 //            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
