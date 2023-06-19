@@ -50,23 +50,30 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     @Transactional
-    public void createNewContract(ContractDTO dto, Project project, MhteUserPrincipal userPrincipal) {
-        if (!negativeNumberValidator(dto.getContractValue())) {
-            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
-        }
+    public void createContracts(List<ContractDTO> dtoList, Project project, MhteUserPrincipal userPrincipal) {
 
-        Contract contract = new Contract();
-        contract.setContractType(dto.getContractType());
-        contract.setContractValue(dto.getContractValue());
-        contract.setSigningDate(dto.getSigningDate());
-        contract.setProject(project);
+        List<Contract> contracts = dtoList
+                .stream()
+                .map(dto -> {
+                    if (!negativeNumberValidator(dto.getContractValue())) {
+                        throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+                    }
 
-        contract.setDateCreated(LocalDateTime.now());
-        //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-        contract.setLastModifiedBy("JULIUS CAESAR");
-//        contract.setLastModifiedBy(userPrincipal.getUsername());
+                    Contract contract = new Contract();
+                    contract.setContractType(dto.getContractType());
+                    contract.setContractValue(dto.getContractValue());
+                    contract.setSigningDate(dto.getSigningDate());
+                    contract.setProject(project);
 
-        contractRepository.save(contract);
+                    contract.setDateCreated(LocalDateTime.now());
+                    //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+                    contract.setLastModifiedBy("JULIUS CAESAR");
+//                    contract.setLastModifiedBy(userPrincipal.getUsername());
+                    return contract;
+                })
+                .toList();
+
+        contractRepository.saveAll(contracts);
     }
 
     @Override

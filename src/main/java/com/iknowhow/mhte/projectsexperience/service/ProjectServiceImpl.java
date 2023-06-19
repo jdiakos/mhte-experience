@@ -20,7 +20,6 @@ import com.iknowhow.mhte.projectsexperience.utils.Utils;
 import com.querydsl.core.BooleanBuilder;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -110,24 +109,15 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = addNewProject(cudProjectDTO);
         logger.info("PROJECT ADDED");
 
-        List<ProjectContractorDTO> projectContractorDTOs = dto.getProjectContractors();
-        projectContractorDTOs.forEach(contractorDTO ->
-                projectContractorService.assignContractorToProject(contractorDTO, project, userPrincipal)
-        );
+        projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal);
         logger.info("PROJECT CONTRACTORS ADDED");
 
         // @TODO - SAVE FILES
-        List<ProjectSubcontractorDTO> projectSubcontractorDTOs = dto.getProjectSubcontractors();
-        projectSubcontractorDTOs.forEach(subcontractorDTO ->
-                projectSubcontractorService.assignSubcontractorToProject(subcontractorDTO, project, userPrincipal)
-        );
+        projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), project, userPrincipal);
         logger.info("PROJECT SUBCONTRACTORS ADDED");
 
         // @TODO - SAVE FILES
-        List<ContractDTO> contractDTOs = dto.getContracts();
-        contractDTOs.forEach(contractDTO ->
-                contractService.createNewContract(contractDTO, project, userPrincipal)
-        );
+        contractService.createContracts(dto.getContracts(), project, userPrincipal);
         logger.info("CONTRACTS ADDED");
 
     }

@@ -56,24 +56,31 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
 
     @Override
     @Transactional
-    public void assignContractorToProject(ProjectContractorDTO dto,
-                                          Project project,
-                                          MhteUserPrincipal userPrincipal) {
-//        validateAlreadyAssignedContractor(project.getProjectContractors(), dto);
-//        validateProjectParticipationPercentages(project, dto.getParticipationPercentage());
+    public void assignContractorsToProject(List<ProjectContractorDTO> dtoList,
+                                           Project project,
+                                           MhteUserPrincipal userPrincipal) {
 
-        ProjectContractor contractor = new ProjectContractor();
-        contractor.setContractorId(dto.getContractorId());
-        contractor.setProject(project);
-        contractor.setParticipationType(dto.getParticipationType());
-        contractor.setParticipationPercentage(dto.getParticipationPercentage());
+        List<ProjectContractor> contractors = dtoList
+                .stream()
+                .map(dto -> {
+//                    validateAlreadyAssignedContractor(project.getProjectContractors(), dto);
+//                    validateProjectParticipationPercentages(project, dto.getParticipationPercentage());
 
-        contractor.setDateCreated(LocalDateTime.now());
-        // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
-        contractor.setLastModifiedBy("ASTERIX");
-//        contractor.setLastModifiedBy(userPrincipal.getUsername());
+                    ProjectContractor contractor = new ProjectContractor();
+                    contractor.setContractorId(dto.getContractorId());
+                    contractor.setProject(project);
+                    contractor.setParticipationType(dto.getParticipationType());
+                    contractor.setParticipationPercentage(dto.getParticipationPercentage());
 
-        contractorRepository.save(contractor);
+                    contractor.setDateCreated(LocalDateTime.now());
+                    // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
+                    contractor.setLastModifiedBy("ASTERIX");
+//                    contractor.setLastModifiedBy(userPrincipal.getUsername());
+                    return contractor;
+                })
+                .toList();
+
+        contractorRepository.saveAll(contractors);
 
     }
 

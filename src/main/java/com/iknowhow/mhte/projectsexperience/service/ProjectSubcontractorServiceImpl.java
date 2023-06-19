@@ -87,26 +87,34 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 
     @Override
     @Transactional
-    public void assignSubcontractorToProject(ProjectSubcontractorDTO dto,
-                                             Project project,
-                                             MhteUserPrincipal userPrincipal) {
-//        validateAlreadyAssignedSubcontractor(project.getProjectSubcontractors(), dto);
+    public void assignSubcontractorsToProject(List<ProjectSubcontractorDTO> dtoList,
+                                              Project project,
+                                              MhteUserPrincipal userPrincipal) {
 
-        ProjectSubcontractor subcontractor = new ProjectSubcontractor();
-        subcontractor.setSubcontractorId(dto.getSubcontractorId());
-        subcontractor.setProject(project);
-        subcontractor.setContractValue(dto.getContractValue());
-        subcontractor.setParticipationType(dto.getParticipationType());
-        subcontractor.setContractDateFrom(dto.getContractDateFrom());
-        subcontractor.setContractDateTo(dto.getContractDateTo());
-//        subcontractor.setContractGUID(dto.getContractGUID());
+        List<ProjectSubcontractor> subcontractors = dtoList
+                .stream()
+                .map(dto -> {
+//                    validateAlreadyAssignedSubcontractor(project.getProjectSubcontractors(), dto);
 
-        subcontractor.setDateCreated(LocalDateTime.now());
-        // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
-        subcontractor.setLastModifiedBy("ASTERIX");
-//        subcontractor.setLastModifiedBy(userPrincipal.getUsername());
+                    ProjectSubcontractor subcontractor = new ProjectSubcontractor();
+                    subcontractor.setSubcontractorId(dto.getSubcontractorId());
+                    subcontractor.setProject(project);
+                    subcontractor.setContractValue(dto.getContractValue());
+                    subcontractor.setParticipationType(dto.getParticipationType());
+                    subcontractor.setContractDateFrom(dto.getContractDateFrom());
+                    subcontractor.setContractDateTo(dto.getContractDateTo());
+//                    subcontractor.setContractGUID(dto.getContractGUID());
 
-        subcontractorRepository.save(subcontractor);
+                    subcontractor.setDateCreated(LocalDateTime.now());
+//                    // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
+                    subcontractor.setLastModifiedBy("ASTERIX");
+//                    subcontractor.setLastModifiedBy(userPrincipal.getUsername());
+
+                    return subcontractor;
+                })
+                .toList();
+
+        subcontractorRepository.saveAll(subcontractors);
 
     }
 

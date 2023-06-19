@@ -8,6 +8,8 @@ import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectSubcontractorDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 
 public interface ProjectSubcontractorService {
 
@@ -19,7 +21,9 @@ public interface ProjectSubcontractorService {
 
     void updateProjectSubcontractor(Long id, UpdateProjectSubcontractorDTO dto, MhteUserPrincipal userPrincipal);
 
-    void assignSubcontractorToProject(ProjectSubcontractorDTO dto, Project project, MhteUserPrincipal userPrincipal);
+    void assignSubcontractorsToProject(List<ProjectSubcontractorDTO> dtoList,
+                                       Project project,
+                                       MhteUserPrincipal userPrincipal);
 
     void removeSubcontractorFromProject(Long id);
 
