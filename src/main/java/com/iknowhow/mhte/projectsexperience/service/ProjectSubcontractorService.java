@@ -1,6 +1,7 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
+import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectSubcontractorDTO;
@@ -18,7 +19,7 @@ public interface ProjectSubcontractorService {
 
     void updateProjectSubcontractor(Long id, UpdateProjectSubcontractorDTO dto, MhteUserPrincipal userPrincipal);
 
-    void assignSubcontractorToProject(ProjectSubcontractorDTO dto, MhteUserPrincipal userPrincipal);
+    void assignSubcontractorToProject(ProjectSubcontractorDTO dto, Project project, MhteUserPrincipal userPrincipal);
 
     void removeSubcontractorFromProject(Long id);
 

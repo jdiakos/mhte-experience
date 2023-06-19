@@ -42,34 +42,25 @@ public class DistributorWrapperServiceImpl implements DistributorWrapperService 
         Project project = projectService.addNewProject(cudProjectDTO);
         logger.info("PROJECT ADDED");
 
-        // @TODO - SAVE FILES
         // call project contractor service
         List<ProjectContractorDTO> projectContractorDTOList = dto.getProjectContractors();
         projectContractorDTOList.forEach(
-                contractor -> contractor.setProjectId(project.getId())
-        );
-        projectContractorDTOList.forEach(
-                contractor -> projectContractorService.assignContractorToProject(contractor, userPrincipal)
+                contractor -> projectContractorService.assignContractorToProject(contractor, project, userPrincipal)
         );
         logger.info("CONTRACT ADDED");
 
+        // @TODO - SAVE FILES
         // call project subcontractor service
         List<ProjectSubcontractorDTO> subcontractorDTOList = dto.getProjectSubcontractors();
         subcontractorDTOList.forEach(
-                subcontractor -> subcontractor.setProjectId(project.getId())
-        );
-        subcontractorDTOList.forEach(
-                subcontractor -> projectSubcontractorService.assignSubcontractorToProject(subcontractor, userPrincipal)
+                subcontractor -> projectSubcontractorService.assignSubcontractorToProject(subcontractor, project, userPrincipal)
         );
         logger.info("PROJECT CONTRACTOR ADDED");
 
         // call contract service
         // @TODO -- SAVE FILES
         List<ContractDTO> contractDTOList = dto.getContracts();
-        contractDTOList.forEach(
-                contract -> contract.setProjectId(project.getId())
-        );
-        contractDTOList.forEach(contractService::createNewContract);
+        contractDTOList.forEach(contract -> contractService.createNewContract(contract, project));
         logger.info("PROJECT SUBCONTRACTOR ADDED");
 
     }

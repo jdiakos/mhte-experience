@@ -55,10 +55,9 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
 
     @Override
     @Transactional
-    public void assignContractorToProject(ProjectContractorDTO dto, MhteUserPrincipal userPrincipal) {
-        Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
-                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
-
+    public void assignContractorToProject(ProjectContractorDTO dto,
+                                          Project project,
+                                          MhteUserPrincipal userPrincipal) {
 //        validateAlreadyAssignedContractor(project.getProjectContractors(), dto);
 //        validateProjectParticipationPercentages(project, dto.getParticipationPercentage());
 

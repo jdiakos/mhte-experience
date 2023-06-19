@@ -94,10 +94,9 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 
     @Override
     @Transactional
-    public void assignSubcontractorToProject(ProjectSubcontractorDTO dto, MhteUserPrincipal userPrincipal) {
-        Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
-                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
-
+    public void assignSubcontractorToProject(ProjectSubcontractorDTO dto,
+                                             Project project,
+                                             MhteUserPrincipal userPrincipal) {
 //        validateAlreadyAssignedSubcontractor(project.getProjectSubcontractors(), dto);
 
         ProjectSubcontractor subcontractor = new ProjectSubcontractor();

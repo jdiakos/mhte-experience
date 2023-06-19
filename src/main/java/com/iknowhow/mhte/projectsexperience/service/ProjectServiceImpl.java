@@ -95,9 +95,9 @@ public class ProjectServiceImpl implements ProjectService {
     
     @Override
     public Project addNewProject(CUDProjectDTO dto) {
-    	logger.info("add new project service");
+//    	logger.info("add new project service");
     	ModelMapper strict = utils.initModelMapperStrict();
-    	ModelMapper loose = utils.initModelMapperLoose();
+//    	ModelMapper loose = utils.initModelMapperLoose();
     	if(!validateProject(dto)) {
     		throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
     	}
@@ -117,7 +117,7 @@ public class ProjectServiceImpl implements ProjectService {
 				} else {
 					throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.PROTOCOL_NUMBER_ALREADY_EXISTS);
 				}
-    		}else {
+    		} else {
     			throw new MhteProjectsNotFoundException(ex.getMessage());
     		}
     	}

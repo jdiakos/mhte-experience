@@ -50,13 +50,10 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     @Transactional
-    public ContractDTO createNewContract(ContractDTO dto) {
+    public ContractDTO createNewContract(ContractDTO dto, Project project) {
         if (!negativeNumberValidator(dto.getContractValue())) {
             throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
         }
-        Project project = projectRepository.findById(dto.getProjectId()).orElseThrow(
-                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
-        );
 
         Contract contract = new Contract();
         contract.setContractType(dto.getContractType());
