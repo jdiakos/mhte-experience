@@ -51,14 +51,13 @@ public class ContractServiceImpl implements ContractService {
     @Override
     @Transactional
     public void createContracts(List<ContractDTO> dtoList, Project project, MhteUserPrincipal userPrincipal) {
+//        if (!negativeNumberValidator(dto.getContractValue())) {
+//            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+//        }
 
         List<Contract> contracts = dtoList
                 .stream()
                 .map(dto -> {
-                    if (!negativeNumberValidator(dto.getContractValue())) {
-                        throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
-                    }
-
                     Contract contract = new Contract();
                     contract.setContractType(dto.getContractType());
                     contract.setContractValue(dto.getContractValue());
