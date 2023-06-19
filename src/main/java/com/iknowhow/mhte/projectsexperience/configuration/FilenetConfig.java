@@ -21,7 +21,7 @@ public class FilenetConfig {
     private String username;
     @Value("${app.filenet.password}")
     private String password;
-    @Value("${app.filenet.objectStrone.name}")
+    @Value("${app.filenet.objectStore.name}")
     private String objectStoreName;
 
     public Connection getConnection() {
