@@ -131,7 +131,7 @@ public class ContractServiceImpl implements ContractService {
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND)
         );
 
-        String guid = fileNetService.uploadFileToFilenet(contract, file, username);
+        String guid = fileNetService.uploadFileToFilenet(contract.getProject(), file, username);
         contract.setContractGUID(guid);
         contractRepository.save(contract);
     }

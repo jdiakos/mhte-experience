@@ -6,7 +6,7 @@ import com.filenet.api.core.*;
 import com.filenet.api.exception.EngineRuntimeException;
 import com.filenet.api.exception.ExceptionCode;
 import com.iknowhow.mhte.projectsexperience.configuration.FilenetConfig;
-import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
+import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectFileNetException;
@@ -38,7 +38,7 @@ public class FileNetServiceImpl implements FileNetService {
     }
 
     @Override
-    public String uploadFileToFilenet(Contract contract, MultipartFile file, String username) {
+    public String uploadFileToFilenet(Project project, MultipartFile file, String username) {
         ObjectStore objectStore = filenetConfig.getObjectStore();
 
         String name = "MHTEDoc";
@@ -46,8 +46,8 @@ public class FileNetServiceImpl implements FileNetService {
         try {
             Document document = Factory.Document.createInstance(objectStore, name);
             document.getProperties().putValue("DocumentTitle", file.getOriginalFilename());
-            document.getProperties().putValue("ProtocolNumber", contract.getProject().getProtocolNumber());
-            document.getProperties().putValue("ADAM", contract.getProject().getAdam());
+            document.getProperties().putValue("ProtocolNumber", project.getProtocolNumber());
+            document.getProperties().putValue("ADAM", project.getAdam());
             document.getProperties().putValue("MHTEUser", username);
 
             ContentElementList ctList = Factory.ContentElement.createList();
@@ -62,7 +62,7 @@ public class FileNetServiceImpl implements FileNetService {
             document.save(RefreshMode.NO_REFRESH);
 
             // ASSIGN TO FOLDER - IF FOLDER DOES NOT EXIST, CREATE BASED ON PROJECT ADAM
-            Folder folder = fetchFolder(objectStore, contract.getProject().getAdam());
+            Folder folder = fetchFolder(objectStore, project.getAdam());
             ReferentialContainmentRelationship rcr = folder.file(
                     document, AutoUniqueName.AUTO_UNIQUE, "TEST", DefineSecurityParentage.DO_NOT_DEFINE_SECURITY_PARENTAGE
             );
