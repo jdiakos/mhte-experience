@@ -43,15 +43,6 @@ public class ProjectContractorController {
         return ResponseEntity.ok().body(response);
     }
 
-    // @TODO - REMOVE ON REFACTOR
-//    @PostMapping("/assign")
-//    public ResponseEntity<Void> assignContractorToProject(@Valid @RequestBody ProjectContractorDTO dto,
-//                                                          @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
-//        projectContractorService.assignContractorToProject(dto, userPrincipal);
-//
-//        return ResponseEntity.ok().build();
-//    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ProjectContractorResponseDTO> getContractorForProject(@PathVariable Long id) {
         ProjectContractorResponseDTO response = projectContractorService.getContractorOfProject(id);

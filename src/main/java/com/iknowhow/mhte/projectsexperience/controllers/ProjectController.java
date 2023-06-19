@@ -95,13 +95,6 @@ public class ProjectController {
         return ResponseEntity.ok().build();
     }
 
-    // @TODO - REMOVE ON REFACTOR
-//    @PostMapping(value = "/add-project")
-//    public ResponseEntity<Void> addNewProject(@RequestBody CUDProjectDTO project){
-//        projectService.addNewProject(project);
-//    	return ResponseEntity.status(HttpStatus.OK).build();
-//    }
-    
     @PutMapping(value = "/update-project")
     public ResponseEntity<ProjectConDTO> updateProject(@RequestBody CUDProjectDTO project){
     	return ResponseEntity.status(HttpStatus.OK).body(projectService.updateProject(project));
