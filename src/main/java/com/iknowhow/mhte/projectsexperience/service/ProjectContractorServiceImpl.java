@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -92,14 +93,11 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_CONTRACTOR_NOT_FOUND)
         );
 
-        validateProjectParticipationPercentages(projectContractor.getProject(), dto.getParticipationPercentage());
+//        validateProjectParticipationPercentages(projectContractor.getProject(), dto.getParticipationPercentage());
 
-        if (dto.getParticipationType() != null) {
-            projectContractor.setParticipationType(dto.getParticipationType());
-        }
-        if (dto.getParticipationPercentage() != null) {
-            projectContractor.setParticipationPercentage(dto.getParticipationPercentage());
-        }
+        Optional.ofNullable(dto.getParticipationType()).ifPresent(projectContractor::setParticipationType);
+        Optional.ofNullable(dto.getParticipationPercentage()).ifPresent(projectContractor::setParticipationPercentage);
+
         // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
         projectContractor.setLastModifiedBy("OBELIX");
 //        projectContractor.setLastModifiedBy(userPrincipal.getUsername());

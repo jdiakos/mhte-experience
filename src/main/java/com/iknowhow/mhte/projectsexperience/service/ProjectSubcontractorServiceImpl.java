@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -71,18 +72,10 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_SUBCONTRACTOR_NOT_FOUND)
         );
 
-        if (dto.getParticipationType() != null) {
-            projectSubcontractor.setParticipationType(dto.getParticipationType());
-        }
-        if (dto.getContractValue() != null) {
-            projectSubcontractor.setContractValue(dto.getContractValue());
-        }
-        if (dto.getContractDateFrom() != null) {
-            projectSubcontractor.setContractDateFrom(dto.getContractDateFrom());
-        }
-        if (dto.getContractDateTo() != null) {
-            projectSubcontractor.setContractDateTo(dto.getContractDateTo());
-        }
+        Optional.ofNullable(dto.getParticipationType()).ifPresent(projectSubcontractor::setParticipationType);
+        Optional.ofNullable(dto.getContractValue()).ifPresent(projectSubcontractor::setContractValue);
+        Optional.ofNullable(dto.getContractDateFrom()).ifPresent(projectSubcontractor::setContractDateFrom);
+        Optional.ofNullable(dto.getContractDateTo()).ifPresent(projectSubcontractor::setContractDateTo);
 
         // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
         projectSubcontractor.setLastModifiedBy("OBELIX");
