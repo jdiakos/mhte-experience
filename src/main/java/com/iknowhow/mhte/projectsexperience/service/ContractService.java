@@ -13,9 +13,9 @@ import java.util.List;
 
 public interface ContractService {
 
-    void createNewContract(ContractDTO contract, Project project);
+    void createNewContract(ContractDTO contract, Project project, MhteUserPrincipal userPrincipal);
 
-    ContractDTO updateContract(ContractDTO contractDTO);
+    ContractDTO updateContract(ContractDTO contractDTO, MhteUserPrincipal userPrincipal);
 
     ContractDTO deleteContract(Long id);
 

@@ -30,7 +30,8 @@ public class ContractController {
 
     @PostMapping(value= "/save-file")
     public ResponseEntity<String> uploadFile(@RequestPart("contract") ContractDTO contract,
-                                             @RequestPart("file") MultipartFile document, @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
+                                             @RequestPart("file") MultipartFile document,
+                                             @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
         //@TODO - CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
         contractService.uploadFile(contract, document, "test_user");
         //contractService.uploadFile(contract, document, userPrincipal.getUsername());
@@ -38,9 +39,10 @@ public class ContractController {
     }
 
     @PutMapping(value="/update-contract")
-    public ResponseEntity<ContractDTO> updateContract(@RequestBody ContractDTO contract){
+    public ResponseEntity<ContractDTO> updateContract(@RequestBody ContractDTO contract,
+                                                      @AuthenticationPrincipal MhteUserPrincipal userPrincipal){
         logger.info("Update contract with id: " + contract.getId());
-        ContractDTO response = contractService.updateContract(contract);
+        ContractDTO response = contractService.updateContract(contract, userPrincipal);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

@@ -126,7 +126,7 @@ public class ProjectServiceImpl implements ProjectService {
         // @TODO - SAVE FILES
         List<ContractDTO> contractDTOs = dto.getContracts();
         contractDTOs.forEach(contractDTO ->
-                contractService.createNewContract(contractDTO, project)
+                contractService.createNewContract(contractDTO, project, userPrincipal)
         );
         logger.info("CONTRACTS ADDED");
 

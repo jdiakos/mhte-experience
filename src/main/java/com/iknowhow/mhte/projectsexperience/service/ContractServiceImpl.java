@@ -50,7 +50,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     @Transactional
-    public void createNewContract(ContractDTO dto, Project project) {
+    public void createNewContract(ContractDTO dto, Project project, MhteUserPrincipal userPrincipal) {
         if (!negativeNumberValidator(dto.getContractValue())) {
             throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
         }
@@ -60,16 +60,18 @@ public class ContractServiceImpl implements ContractService {
         contract.setContractValue(dto.getContractValue());
         contract.setSigningDate(dto.getSigningDate());
         contract.setProject(project);
+
         contract.setDateCreated(LocalDateTime.now());
         //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
         contract.setLastModifiedBy("JULIUS CAESAR");
+//        contract.setLastModifiedBy(userPrincipal.getUsername());
 
         contractRepository.save(contract);
     }
 
     @Override
     @Transactional
-    public ContractDTO updateContract(ContractDTO contract) {
+    public ContractDTO updateContract(ContractDTO contract, MhteUserPrincipal userPrincipal) {
         if (!negativeNumberValidator(contract.getContractValue())) {
             throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
         }
@@ -83,8 +85,11 @@ public class ContractServiceImpl implements ContractService {
         Project current = (contractExists.getProject() == null) ? null : contractExists.getProject();
         contractExists = modelMapper.map(contract, Contract.class);
         contractExists.setProject(current);
+
         //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
         contractExists.setLastModifiedBy("CLEOPATRA");
+//        contractExists.setLastModifiedBy(userPrincipal.getUsername());
+
         contractRepository.save(contractExists);
         return modelMapper.map(contractExists, ContractDTO.class);
     }
