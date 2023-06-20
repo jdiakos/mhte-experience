@@ -127,7 +127,6 @@ public class ProjectServiceImpl implements ProjectService {
         project.setLastModifiedBy("dude");
 //        project.setLastModifiedBy(userPrincipal.getUsername());
         logger.info("PROJECT ADDED");
-        
         project.setProjectContractors(
                 projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal)
         );

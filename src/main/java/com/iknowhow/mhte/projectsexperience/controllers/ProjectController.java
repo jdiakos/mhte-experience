@@ -88,7 +88,7 @@ public class ProjectController {
 
     @PostMapping(value= "/create-project")
     public ResponseEntity<Void> createProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal, 
-    		@Valid  @RequestBody ProjectMasterDTO dto,
+    		@Valid  @RequestPart ProjectMasterDTO dto,
     		@RequestPart("subcontractorFiles") MultipartFile[] subcontractorFiles,
     		@RequestPart("contractFiles") MultipartFile[] contractFiles,
     		@RequestPart("documents") MultipartFile[] documents) {

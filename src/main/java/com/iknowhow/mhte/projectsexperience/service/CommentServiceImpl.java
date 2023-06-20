@@ -33,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
                     Comment comment = new Comment();
                     comment.setMessage(dto.getMessage());
                     comment.setCreatedAt(LocalDateTime.now());
-                    comment.setCreatedBy(userPrincipal.getUsername());
+                    comment.setCreatedBy("ASTERIX");
 
                     return comment;
                 })

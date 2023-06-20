@@ -24,8 +24,8 @@ public class FileNetServiceImpl implements FileNetService {
 
     Logger logger = LoggerFactory.getLogger(FileNetServiceImpl.class);
 
-    @Value("${app.filenet.folder.root}")
-    private String rootFolder;
+//    @Value("${app.filenet.folder.root}")
+    private String rootFolder = "/mhte";
 
     @Value(("${app.filenet.folder.root.subcontractors}"))
     private String subcontractorFolder;
@@ -59,14 +59,14 @@ public class FileNetServiceImpl implements FileNetService {
             document.set_ContentElements(ctList);
 
             document.checkin(AutoClassify.DO_NOT_AUTO_CLASSIFY, CheckinType.MAJOR_VERSION);
-            document.save(RefreshMode.NO_REFRESH);
+            document.save(RefreshMode.REFRESH);
 
             // ASSIGN TO FOLDER - IF FOLDER DOES NOT EXIST, CREATE BASED ON PROJECT ADAM
             Folder folder = fetchFolder(objectStore, project.getAdam());
             ReferentialContainmentRelationship rcr = folder.file(
                     document, AutoUniqueName.AUTO_UNIQUE, "TEST", DefineSecurityParentage.DO_NOT_DEFINE_SECURITY_PARENTAGE
             );
-            rcr.save(RefreshMode.NO_REFRESH);
+            rcr.save(RefreshMode.REFRESH);
 
             return document.get_Id().toString();
         } catch (Exception e) {

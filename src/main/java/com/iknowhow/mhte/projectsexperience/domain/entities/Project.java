@@ -62,23 +62,23 @@ public class Project implements Serializable {
     @NotAudited
     private String headAuthority;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @NotAudited
     private List<ProjectContractor> projectContractors;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @NotAudited
     private List<ProjectSubcontractor> projectSubcontractors;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @NotAudited
     private List<Contract> contracts;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @NotAudited
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @NotAudited
     private List<ProjectDocument> projectDocuments;
 
