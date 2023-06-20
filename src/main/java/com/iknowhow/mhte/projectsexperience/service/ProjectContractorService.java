@@ -22,10 +22,13 @@ public interface ProjectContractorService {
 
     void updateProjectContractor(Long id, UpdateProjectContractorDTO dto, MhteUserPrincipal userPrincipal);
 
-    List<ProjectContractor> assignContractorsToProject(List<ProjectContractorDTO> dtoList,
-                                    Project project,
-                                    MhteUserPrincipal userPrincipal);
+//    List<ProjectContractor> assignContractorsToProject(List<ProjectContractorDTO> dtoList,
+//                                    Project project,
+//                                    MhteUserPrincipal userPrincipal);
 
     void removeContractorFromProject(Long id);
+
+	List<ProjectContractor> assignContractorsToProject(List<ProjectContractorDTO> dtoList, Project project,
+			MhteUserPrincipal userPrincipal);
 
 }

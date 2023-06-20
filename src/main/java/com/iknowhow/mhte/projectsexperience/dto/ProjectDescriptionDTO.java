@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class ProjectDescriptionDTO {
 
+	private Long id;
     private ProjectsCategoryEnum projectCategory;
     private String adam;
     private String protocolNumber;

@@ -96,10 +96,15 @@ public class ProjectController {
     	projectService.createProject(userPrincipal, dto, subcontractorFiles, contractFiles, documents);
         return ResponseEntity.ok().build();
     }
-
-    @PutMapping(value = "/update-project")
-    public ResponseEntity<ProjectResponseDTO> updateProject(@RequestBody CUDProjectDTO project){
-    	return ResponseEntity.status(HttpStatus.OK).body(projectService.updateProject(project));
+    
+    @PutMapping(value= "/update-project")
+    public ResponseEntity<Void> updateProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal, 
+    		@Valid  @RequestPart ProjectMasterDTO dto,
+    		@RequestPart("subcontractorFiles") MultipartFile[] subcontractorFiles,
+    		@RequestPart("contractFiles") MultipartFile[] contractFiles,
+    		@RequestPart("documents") MultipartFile[] documents) {
+    	projectService.createProject(userPrincipal, dto, subcontractorFiles, contractFiles, documents);
+        return ResponseEntity.ok().build();
     }
     
     @DeleteMapping(value = "/project/{id}")

@@ -24,8 +24,8 @@ public class FileNetServiceImpl implements FileNetService {
 
     Logger logger = LoggerFactory.getLogger(FileNetServiceImpl.class);
 
-    @Value("${app.filenet.folder.root}")
-    private String rootFolder;
+//    @Value("${app.filenet.folder.root}")
+    private String rootFolder = "/mhte";
 
     @Value(("${app.filenet.folder.root.subcontractors}"))
     private String subcontractorFolder;

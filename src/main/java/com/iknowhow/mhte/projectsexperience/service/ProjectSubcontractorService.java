@@ -23,11 +23,9 @@ public interface ProjectSubcontractorService {
 
     void updateProjectSubcontractor(Long id, UpdateProjectSubcontractorDTO dto, MhteUserPrincipal userPrincipal);
 
-    List<ProjectSubcontractor> assignSubcontractorsToProject(List<ProjectSubcontractorDTO> dtoList,
-    								MultipartFile[] subcontractorFiles,
-                                    Project project,
-                                    MhteUserPrincipal userPrincipal);
-
     void removeSubcontractorFromProject(Long id);
+    
+	List<ProjectSubcontractor> assignSubcontractorsToProject(List<ProjectSubcontractorDTO> dtoList,
+			MultipartFile[] subcontractorFiles, Project project, MhteUserPrincipal userPrincipal);
 
 }

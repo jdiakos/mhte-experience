@@ -100,6 +100,9 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
     	List<ProjectSubcontractor> subcontractors = new ArrayList<>();
     	for (int i=0; i<dtoList.size(); i++) {
     		ProjectSubcontractor subcontractor = new ProjectSubcontractor();
+    		if(dtoList.get(i).getId()!=null) {
+    			subcontractor.setId(dtoList.get(i).getId());
+            }
             subcontractor.setSubcontractorId(dtoList.get(i).getSubcontractorId());
             subcontractor.setProject(project);
             subcontractor.setContractValue(dtoList.get(i).getContractValue());

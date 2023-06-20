@@ -11,9 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
+import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.entities.QProject;
 import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
+import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectSubcontractorRepository;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectCustomValidationException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
@@ -22,6 +24,7 @@ import com.querydsl.core.BooleanBuilder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,6 +38,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ContractService contractService;
     private final ProjectContractorService projectContractorService;
     private final ProjectSubcontractorService projectSubcontractorService;
+    private final ProjectSubcontractorRepository subcontractorRepo;
     private final CommentService commentService;
     private final ProjectDocumentService projectDocumentService;
 
@@ -46,7 +50,8 @@ public class ProjectServiceImpl implements ProjectService {
                               ProjectContractorService projectContractorService,
                               ProjectSubcontractorService projectSubcontractorService,
                               CommentService commentService,
-                              ProjectDocumentService projectDocumentService) {
+                              ProjectDocumentService projectDocumentService,
+                              ProjectSubcontractorRepository subcontractorRepo) {
         this.projectRepo = projectRepo;
         this.utils = utils;
         this.contractService = contractService;
@@ -54,6 +59,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectSubcontractorService = projectSubcontractorService;
         this.commentService = commentService;
         this.projectDocumentService = projectDocumentService;
+        this.subcontractorRepo = subcontractorRepo;
     }
     
     @Override
@@ -117,67 +123,82 @@ public class ProjectServiceImpl implements ProjectService {
     public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
     	
+    	Project project;
         validateProjectNegativeValues(dto.getFinancialElements());
         validateTotalProjectContractorPercentages(dto);
-        validateDuplicateProjectContractor(dto);
-        validateDuplicateProjectSubcontractor(dto);
+        if(dto.getProjectDescription().getId() != null) {
+        	project = projectRepo.findById(dto.getProjectDescription().getId()).orElseThrow(() ->
+        		new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
+        } else {
+            project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
+            project.setDateCreated(LocalDateTime.now());
+            validateDuplicateProjectContractor(dto);
+            validateDuplicateProjectSubcontractor(dto);
+        }
         validateContractNegativeValues(dto);
-
-        Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
+        
         utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
-        project.setDateCreated(LocalDateTime.now());
-        //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
         project.setLastModifiedBy("dude");
-//        project.setLastModifiedBy(userPrincipal.getUsername());
-        logger.info("PROJECT ADDED");
+//      project.setLastModifiedBy(userPrincipal.getUsername());
         project.setProjectContractors(
                 projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal)
         );
-        logger.info("PROJECT CONTRACTORS ADDED");
-
         project.setProjectSubcontractors(
                 projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles,
         		project, userPrincipal)
         );
-        logger.info("PROJECT SUBCONTRACTORS ADDED");
         project.setContracts(
                 contractService.createContracts(dto.getContracts(), contractFiles, project, userPrincipal)
         );
-        logger.info("CONTRACTS ADDED");
-
         project.setComments(
                 commentService.createComments(dto.getProjectComments(), project, userPrincipal)
         );
-        logger.info("COMMENTS ADDED");
-
         project.setProjectDocuments(
                 projectDocumentService.createDocuments(documents, project, userPrincipal)
         );
-        logger.info("DOCUMENTS ADDED");
-
         projectRepo.save(project);
     }
 
     @Override
-    public ProjectResponseDTO updateProject(CUDProjectDTO dto) {
-    	logger.info("update project service");
-
-    	ModelMapper loose = utils.initModelMapperLoose();
-    	if(!validateProject(dto)) {
-    		throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
-    	}
-        Project projectExists = projectRepo.findByAdam(dto.getAdam()).orElseThrow(()->
-        	new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
-        );
+    public void updateProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
+    		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
+    	
+    	Project project = projectRepo.findById(dto.getProjectDescription().getId()).orElseThrow(() ->
+        new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
+    	
+        validateProjectNegativeValues(dto.getFinancialElements());
+        validateTotalProjectContractorPercentages(dto);
+        validateContractNegativeValues(dto);
         
-        Long id = projectExists.getId();
-        projectExists = loose.map(dto, Project.class);
-        projectExists.setId(id);
-        //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-        projectExists.setLastModifiedBy("dude");
-        projectRepo.save(projectExists);
-        ProjectResponseDTO response = loose.map(projectExists, ProjectResponseDTO.class);
-        return response;
+        List<Long> oldIds = project.getProjectSubcontractors().
+        		stream().
+        		map(ProjectSubcontractor::getId).toList();
+        List<Long> newIds = dto.getProjectSubcontractors().
+        		stream().
+        		filter(s -> s.getId() != null).
+        		map(ProjectSubcontractorDTO::getId).toList();
+        List<Long> differences = oldIds.stream()
+                .filter(element -> !newIds.contains(element))
+                .collect(Collectors.toList());
+        utils.initModelMapperStrict().map(dto.getProjectDescription(), project);
+        utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
+        subcontractorRepo.deleteAllById(differences);
+        project.setLastModifiedBy("dude");
+//      project.setLastModifiedBy(userPrincipal.getUsername());
+        project.setProjectContractors(
+                projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal)
+        );
+        project.setProjectSubcontractors(
+                projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles,
+        		project, userPrincipal)
+        );
+        project.setContracts(
+                contractService.createContracts(dto.getContracts(), contractFiles, project, userPrincipal)
+        );
+        project.setComments(
+                commentService.createComments(dto.getProjectComments(), project, userPrincipal)
+        );
+        projectRepo.save(project);
     }
 
     @Override
@@ -221,18 +242,6 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepo.findAll(booleanBuilder, pageable)
                 .map(project -> modelMapper.map(project, ProjectResponseDTO.class));
     }
-    
-    private boolean validateProject(CUDProjectDTO dto) {
-    	if(dto.getInitialContractBudget() > 0 &&
-    			dto.getInitialContractValue() > 0 &&
-    			dto.getSupplementaryContractValue() > 0 &&
-    			dto.getApeValue() > 0 &&
-    			dto.getTotalValue() > 0) {
-    		return true;
-    	}
-    	return false;
-    }
-
 
     private void validateProjectNegativeValues(ProjectFinancialElementsDTO dto) {
         if (dto.getInitialContractBudget() < 0 &&

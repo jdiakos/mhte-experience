@@ -24,9 +24,7 @@ public interface ProjectService {
     		MultipartFile[] subcontractorFiles,
     		MultipartFile[] contractFiles,
     		MultipartFile[] documents);
-	
-	ProjectResponseDTO updateProject(CUDProjectDTO dto);
-	
+		
 	CUDProjectDTO deleteProject(Long id);
 	
 	ProjectResponseDTO getProjectByContractId(Long id);
@@ -38,5 +36,8 @@ public interface ProjectService {
 	Page<ProjectResponseDTO> getProjectByResponsibleEntity(String entity, Pageable page);
 	
 	Page<ProjectResponseDTO> search(ProjectSearchDTO dto, Pageable pageable);
+
+	void updateProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto, MultipartFile[] subcontractorFiles,
+			MultipartFile[] contractFiles, MultipartFile[] documents);
 
 }

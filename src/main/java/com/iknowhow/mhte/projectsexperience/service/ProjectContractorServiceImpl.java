@@ -65,6 +65,9 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                 .map(dto -> {
 
                     ProjectContractor contractor = new ProjectContractor();
+                    if(dto.getId()!=null) {
+                        contractor.setId(dto.getId());
+                    }
                     contractor.setContractorId(dto.getContractorId());
                     contractor.setProject(project);
                     contractor.setParticipationType(dto.getParticipationType());
