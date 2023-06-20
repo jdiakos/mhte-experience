@@ -10,4 +10,4 @@ data:
   spring.jpa.hibernate.ddl-auto: "none"
   spring.jpa.properties.hibernate.default_schema: "mhte_projects_experience"
   hibernate.default_schema: "mhte_projects_experience"
-  spring.liquibase.enabled: "true"
+  spring.liquibase.enabled: "false"

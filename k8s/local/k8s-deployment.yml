@@ -42,6 +42,38 @@ spec:
                 name: mhte-config
                 key: app.taxis.jwt.expiresSec
 
+          # Filenet Global configuration
+          - name: APP_FILENET_URL
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-config
+                key: app.filenet.url
+          - name: APP_FILENET_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-config
+                key: app.filenet.username
+          - name: APP_FILENET_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-config
+                key: app.filenet.password
+          - name: APP_FILENET_OBJECT_STORE
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-config
+                key: app.filenet.objectStore.name
+          - name: APP_FILENET_FOLDER_ROOT
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-config
+                key: app.filenet.folder.root
+          - name: APP_FILENET_FOLDER_ROOT_SUBCONTRACTORS
+            valueFrom:
+              configMapKeyRef:
+                name: mhte-config
+                key: app.filenet.folder.root.subcontractors
+
           # Mhte Projects Config
           - name: APP_PROJECTS_DB_URL
             valueFrom:
