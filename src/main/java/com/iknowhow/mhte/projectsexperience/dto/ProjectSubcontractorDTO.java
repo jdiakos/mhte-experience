@@ -20,7 +20,7 @@ public class ProjectSubcontractorDTO {
     private LocalDate contractDateFrom;
     @NotNull
     private LocalDate contractDateTo;
-//    @NotBlank
-//    private String contractGUID;
+
+    private String contractGUID;
 
 }

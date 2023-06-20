@@ -20,7 +20,7 @@ import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundExcept
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
 import com.querydsl.core.BooleanBuilder;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -111,38 +111,37 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public void createProject(ProjectMasterDTO dto, MhteUserPrincipal userPrincipal) {
 
+    public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto, 
+    		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
+    	
         validateProjectNegativeValues(dto.getFinancialElements());
         validateTotalProjectContractorPercentages(dto);
         validateDuplicateProjectContractor(dto);
         validateDuplicateProjectSubcontractor(dto);
         validateContractNegativeValues(dto);
 
-
         Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
         utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
-
         project.setDateCreated(LocalDateTime.now());
         //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
         project.setLastModifiedBy("dude");
 //        project.setLastModifiedBy(userPrincipal.getUsername());
-
-        projectRepo.save(project);
         logger.info("PROJECT ADDED");
-
-        projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal);
+        
+        project.setProjectContractors(projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal));
         logger.info("PROJECT CONTRACTORS ADDED");
 
         // @TODO - SAVE FILES
-        projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), project, userPrincipal);
+        project.setProjectSubcontractors(projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles, 
+        		project, userPrincipal));
         logger.info("PROJECT SUBCONTRACTORS ADDED");
-
         // @TODO - SAVE FILES
         contractService.createContracts(dto.getContracts(), project, userPrincipal);
         logger.info("CONTRACTS ADDED");
-
+        
         commentService.postComment(dto.getProjectComments(), project, userPrincipal);
+        projectRepo.save(project);
     }
 
     @Override

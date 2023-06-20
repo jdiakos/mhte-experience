@@ -16,9 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,10 +30,13 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 
     private final ProjectSubcontractorRepository subcontractorRepository;
     private final ProjectRepository projectRepository;
+    private final FileNetService fileNetService;
 
     @Autowired
     public ProjectSubcontractorServiceImpl(ProjectSubcontractorRepository subcontractorRepository,
-                                           ProjectRepository projectRepository) {
+                                           ProjectRepository projectRepository,
+                                           FileNetService fileNetService) {
+    	this.fileNetService = fileNetService;
         this.subcontractorRepository = subcontractorRepository;
         this.projectRepository = projectRepository;
     }
@@ -87,34 +92,28 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 
     @Override
     @Transactional
-    public void assignSubcontractorsToProject(List<ProjectSubcontractorDTO> dtoList,
-                                              Project project,
-                                              MhteUserPrincipal userPrincipal) {
-
-        List<ProjectSubcontractor> subcontractors = dtoList
-                .stream()
-                .map(dto -> {
-
-                    ProjectSubcontractor subcontractor = new ProjectSubcontractor();
-                    subcontractor.setSubcontractorId(dto.getSubcontractorId());
-                    subcontractor.setProject(project);
-                    subcontractor.setContractValue(dto.getContractValue());
-                    subcontractor.setParticipationType(dto.getParticipationType());
-                    subcontractor.setContractDateFrom(dto.getContractDateFrom());
-                    subcontractor.setContractDateTo(dto.getContractDateTo());
-//                    subcontractor.setContractGUID(dto.getContractGUID());
-
-                    subcontractor.setDateCreated(LocalDateTime.now());
-//                    // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
-                    subcontractor.setLastModifiedBy("ASTERIX");
-//                    subcontractor.setLastModifiedBy(userPrincipal.getUsername());
-
-                    return subcontractor;
-                })
-                .toList();
-
-        subcontractorRepository.saveAll(subcontractors);
-
+    public List<ProjectSubcontractor> assignSubcontractorsToProject(List<ProjectSubcontractorDTO> dtoList, MultipartFile[] subcontractorFiles, 
+    		Project project, MhteUserPrincipal userPrincipal) {
+    	
+    	List<ProjectSubcontractor> subcontractors = new ArrayList<>();
+    	for(int i=0; i<dtoList.size(); i++) {
+    		ProjectSubcontractor subcontractor = new ProjectSubcontractor();
+            subcontractor.setSubcontractorId(dtoList.get(i).getSubcontractorId());
+            subcontractor.setProject(project);
+            subcontractor.setContractValue(dtoList.get(i).getContractValue());
+            subcontractor.setParticipationType(dtoList.get(i).getParticipationType());
+            subcontractor.setContractDateFrom(dtoList.get(i).getContractDateFrom());
+            subcontractor.setContractDateTo(dtoList.get(i).getContractDateTo());
+            subcontractor.setDateCreated(LocalDateTime.now());
+            subcontractor.setLastModifiedBy("ASTERIX");
+            if(dtoList.get(i).getContractGUID()!=null) {
+            	subcontractor.setContractGUID(dtoList.get(i).getContractGUID());
+            } else {
+            	subcontractor.setContractGUID(fileNetService.uploadFileToFilenet(project, subcontractorFiles[i], "ASTERIX"));
+            }
+            subcontractors.add(subcontractor);
+    	}
+        return subcontractors;
     }
 
     @Override
@@ -154,4 +153,5 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
             throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
         }
     }
+    
 }

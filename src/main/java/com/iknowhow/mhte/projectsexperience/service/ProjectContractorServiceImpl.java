@@ -56,7 +56,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
 
     @Override
     @Transactional
-    public void assignContractorsToProject(List<ProjectContractorDTO> dtoList,
+    public List<ProjectContractor> assignContractorsToProject(List<ProjectContractorDTO> dtoList,
                                            Project project,
                                            MhteUserPrincipal userPrincipal) {
 
@@ -78,7 +78,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                 })
                 .toList();
 
-        contractorRepository.saveAll(contractors);
+        return contractors;
 
     }
 
