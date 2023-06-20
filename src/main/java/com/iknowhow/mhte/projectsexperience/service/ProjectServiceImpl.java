@@ -110,14 +110,14 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     public void createProject(ProjectMasterDTO dto, MhteUserPrincipal userPrincipal) {
 
-        validateProjectNegativeValues(dto);
+        validateProjectNegativeValues(dto.getFinancialElements());
         validateTotalProjectContractorPercentages(dto);
         validateDuplicateProjectContractor(dto);
         validateDuplicateProjectSubcontractor(dto);
         validateContractNegativeValues(dto);
 
 
-        Project project = utils.initModelMapperStrict().map(dto, Project.class);
+        Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
 
         project.setDateCreated(LocalDateTime.now());
         //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
@@ -216,7 +216,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
-    private void validateProjectNegativeValues(ProjectMasterDTO dto) {
+    private void validateProjectNegativeValues(ProjectFinancialElementsDTO dto) {
         if (dto.getInitialContractBudget() < 0 &&
                 dto.getInitialContractValue() < 0 &&
                 dto.getSupplementaryContractValue() < 0 &&
