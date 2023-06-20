@@ -92,11 +92,13 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 
     @Override
     @Transactional
-    public List<ProjectSubcontractor> assignSubcontractorsToProject(List<ProjectSubcontractorDTO> dtoList, MultipartFile[] subcontractorFiles, 
-    		Project project, MhteUserPrincipal userPrincipal) {
+    public List<ProjectSubcontractor> assignSubcontractorsToProject(List<ProjectSubcontractorDTO> dtoList,
+                                                                    MultipartFile[] subcontractorFiles,
+                                                                    Project project,
+                                                                    MhteUserPrincipal userPrincipal) {
     	
     	List<ProjectSubcontractor> subcontractors = new ArrayList<>();
-    	for(int i=0; i<dtoList.size(); i++) {
+    	for (int i=0; i<dtoList.size(); i++) {
     		ProjectSubcontractor subcontractor = new ProjectSubcontractor();
             subcontractor.setSubcontractorId(dtoList.get(i).getSubcontractorId());
             subcontractor.setProject(project);
@@ -106,10 +108,14 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
             subcontractor.setContractDateTo(dtoList.get(i).getContractDateTo());
             subcontractor.setDateCreated(LocalDateTime.now());
             subcontractor.setLastModifiedBy("ASTERIX");
-            if(dtoList.get(i).getContractGUID()!=null) {
+            if (dtoList.get(i).getContractGUID() != null) {
             	subcontractor.setContractGUID(dtoList.get(i).getContractGUID());
+                subcontractor.setContractFilename(subcontractorFiles[i].getOriginalFilename());
             } else {
-            	subcontractor.setContractGUID(fileNetService.uploadFileToFilenet(project, subcontractorFiles[i], "ASTERIX"));
+            	subcontractor.setContractGUID(
+                        fileNetService.uploadFileToFilenet(project, subcontractorFiles[i], "ASTERIX")
+                );
+                subcontractor.setContractFilename(subcontractorFiles[i].getOriginalFilename());
             }
             subcontractors.add(subcontractor);
     	}

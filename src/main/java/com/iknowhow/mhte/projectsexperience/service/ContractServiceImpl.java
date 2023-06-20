@@ -71,10 +71,12 @@ public class ContractServiceImpl implements ContractService {
 
             if (dtoList.get(i).getContractGUID() != null) {
                 contract.setContractGUID(dtoList.get(i).getContractGUID());
+                contract.setFilename(contractFiles[i].getOriginalFilename());
             } else {
                 contract.setContractGUID(
                         fileNetService.uploadFileToFilenet(project, contractFiles[i], "ASTERIX")
                 );
+                contract.setFilename(contractFiles[i].getOriginalFilename());
             }
             contracts.add(contract);
 

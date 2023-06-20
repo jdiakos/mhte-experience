@@ -49,8 +49,10 @@ public class ProjectSubcontractor implements Serializable {
     private LocalDate contractDateTo;
 
     @Column(name = "contract_guid", nullable = false, updatable = false)
-    @NotAudited
     private String contractGUID;
+
+    @Column(name = "contract_filename")
+    private String contractFilename;
 
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)

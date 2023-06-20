@@ -30,6 +30,9 @@ public class ProjectDocument implements Serializable {
     @Column(name = "guid")
     private String guid;
 
+    @Column(name = "filename")
+    private String filename;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     @NotAudited

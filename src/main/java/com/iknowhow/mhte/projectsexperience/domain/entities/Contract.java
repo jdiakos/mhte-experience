@@ -49,6 +49,9 @@ public class Contract implements Serializable {
     @Column(name = "contract_guid")
     private String contractGUID;
 
+    @Column(name = "filename")
+    private String filename;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     @NotAudited

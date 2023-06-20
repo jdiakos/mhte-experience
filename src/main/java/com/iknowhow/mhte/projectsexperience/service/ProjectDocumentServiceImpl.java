@@ -40,6 +40,7 @@ public class ProjectDocumentServiceImpl implements ProjectDocumentService {
             document.setLastModifiedBy("ASTERIX");
 //            document.setLastModifiedBy(userPrincipal.getUsername());
             document.setGuid(fileNetService.uploadFileToFilenet(project, multipartFile, "ASTERIX"));
+            document.setFilename(multipartFile.getOriginalFilename());
 
             projectDocuments.add(document);
         }
