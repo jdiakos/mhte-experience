@@ -86,7 +86,7 @@ public class ProjectController {
     // @TODO -- DON'T FORGET TO ADD THE FILE UPLOADS!!!!
     @PostMapping("/create-project")
     public ResponseEntity<Void> createProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal,
-                                              @Valid  @RequestBody ProjectMasterDTO dto) {
+                                              @Valid @RequestBody ProjectMasterDTO dto) {
         projectService.createProject(dto, userPrincipal);
 
         return ResponseEntity.ok().build();

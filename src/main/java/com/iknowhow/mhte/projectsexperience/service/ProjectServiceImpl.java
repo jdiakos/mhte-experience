@@ -2,6 +2,7 @@ package com.iknowhow.mhte.projectsexperience.service;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.*;
+import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsAlreadyAssignedException;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,8 @@ import com.querydsl.core.BooleanBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -106,9 +109,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public void createProject(ProjectMasterDTO dto, MhteUserPrincipal userPrincipal) {
-//        if(!validateProject(dto)) {
-//            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
-//        }
+
+        validateProjectNegativeValues(dto);
+        validateTotalProjectContractorPercentages(dto);
+        validateDuplicateProjectContractor(dto);
+        validateDuplicateProjectSubcontractor(dto);
+        validateContractNegativeValues(dto);
+
 
         Project project = utils.initModelMapperStrict().map(dto, Project.class);
 
@@ -206,5 +213,54 @@ public class ProjectServiceImpl implements ProjectService {
     		return true;
     	}
     	return false;
+    }
+
+
+    private void validateProjectNegativeValues(ProjectMasterDTO dto) {
+        if (dto.getInitialContractBudget() < 0 &&
+                dto.getInitialContractValue() < 0 &&
+                dto.getSupplementaryContractValue() < 0 &&
+                dto.getApeValue() < 0 &&
+                dto.getTotalValue() < 0) {
+            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+        }
+    }
+
+    private void validateTotalProjectContractorPercentages(ProjectMasterDTO dto) {
+        if (dto.getProjectContractors()
+                .stream()
+                .mapToDouble(ProjectContractorDTO::getParticipationPercentage)
+                .sum() > 100) {
+            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.TOTAL_PERCENTAGE_EXCEEDS_MAX);
+        }
+    }
+
+    private void validateDuplicateProjectContractor(ProjectMasterDTO dto) {
+        Set<Long> uniqueContractors = dto.getProjectContractors()
+                .stream()
+                .map(ProjectContractorDTO::getContractorId)
+                .collect(Collectors.toSet());
+
+        if (dto.getProjectContractors().size() != uniqueContractors.size()) {
+            throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
+        }
+    }
+
+    private void validateDuplicateProjectSubcontractor(ProjectMasterDTO dto) {
+        Set<Long> uniqueSubcontractors = dto.getProjectSubcontractors()
+                .stream()
+                .map(ProjectSubcontractorDTO::getSubcontractorId)
+                .collect(Collectors.toSet());
+        if (dto.getProjectSubcontractors().size() != uniqueSubcontractors.size()) {
+            throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
+        }
+    }
+
+    private void validateContractNegativeValues(ProjectMasterDTO dto) {
+        dto.getContracts().forEach(contract -> {
+            if (contract.getContractValue() < 0) {
+                throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+            }
+        });
     }
 }

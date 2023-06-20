@@ -63,8 +63,6 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         List<ProjectContractor> contractors = dtoList
                 .stream()
                 .map(dto -> {
-//                    validateAlreadyAssignedContractor(project.getProjectContractors(), dto);
-//                    validateProjectParticipationPercentages(project, dto.getParticipationPercentage());
 
                     ProjectContractor contractor = new ProjectContractor();
                     contractor.setContractorId(dto.getContractorId());

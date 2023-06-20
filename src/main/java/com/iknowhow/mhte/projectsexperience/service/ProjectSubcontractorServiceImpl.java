@@ -94,7 +94,6 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         List<ProjectSubcontractor> subcontractors = dtoList
                 .stream()
                 .map(dto -> {
-//                    validateAlreadyAssignedSubcontractor(project.getProjectSubcontractors(), dto);
 
                     ProjectSubcontractor subcontractor = new ProjectSubcontractor();
                     subcontractor.setSubcontractorId(dto.getSubcontractorId());
