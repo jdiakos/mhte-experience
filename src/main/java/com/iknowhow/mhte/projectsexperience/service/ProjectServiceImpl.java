@@ -36,6 +36,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectContractorService projectContractorService;
     private final ProjectSubcontractorService projectSubcontractorService;
     private final CommentService commentService;
+    private final ProjectDocumentService projectDocumentService;
 
 
     @Autowired
@@ -44,13 +45,15 @@ public class ProjectServiceImpl implements ProjectService {
                               ContractService contractService,
                               ProjectContractorService projectContractorService,
                               ProjectSubcontractorService projectSubcontractorService,
-                              CommentService commentService) {
+                              CommentService commentService,
+                              ProjectDocumentService projectDocumentService) {
         this.projectRepo = projectRepo;
         this.utils = utils;
         this.contractService = contractService;
         this.projectContractorService = projectContractorService;
         this.projectSubcontractorService = projectSubcontractorService;
         this.commentService = commentService;
+        this.projectDocumentService = projectDocumentService;
     }
     
     @Override
@@ -132,13 +135,11 @@ public class ProjectServiceImpl implements ProjectService {
         );
         logger.info("PROJECT CONTRACTORS ADDED");
 
-        // @TODO - SAVE FILES
         project.setProjectSubcontractors(
                 projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles,
         		project, userPrincipal)
         );
         logger.info("PROJECT SUBCONTRACTORS ADDED");
-        // @TODO - SAVE FILES
         project.setContracts(
                 contractService.createContracts(dto.getContracts(), contractFiles, project, userPrincipal)
         );
@@ -147,6 +148,13 @@ public class ProjectServiceImpl implements ProjectService {
         project.setComments(
                 commentService.createComments(dto.getProjectComments(), project, userPrincipal)
         );
+        logger.info("COMMENTS ADDED");
+
+        project.setProjectDocuments(
+                projectDocumentService.createDocuments(documents, project, userPrincipal)
+        );
+        logger.info("DOCUMENTS ADDED");
+
         projectRepo.save(project);
     }
 
