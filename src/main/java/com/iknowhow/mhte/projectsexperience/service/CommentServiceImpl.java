@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -21,13 +23,20 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void postComment(ProjectCommentsDTO dto, Project project, MhteUserPrincipal userPrincipal) {
-        Comment comment = new Comment();
-        comment.setMessage(dto.getMessage());
-        comment.setCreatedAt(LocalDateTime.now());
-        comment.setCreatedBy(userPrincipal.getUsername());
-        comment.setProject(project);
+    public List<Comment> createComments(List<ProjectCommentsDTO> dtoList,
+                                        Project project,
+                                        MhteUserPrincipal userPrincipal) {
 
-        commentRepository.save(comment);
+        return dtoList
+                .stream()
+                .map(dto -> {
+                    Comment comment = new Comment();
+                    comment.setMessage(dto.getMessage());
+                    comment.setCreatedAt(LocalDateTime.now());
+                    comment.setCreatedBy(userPrincipal.getUsername());
+
+                    return comment;
+                })
+                .toList();
     }
 }

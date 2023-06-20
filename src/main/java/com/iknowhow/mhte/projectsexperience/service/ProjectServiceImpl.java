@@ -144,8 +144,10 @@ public class ProjectServiceImpl implements ProjectService {
                 contractService.createContracts(dto.getContracts(), contractFiles, project, userPrincipal)
         );
         logger.info("CONTRACTS ADDED");
-        
-        commentService.postComment(dto.getProjectComments(), project, userPrincipal);
+
+        project.setComments(
+                commentService.createComments(dto.getProjectComments(), project, userPrincipal)
+        );
         projectRepo.save(project);
     }
 
