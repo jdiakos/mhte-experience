@@ -31,6 +31,10 @@ public class Comment implements Serializable {
     @Column(name = "role")
     private String role;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", referencedColumnName = "id")
+    private Project project;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

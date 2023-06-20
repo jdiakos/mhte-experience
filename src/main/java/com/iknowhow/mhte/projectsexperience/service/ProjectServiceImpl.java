@@ -35,6 +35,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ContractService contractService;
     private final ProjectContractorService projectContractorService;
     private final ProjectSubcontractorService projectSubcontractorService;
+    private final CommentService commentService;
 
 
     @Autowired
@@ -42,12 +43,14 @@ public class ProjectServiceImpl implements ProjectService {
                               Utils utils,
                               ContractService contractService,
                               ProjectContractorService projectContractorService,
-                              ProjectSubcontractorService projectSubcontractorService) {
+                              ProjectSubcontractorService projectSubcontractorService,
+                              CommentService commentService) {
         this.projectRepo = projectRepo;
         this.utils = utils;
         this.contractService = contractService;
         this.projectContractorService = projectContractorService;
         this.projectSubcontractorService = projectSubcontractorService;
+        this.commentService = commentService;
     }
     
     @Override
@@ -118,6 +121,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 
         Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
+        utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
 
         project.setDateCreated(LocalDateTime.now());
         //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
@@ -138,6 +142,7 @@ public class ProjectServiceImpl implements ProjectService {
         contractService.createContracts(dto.getContracts(), project, userPrincipal);
         logger.info("CONTRACTS ADDED");
 
+        commentService.postComment(dto.getProjectComments(), project, userPrincipal);
     }
 
     @Override

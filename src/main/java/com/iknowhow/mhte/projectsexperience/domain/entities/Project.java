@@ -74,6 +74,10 @@ public class Project implements Serializable {
     @NotAudited
     private List<Contract> contracts;
 
+    @OneToMany(mappedBy = "project")
+    @NotAudited
+    private List<Comment> comments;
+
     @CreatedDate
     @Column(name = "created_date", updatable = false, nullable = false)
     @NotAudited

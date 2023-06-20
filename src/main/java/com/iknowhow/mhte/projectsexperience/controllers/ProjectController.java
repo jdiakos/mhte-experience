@@ -11,21 +11,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.dto.CUDProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSearchDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/projects")
@@ -86,7 +79,10 @@ public class ProjectController {
     // @TODO -- DON'T FORGET TO ADD THE FILE UPLOADS!!!!
     @PostMapping("/create-project")
     public ResponseEntity<Void> createProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal,
-                                              @Valid @RequestBody ProjectMasterDTO dto) {
+                                              @Valid @RequestPart("project") ProjectMasterDTO dto,
+                                              @RequestPart("contracts") MultipartFile[] contracts,
+                                              @RequestPart("subcontractors") MultipartFile[] subcontractors,
+                                              @RequestPart("documents") MultipartFile[] documents) {
         projectService.createProject(dto, userPrincipal);
 
         return ResponseEntity.ok().build();
