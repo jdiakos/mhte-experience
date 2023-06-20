@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,26 +51,55 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     @Transactional
-    public void createContracts(List<ContractDTO> dtoList, Project project, MhteUserPrincipal userPrincipal) {
+    public List<Contract> createContracts(List<ContractDTO> dtoList,
+                                          MultipartFile[] contractFiles,
+                                          Project project,
+                                          MhteUserPrincipal userPrincipal) {
+        List<Contract> contracts = new ArrayList<>();
 
-        List<Contract> contracts = dtoList
-                .stream()
-                .map(dto -> {
-                    Contract contract = new Contract();
-                    contract.setContractType(dto.getContractType());
-                    contract.setContractValue(dto.getContractValue());
-                    contract.setSigningDate(dto.getSigningDate());
-                    contract.setProject(project);
+        for (int i = 0; i < dtoList.size(); i++) {
+            Contract contract = new Contract();
+            contract.setContractType(dtoList.get(i).getContractType());
+            contract.setContractValue(dtoList.get(i).getContractValue());
+            contract.setSigningDate(dtoList.get(i).getSigningDate());
+            contract.setProject(project);
 
-                    contract.setDateCreated(LocalDateTime.now());
-                    //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-                    contract.setLastModifiedBy("JULIUS CAESAR");
-//                    contract.setLastModifiedBy(userPrincipal.getUsername());
-                    return contract;
-                })
-                .toList();
+            contract.setDateCreated(LocalDateTime.now());
+            //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+            contract.setLastModifiedBy("JULIUS CAESAR");
+//          contract.setLastModifiedBy(userPrincipal.getUsername());
 
-        contractRepository.saveAll(contracts);
+            if (dtoList.get(i).getContractGUID() != null) {
+                contract.setContractGUID(dtoList.get(i).getContractGUID());
+            } else {
+                contract.setContractGUID(
+                        fileNetService.uploadFileToFilenet(project, contractFiles[i], userPrincipal.getUsername())
+                );
+            }
+            contracts.add(contract);
+
+        }
+
+        return contracts;
+
+//        List<Contract> contracts = dtoList
+//                .stream()
+//                .map(dto -> {
+//                    Contract contract = new Contract();
+//                    contract.setContractType(dto.getContractType());
+//                    contract.setContractValue(dto.getContractValue());
+//                    contract.setSigningDate(dto.getSigningDate());
+//                    contract.setProject(project);
+//
+//                    contract.setDateCreated(LocalDateTime.now());
+//                    //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+//                    contract.setLastModifiedBy("JULIUS CAESAR");
+////                    contract.setLastModifiedBy(userPrincipal.getUsername());
+//                    return contract;
+//                })
+//                .toList();
+//
+//        contractRepository.saveAll(contracts);
     }
 
     @Override

@@ -111,8 +111,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-
-    public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto, 
+    public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
     	
         validateProjectNegativeValues(dto.getFinancialElements());
@@ -129,15 +128,21 @@ public class ProjectServiceImpl implements ProjectService {
 //        project.setLastModifiedBy(userPrincipal.getUsername());
         logger.info("PROJECT ADDED");
         
-        project.setProjectContractors(projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal));
+        project.setProjectContractors(
+                projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal)
+        );
         logger.info("PROJECT CONTRACTORS ADDED");
 
         // @TODO - SAVE FILES
-        project.setProjectSubcontractors(projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles, 
-        		project, userPrincipal));
+        project.setProjectSubcontractors(
+                projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles,
+        		project, userPrincipal)
+        );
         logger.info("PROJECT SUBCONTRACTORS ADDED");
         // @TODO - SAVE FILES
-        contractService.createContracts(dto.getContracts(), project, userPrincipal);
+        project.setContracts(
+                contractService.createContracts(dto.getContracts(), contractFiles, project, userPrincipal)
+        );
         logger.info("CONTRACTS ADDED");
         
         commentService.postComment(dto.getProjectComments(), project, userPrincipal);

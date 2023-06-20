@@ -1,6 +1,7 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
+import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
@@ -13,7 +14,10 @@ import java.util.List;
 
 public interface ContractService {
 
-    void createContracts(List<ContractDTO> dtoList, Project project, MhteUserPrincipal userPrincipal);
+    List<Contract> createContracts(List<ContractDTO> dtoList,
+                                   MultipartFile[] contractFiles,
+                                   Project project,
+                                   MhteUserPrincipal userPrincipal);
 
     ContractDTO updateContract(ContractDTO contractDTO, MhteUserPrincipal userPrincipal);
 

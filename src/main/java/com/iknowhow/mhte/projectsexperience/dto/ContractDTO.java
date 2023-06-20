@@ -20,5 +20,6 @@ public class ContractDTO {
     private LocalDate signingDate;
     @NotNull
     private Long projectId;
+    private String contractGUID;
 
 }
