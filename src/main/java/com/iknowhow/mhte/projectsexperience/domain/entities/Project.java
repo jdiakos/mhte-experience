@@ -78,6 +78,10 @@ public class Project implements Serializable {
     @NotAudited
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "project")
+    @NotAudited
+    private List<ProjectDocument> projectDocuments;
+
     @CreatedDate
     @Column(name = "created_date", updatable = false, nullable = false)
     @NotAudited
