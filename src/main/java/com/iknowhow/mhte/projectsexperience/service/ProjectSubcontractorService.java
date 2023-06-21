@@ -21,8 +21,10 @@ public interface ProjectSubcontractorService {
 
     ProjectSubcontractorResponseDTO getSubcontractorOfProject(Long id);
 
+    // @TODO - FOR REMOVAL
     void updateProjectSubcontractor(Long id, UpdateProjectSubcontractorDTO dto, MhteUserPrincipal userPrincipal);
 
+    // @TODO - FOR REMOVAL
     void removeSubcontractorFromProject(Long id);
     
 	List<ProjectSubcontractor> assignSubcontractorsToProject(List<ProjectSubcontractorDTO> dtoList,

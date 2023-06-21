@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+// @TODO - FOR REMOVAL
 @Data
 public class UpdateProjectSubcontractorDTO {
 

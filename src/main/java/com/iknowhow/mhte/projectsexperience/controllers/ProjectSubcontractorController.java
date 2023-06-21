@@ -50,6 +50,7 @@ public class ProjectSubcontractorController {
         return ResponseEntity.ok().body(response);
     }
 
+    // @TODO - FOR REMOVAL
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateSubcontractorOfProject(@PathVariable Long id,
                                                              @RequestBody UpdateProjectSubcontractorDTO dto,
@@ -59,6 +60,7 @@ public class ProjectSubcontractorController {
         return ResponseEntity.ok().build();
     }
 
+    // @TODO - FOR REMOVAL
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeSubcontractorFromProject(@PathVariable Long id) {
         projectSubcontractorService.removeSubcontractorFromProject(id);

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import lombok.Data;
 
+// @TODO - FOR REMOVAL
 @Data
 public class CUDProjectDTO {
 	

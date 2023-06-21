@@ -10,4 +10,6 @@ import java.util.List;
 public interface CommentService {
 
     List<Comment> createComments(List<ProjectCommentsDTO> dtoList, Project project, MhteUserPrincipal userPrincipal);
+
+    // @TODO - GET PAGINATED - GET ALL
 }

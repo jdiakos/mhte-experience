@@ -28,6 +28,7 @@ public class ContractController {
     @Autowired
     public ContractController(ContractService contractService) { this.contractService = contractService; }
 
+    // @TODO - FOR REMOVAL
     @PostMapping(value= "/save-file")
     public ResponseEntity<String> uploadFile(@RequestPart("contract") ContractDTO contract,
                                              @RequestPart("file") MultipartFile document,
@@ -38,6 +39,7 @@ public class ContractController {
         return ResponseEntity.status(HttpStatus.CREATED).body("ok");
     }
 
+    // @TODO - FOR REMOVAL
     @PutMapping(value="/update-contract")
     public ResponseEntity<ContractDTO> updateContract(@RequestBody ContractDTO contract,
                                                       @AuthenticationPrincipal MhteUserPrincipal userPrincipal){
@@ -46,6 +48,7 @@ public class ContractController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // @TODO - FOR REMOVAL
     @DeleteMapping(value="/delete-contract/{id}")
     public ResponseEntity<ContractDTO> deleteContract(@PathVariable(value="id") Long id){
         logger.info("Request to delete contract with id: " + id);
@@ -67,6 +70,7 @@ public class ContractController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // @TODO - MOVE TO PROJECT CONTROLLER
     @GetMapping("/download-file/{guid}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable("guid") String guid) {
         logger.info("Downloading file");
@@ -87,6 +91,7 @@ public class ContractController {
                 .body(dto.getFile());
     }
 
+    // @TODO - MOVE TO PROJECT CONTROLLER
     @DeleteMapping("/delete-file/{contractId}/{guid}")
     public ResponseEntity<Void> deleteFile(@PathVariable("contractId") Long contractId,
                                            @PathVariable("guid") String guid,

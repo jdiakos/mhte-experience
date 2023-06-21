@@ -50,6 +50,7 @@ public class ProjectContractorController {
         return ResponseEntity.ok().body(response);
     }
 
+    // @TODO - FOR REMOVAL
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateContractorOfProject(@PathVariable Long id,
                                                           @RequestBody UpdateProjectContractorDTO dto,
@@ -59,6 +60,7 @@ public class ProjectContractorController {
         return ResponseEntity.ok().build();
     }
 
+    // @TODO - FOR REMOVAL
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeContractorFromProject(@PathVariable Long id) {
         projectContractorService.removeContractorFromProject(id);

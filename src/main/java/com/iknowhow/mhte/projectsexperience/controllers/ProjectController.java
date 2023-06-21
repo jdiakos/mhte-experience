@@ -54,31 +54,36 @@ public class ProjectController {
     	ProjectResponseDTO project = projectService.getProjectById(id);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
-    
+
+    // @TODO - FOR REMOVAL
     @GetMapping("/get-by-contract-id")
     public ResponseEntity<ProjectResponseDTO> getProjectByContractId(@RequestParam("id") Long id) {
     	ProjectResponseDTO project = projectService.getProjectByContractId(id);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
-    
+
+    // @TODO - FOR REMOVAL
     @GetMapping("/get-by-adam")
     public ResponseEntity<ProjectResponseDTO> getProjectByAdam(@RequestParam("adam") String id) {
     	ProjectResponseDTO project = projectService.getProjectByAdam(id);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
-    
+
+    // @TODO - FOR REMOVAL
     @GetMapping("/get-by-category")
     public ResponseEntity<Page<ProjectResponseDTO>> getProjectByCategory(@RequestParam("category") ProjectsCategoryEnum category,
                                                                          Pageable pageable) {
     	Page<ProjectResponseDTO> project = projectService.getProjectByCategory(category, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(project);
     }
-    
+
+    // @TODO - FOR REMOVAL
     @GetMapping("/get-by-protocol")
     public ResponseEntity<ProjectResponseDTO> getProjectByProtocolNumber(@RequestParam("protocolNumber") String protocolNumber) {
         return ResponseEntity.status(HttpStatus.OK).body(projectService.getProjectByProtocolNumber(protocolNumber));
     }
-    
+
+    // @TODO - FOR REMOVAL
     @GetMapping("/get-by-entity")
     public ResponseEntity<Page<ProjectResponseDTO>> getProjectByResponsibleEntity(@RequestParam("entity") String entity,
                                                                                   Pageable pageable) {
