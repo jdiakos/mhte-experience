@@ -159,4 +159,26 @@ public class Project implements Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
+    
+    public void removeContractor(ProjectContractor contractor) {
+    	contractor.setProject(null);
+    	this.projectContractors.remove(contractor);
+    }
+    
+    public void addContractors(List<ProjectContractor> contractors) {
+    	this.projectContractors.addAll(contractors);
+    }
+    
+    public void addSubcontractor(List<ProjectSubcontractor> subcontractors) {
+    	this.projectSubcontractors.addAll(subcontractors);
+    }
+    
+    public void removeSubcontractor(ProjectSubcontractor subcontractor) {
+    	subcontractor.setProject(null);
+    	this.projectSubcontractors.remove(subcontractor);
+    }
+    
+    public ProjectContractor getContractorById(Long id) {
+    	return this.projectContractors.stream().filter(p -> p.getId()==id).findFirst().orElse(new ProjectContractor());
+    }
 }

@@ -27,7 +27,7 @@ public class ProjectSubcontractor implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @JoinColumn(name = "project_id", nullable = false, updatable = false)
+    @JoinColumn(name = "project_id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @NotAudited
     private Project project;

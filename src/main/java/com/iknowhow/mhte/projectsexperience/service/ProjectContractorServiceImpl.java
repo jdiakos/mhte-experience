@@ -3,6 +3,7 @@ package com.iknowhow.mhte.projectsexperience.service;
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectContractor;
+import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectContractorRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -61,24 +63,22 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
         List<ProjectContractor> contractors = dtoList
                 .stream()
                 .map(dto -> {
-
                     ProjectContractor contractor = new ProjectContractor();
-                    if(dto.getId()!=null) {
+                    if(dto.getId()==null) {
+                        contractor = new ProjectContractor();
+                    } else {
                         contractor.setId(dto.getId());
                     }
                     contractor.setContractorId(dto.getContractorId());
                     contractor.setProject(project);
                     contractor.setParticipationType(dto.getParticipationType());
                     contractor.setParticipationPercentage(dto.getParticipationPercentage());
-
                     contractor.setDateCreated(LocalDateTime.now());
-                    // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
                     contractor.setLastModifiedBy("ASTERIX");
 //                    contractor.setLastModifiedBy(userPrincipal.getUsername());
                     return contractor;
                 })
                 .toList();
-
         return contractors;
 
     }
