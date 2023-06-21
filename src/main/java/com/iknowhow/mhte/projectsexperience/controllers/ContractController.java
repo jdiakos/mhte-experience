@@ -8,8 +8,6 @@ import com.iknowhow.mhte.projectsexperience.service.ContractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +24,9 @@ public class ContractController {
     private final ContractService contractService;
 
     @Autowired
-    public ContractController(ContractService contractService) { this.contractService = contractService; }
+    public ContractController(ContractService contractService) {
+        this.contractService = contractService;
+    }
 
     // @TODO - FOR REMOVAL
     @PostMapping(value= "/save-file")
@@ -39,35 +39,10 @@ public class ContractController {
         return ResponseEntity.status(HttpStatus.CREATED).body("ok");
     }
 
-    // @TODO - FOR REMOVAL
-    @PutMapping(value="/update-contract")
-    public ResponseEntity<ContractDTO> updateContract(@RequestBody ContractDTO contract,
-                                                      @AuthenticationPrincipal MhteUserPrincipal userPrincipal){
-        logger.info("Update contract with id: " + contract.getId());
-        ContractDTO response = contractService.updateContract(contract, userPrincipal);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // @TODO - FOR REMOVAL
-    @DeleteMapping(value="/delete-contract/{id}")
-    public ResponseEntity<ContractDTO> deleteContract(@PathVariable(value="id") Long id){
-        logger.info("Request to delete contract with id: " + id);
-        ContractDTO response = contractService.deleteContract(id);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
     @GetMapping(value="/{projectId}/get-all")
     public ResponseEntity<List<ContractResponseDTO>> getAllContractsByProject(@PathVariable(value="projectId") Long projectId){
         logger.info("Fetching all contracts of project with id: " + projectId);
         List<ContractResponseDTO> response = contractService.getAllContractsByProject(projectId);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // @TODO - FOR REMOVAL
-    @GetMapping(value="/all")
-    public ResponseEntity<Page<ContractDTO>> fetchAllContractsPaginated(Pageable pageable) {
-        logger.info("Fetch all contract paginated");
-        Page<ContractDTO> response = contractService.fetchAllContractsPaginated(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

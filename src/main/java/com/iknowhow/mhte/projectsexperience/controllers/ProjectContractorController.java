@@ -34,40 +34,4 @@ public class ProjectContractorController {
         return null;
     }
 
-    // @TODO - FOR REMOVAL
-    @GetMapping("/{projectId}/get-all")
-    public ResponseEntity<Page<ProjectContractorResponseDTO>> getAllContractorsByProject(@PathVariable Long projectId,
-                                                                                         Pageable pageable) {
-        Page<ProjectContractorResponseDTO> response =
-                projectContractorService.getAllContractorsForProject(projectId, pageable);
-
-        return ResponseEntity.ok().body(response);
-    }
-
-    // @TODO - FOR REMOVAL
-    @GetMapping("/{id}")
-    public ResponseEntity<ProjectContractorResponseDTO> getContractorForProject(@PathVariable Long id) {
-        ProjectContractorResponseDTO response = projectContractorService.getContractorOfProject(id);
-
-        return ResponseEntity.ok().body(response);
-    }
-
-    // @TODO - FOR REMOVAL
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateContractorOfProject(@PathVariable Long id,
-                                                          @RequestBody UpdateProjectContractorDTO dto,
-                                                          @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
-        projectContractorService.updateProjectContractor(id, dto, userPrincipal);
-
-        return ResponseEntity.ok().build();
-    }
-
-    // @TODO - FOR REMOVAL
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removeContractorFromProject(@PathVariable Long id) {
-        projectContractorService.removeContractorFromProject(id);
-
-        return ResponseEntity.ok().build();
-    }
-
 }

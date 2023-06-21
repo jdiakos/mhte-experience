@@ -19,12 +19,6 @@ public interface ContractService {
                                    Project project,
                                    MhteUserPrincipal userPrincipal);
 
-    // @TODO - FOR REMOVAL
-    ContractDTO updateContract(ContractDTO contractDTO, MhteUserPrincipal userPrincipal);
-
-    // @TODO - FOR REMOVAL
-    ContractDTO deleteContract(Long id);
-
     List<ContractResponseDTO> getAllContractsByProject(Long projectId);
 
     Page<ContractDTO> fetchAllContractsPaginated(Pageable page);
@@ -35,7 +29,7 @@ public interface ContractService {
     // @TODO - MOVE TO PROJECT SERVICE
     DownloadFileDTO downloadFile(String guid);
 
-    // @TODO - FOR REMOVAL
+    // @TODO - MOVE TO PROJECT SERVICE
     void deleteFile(Long contractId, String guid, MhteUserPrincipal userPrincipal);
 
 }

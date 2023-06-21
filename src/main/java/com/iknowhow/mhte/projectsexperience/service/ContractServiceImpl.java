@@ -8,7 +8,6 @@ import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
-import com.iknowhow.mhte.projectsexperience.exception.MhteProjectCustomValidationException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
@@ -30,8 +29,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ContractServiceImpl implements ContractService {
-
-    Logger logger = LoggerFactory.getLogger(ContractServiceImpl.class);
 
     private final ContractRepository contractRepository;
     private final ProjectRepository projectRepository;
@@ -84,62 +81,6 @@ public class ContractServiceImpl implements ContractService {
 
         return contracts;
 
-//        List<Contract> contracts = dtoList
-//                .stream()
-//                .map(dto -> {
-//                    Contract contract = new Contract();
-//                    contract.setContractType(dto.getContractType());
-//                    contract.setContractValue(dto.getContractValue());
-//                    contract.setSigningDate(dto.getSigningDate());
-//                    contract.setProject(project);
-//
-//                    contract.setDateCreated(LocalDateTime.now());
-//                    //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-//                    contract.setLastModifiedBy("JULIUS CAESAR");
-////                    contract.setLastModifiedBy(userPrincipal.getUsername());
-//                    return contract;
-//                })
-//                .toList();
-//
-//        contractRepository.saveAll(contracts);
-    }
-
-    @Override
-    @Transactional
-    public ContractDTO updateContract(ContractDTO contract, MhteUserPrincipal userPrincipal) {
-        if (!negativeNumberValidator(contract.getContractValue())) {
-            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
-        }
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-
-        Contract contractExists = contractRepository.findById(contract.getId()).orElse(null);
-        if (contractExists == null) {
-            throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND);
-        }
-        Project current = (contractExists.getProject() == null) ? null : contractExists.getProject();
-        contractExists = modelMapper.map(contract, Contract.class);
-        contractExists.setProject(current);
-
-        //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-        contractExists.setLastModifiedBy("CLEOPATRA");
-//        contractExists.setLastModifiedBy(userPrincipal.getUsername());
-
-        contractRepository.save(contractExists);
-        return modelMapper.map(contractExists, ContractDTO.class);
-    }
-
-    @Override
-    @Transactional
-    public ContractDTO deleteContract(Long id) {
-        Contract contract = contractRepository.findById(id).orElseThrow(() ->
-                new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND));
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        ContractDTO contractDTO = modelMapper.map(contract, ContractDTO.class);
-        contractRepository.delete(contract);
-
-        return contractDTO;
     }
 
     @Override

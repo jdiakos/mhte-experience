@@ -7,13 +7,10 @@ import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectSubcontractorRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorResponseDTO;
-import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectSubcontractorDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
-import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsAlreadyAssignedException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
 
 
 @Service
@@ -52,42 +47,15 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
     }
 
     @Override
-    public Page<ProjectSubcontractorResponseDTO> getAllSubcontractorsForProject(Long projectId, Pageable pageable) {
+    public List<ProjectSubcontractorResponseDTO> getAllSubcontractorsForProject(Long projectId) {
         // @TODO -- VARIOUS FIELDS INCLUDING name, taxId, type etc. must be filled from another MICROSERVICE
         projectRepository.findById(projectId).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
-        return subcontractorRepository.findAllByProjectId(projectId, pageable)
-                .map(this::toSubcontractorResponseDTO);
-    }
-
-    @Override
-    public ProjectSubcontractorResponseDTO getSubcontractorOfProject(Long id) {
-        ProjectSubcontractor projectSubcontractor = subcontractorRepository.findById(id).orElseThrow(
-                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_SUBCONTRACTOR_NOT_FOUND)
-        );
-
-        return toSubcontractorResponseDTO(projectSubcontractor);
-    }
-
-    @Override
-    @Transactional
-    public void updateProjectSubcontractor(Long id, UpdateProjectSubcontractorDTO dto, MhteUserPrincipal userPrincipal) {
-        ProjectSubcontractor projectSubcontractor = subcontractorRepository.findById(id).orElseThrow(
-                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_SUBCONTRACTOR_NOT_FOUND)
-        );
-
-        Optional.ofNullable(dto.getParticipationType()).ifPresent(projectSubcontractor::setParticipationType);
-        Optional.ofNullable(dto.getContractValue()).ifPresent(projectSubcontractor::setContractValue);
-        Optional.ofNullable(dto.getContractDateFrom()).ifPresent(projectSubcontractor::setContractDateFrom);
-        Optional.ofNullable(dto.getContractDateTo()).ifPresent(projectSubcontractor::setContractDateTo);
-
-        // @TODO - PLACEHOLDER, CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
-        projectSubcontractor.setLastModifiedBy("OBELIX");
-//        projectSubcontractor.setLastModifiedBy(userPrincipal.getUsername());
-
-        subcontractorRepository.save(projectSubcontractor);
-
+        return subcontractorRepository.findAllByProjectId(projectId)
+                .stream()
+                .map(this::toSubcontractorResponseDTO)
+                .toList();
     }
 
     @Override
@@ -125,14 +93,6 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         return subcontractors;
     }
 
-    @Override
-    @Transactional
-    public void removeSubcontractorFromProject(Long id) {
-        // @TODO - CHECK CONDITIONS FOR REMOVAL
-
-        subcontractorRepository.deleteById(id);
-    }
-
     private ProjectSubcontractorResponseDTO toSubcontractorResponseDTO(ProjectSubcontractor subcontractor) {
         ProjectSubcontractorResponseDTO dto = new ProjectSubcontractorResponseDTO();
 
@@ -148,19 +108,5 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         return dto;
     }
 
-    private void validateAlreadyAssignedSubcontractor(
-            List<ProjectSubcontractor> currentSubcontractors, ProjectSubcontractorDTO dto) {
 
-        // check whether the current contractors contained the contractors to be assigned
-        List<ProjectSubcontractor> subcontractorList = currentSubcontractors
-                .stream()
-                .filter(subcontractor -> Objects.equals(subcontractor.getSubcontractorId(), dto.getSubcontractorId()))
-                .filter(subcontractor -> Objects.equals(subcontractor.getProject().getId(), dto.getProjectId()))
-                .toList();
-
-        if (!subcontractorList.isEmpty()) {
-            throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
-        }
-    }
-    
 }

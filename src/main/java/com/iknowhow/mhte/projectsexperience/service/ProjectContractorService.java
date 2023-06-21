@@ -16,19 +16,7 @@ public interface ProjectContractorService {
 
     Page<?> searchProjectContractors();
 
-    Page<ProjectContractorResponseDTO> getAllContractorsForProject(Long projectId, Pageable pageable);
-
-    ProjectContractorResponseDTO getContractorOfProject(Long id);
-
-    // @TODO - FOR REMOVAL
-    void updateProjectContractor(Long id, UpdateProjectContractorDTO dto, MhteUserPrincipal userPrincipal);
-
-//    List<ProjectContractor> assignContractorsToProject(List<ProjectContractorDTO> dtoList,
-//                                    Project project,
-//                                    MhteUserPrincipal userPrincipal);
-
-    // @TODO - FOR REMOVAL
-    void removeContractorFromProject(Long id);
+    List<ProjectContractorResponseDTO> getAllContractorsForProject(Long projectId);
 
 	List<ProjectContractor> assignContractorsToProject(List<ProjectContractorDTO> dtoList, Project project,
 			MhteUserPrincipal userPrincipal);

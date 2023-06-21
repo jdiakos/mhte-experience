@@ -80,45 +80,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public ProjectResponseDTO getProjectByContractId(Long id) {
-    	logger.info("get project by contract id service");
-    	ModelMapper loose = utils.initModelMapperLoose();
-    	return projectRepo.findByContracts_Id(id).map(project -> loose.map(project, ProjectResponseDTO.class)).orElseThrow(()->
-    		new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
-    	);
-    }
-    
-    @Override
-    public ProjectResponseDTO getProjectByAdam(String adam) {
-    	logger.info("get project by adam service");
-    	ModelMapper loose = utils.initModelMapperLoose();
-    	return projectRepo.findByAdam(adam).map(project -> loose.map(project, ProjectResponseDTO.class)).orElseThrow(()->
-    		new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
-    	);
-    };
-    
-    @Override
-    public Page<ProjectResponseDTO> getProjectByCategory(ProjectsCategoryEnum category, Pageable page) {
-    	logger.info("get project by category service");
-    	ModelMapper loose = utils.initModelMapperLoose();
-    	return projectRepo.findByProjectCategory(category, page).map(project -> loose.map(project, ProjectResponseDTO.class));
-    }
-    
-    @Override
-    public ProjectResponseDTO getProjectByProtocolNumber(String number) {
-    	logger.info("get project by category service");
-    	ModelMapper loose = utils.initModelMapperLoose();
-    	return loose.map(projectRepo.findByProtocolNumber(number), ProjectResponseDTO.class);
-    }
-    
-    @Override
-    public Page<ProjectResponseDTO> getProjectByResponsibleEntity(String entity, Pageable page) {
-    	logger.info("get project by category service");
-    	ModelMapper loose = utils.initModelMapperLoose();
-    	return projectRepo.findByResponsibleEntity(entity, page).map(project -> loose.map(project, ProjectResponseDTO.class));
-    }
-
-    @Override
     @Transactional
     public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
