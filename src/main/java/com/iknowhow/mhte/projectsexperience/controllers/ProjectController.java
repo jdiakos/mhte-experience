@@ -1,15 +1,16 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
+import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
+import com.iknowhow.mhte.projectsexperience.service.FileNetService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +33,13 @@ public class ProjectController {
     Logger logger = LoggerFactory.getLogger(ProjectController.class);
 	
 	private final ProjectService projectService;
+    private final FileNetService fileNetService;
 
     @Autowired
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService,
+                             FileNetService fileNetService) {
         this.projectService = projectService;
+        this.fileNetService = fileNetService;
     }
     
     @GetMapping("/get-all")
@@ -75,6 +79,25 @@ public class ProjectController {
         logger.info("Search for users");
         Page<ProjectResponseDTO> result = projectService.search(dto, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("/download-file/{guid}")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable("guid") String guid) {
+        logger.info("Downloading file");
+        DownloadFileDTO dto = fileNetService.fetchByGuid(guid);
+
+        ContentDisposition contentDisposition = ContentDisposition
+                .builder("attachment")
+                .filename(dto.getFilename())
+                .build();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentDisposition(contentDisposition);
+
+        return ResponseEntity.ok()
+                .headers(httpHeaders)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(dto.getFile());
     }
 
 }

@@ -16,13 +16,4 @@ public interface ContractService {
                                    Project project,
                                    MhteUserPrincipal userPrincipal);
 
-    // @TODO - MOVE TO PROJECT SERVICE
-    void uploadFile(ContractDTO contract, MultipartFile file, String username);
-
-    // @TODO - MOVE TO PROJECT SERVICE
-    DownloadFileDTO downloadFile(String guid);
-
-    // @TODO - MOVE TO PROJECT SERVICE
-    void deleteFile(Long contractId, String guid, MhteUserPrincipal userPrincipal);
-
 }

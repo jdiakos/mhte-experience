@@ -23,17 +23,14 @@ import java.util.List;
 public class ContractServiceImpl implements ContractService {
 
     private final ContractRepository contractRepository;
-    private final ProjectRepository projectRepository;
     private final FileNetService fileNetService;
     private final Utils utils;
 
     @Autowired
     public ContractServiceImpl(ContractRepository contractRepository,
-                               ProjectRepository projectRepository,
                                FileNetService fileNetService,
                                Utils utils) {
         this.contractRepository = contractRepository;
-        this.projectRepository = projectRepository;
         this.fileNetService = fileNetService;
         this.utils = utils;
     }
@@ -73,38 +70,6 @@ public class ContractServiceImpl implements ContractService {
 
         return contracts;
 
-    }
-
-    @Override
-    @Transactional
-    public void uploadFile(ContractDTO dto, MultipartFile file, String username) {
-        Contract contract = contractRepository.findById(dto.getId()).orElseThrow(
-                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND)
-        );
-
-        String guid = fileNetService.uploadFileToFilenet(contract.getProject(), file, username);
-        contract.setContractGUID(guid);
-        contractRepository.save(contract);
-    }
-
-    @Override
-    public DownloadFileDTO downloadFile(String guid) {
-
-        return fileNetService.fetchByGuid(guid);
-    }
-
-    @Override
-    @Transactional
-    public void deleteFile(Long contractId, String guid, MhteUserPrincipal userPrincipal) {
-        Contract contract = contractRepository.findById(contractId).orElseThrow(
-                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_NOT_FOUND)
-        );
-
-        // @TODO - PLACEHOLDER: CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
-        contract.setLastModifiedBy("MAJESTIX");
-//        contract.setLastModifiedBy(userPrincipal.getUsername());
-        contract.setContractGUID(null);
-        contractRepository.save(contract);
     }
 
 }
