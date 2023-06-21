@@ -50,8 +50,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    @Transactional
-    public List<Contract> createContracts(List<ContractDTO> dtoList,
+    public List<Contract> assignContractsToProject(List<ContractDTO> dtoList,
                                           MultipartFile[] contractFiles,
                                           Project project,
                                           MhteUserPrincipal userPrincipal) {
@@ -59,49 +58,28 @@ public class ContractServiceImpl implements ContractService {
 
         for (int i = 0; i < dtoList.size(); i++) {
             Contract contract = new Contract();
+            if(dtoList.get(i).getId()!=null) {
+            	contract.setId(dtoList.get(i).getId());
+            }
             contract.setContractType(dtoList.get(i).getContractType());
             contract.setContractValue(dtoList.get(i).getContractValue());
             contract.setSigningDate(dtoList.get(i).getSigningDate());
             contract.setProject(project);
-
             contract.setDateCreated(LocalDateTime.now());
-            //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
             contract.setLastModifiedBy("JULIUS CAESAR");
 //          contract.setLastModifiedBy(userPrincipal.getUsername());
-
             if (dtoList.get(i).getContractGUID() != null) {
                 contract.setContractGUID(dtoList.get(i).getContractGUID());
                 contract.setFilename(contractFiles[i].getOriginalFilename());
             } else {
                 contract.setContractGUID(
-                        fileNetService.uploadFileToFilenet(project, contractFiles[i], "ASTERIX")
+                		fileNetService.uploadFileToFilenet(project, contractFiles[i], "ASTERIX")
                 );
                 contract.setFilename(contractFiles[i].getOriginalFilename());
             }
             contracts.add(contract);
-
         }
-
         return contracts;
-
-//        List<Contract> contracts = dtoList
-//                .stream()
-//                .map(dto -> {
-//                    Contract contract = new Contract();
-//                    contract.setContractType(dto.getContractType());
-//                    contract.setContractValue(dto.getContractValue());
-//                    contract.setSigningDate(dto.getSigningDate());
-//                    contract.setProject(project);
-//
-//                    contract.setDateCreated(LocalDateTime.now());
-//                    //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-//                    contract.setLastModifiedBy("JULIUS CAESAR");
-////                    contract.setLastModifiedBy(userPrincipal.getUsername());
-//                    return contract;
-//                })
-//                .toList();
-//
-//        contractRepository.saveAll(contracts);
     }
 
     @Override

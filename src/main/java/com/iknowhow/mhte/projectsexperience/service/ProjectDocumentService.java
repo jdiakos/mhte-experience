@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface ProjectDocumentService {
 
-    List<ProjectDocument> createDocuments(MultipartFile[] documents, Project project, MhteUserPrincipal userPrincipal);
+    List<ProjectDocument> assignDocumentsToProject(MultipartFile[] documents, Project project, MhteUserPrincipal userPrincipal);
 
-    // @TODO - ADD GET PAGINATED - GET ALL
 }

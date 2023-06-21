@@ -3,14 +3,10 @@ package com.iknowhow.mhte.projectsexperience.service;
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectContractor;
-import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectContractorRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorDTO;
-import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,12 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 
 @Service
 public class ProjectContractorServiceImpl implements ProjectContractorService {

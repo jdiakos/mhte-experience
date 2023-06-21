@@ -23,7 +23,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> createComments(List<ProjectCommentsDTO> dtoList,
+    public List<Comment> assignCommentsToProject(List<ProjectCommentsDTO> dtoList,
                                         Project project,
                                         MhteUserPrincipal userPrincipal) {
 
@@ -35,7 +35,6 @@ public class CommentServiceImpl implements CommentService {
                     comment.setProject(project);
                     comment.setCreatedAt(LocalDateTime.now());
                     comment.setCreatedBy("ASTERIX");
-
                     return comment;
                 })
                 .toList();

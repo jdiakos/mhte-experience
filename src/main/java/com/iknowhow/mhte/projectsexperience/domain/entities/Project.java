@@ -169,6 +169,18 @@ public class Project implements Serializable {
     	this.projectContractors.addAll(contractors);
     }
     
+    public void addContracts(List<Contract> contracts) {
+    	this.contracts.addAll(contracts);
+    }
+    
+    public void addComments(List<Comment> comments) {
+    	this.comments.addAll(comments);
+    }
+    
+    public void addProjectDocuments(List<ProjectDocument> projectDocuments) {
+    	this.projectDocuments.addAll(projectDocuments);
+    }
+    
     public void addSubcontractor(List<ProjectSubcontractor> subcontractors) {
     	this.projectSubcontractors.addAll(subcontractors);
     }

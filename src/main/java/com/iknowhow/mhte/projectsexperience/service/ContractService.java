@@ -14,11 +14,6 @@ import java.util.List;
 
 public interface ContractService {
 
-    List<Contract> createContracts(List<ContractDTO> dtoList,
-                                   MultipartFile[] contractFiles,
-                                   Project project,
-                                   MhteUserPrincipal userPrincipal);
-
     // @TODO - FOR REMOVAL
     ContractDTO updateContract(ContractDTO contractDTO, MhteUserPrincipal userPrincipal);
 
@@ -37,5 +32,8 @@ public interface ContractService {
 
     // @TODO - FOR REMOVAL
     void deleteFile(Long contractId, String guid, MhteUserPrincipal userPrincipal);
+
+	List<Contract> assignContractsToProject(List<ContractDTO> dtoList, MultipartFile[] contractFiles, Project project,
+			MhteUserPrincipal userPrincipal);
 
 }
