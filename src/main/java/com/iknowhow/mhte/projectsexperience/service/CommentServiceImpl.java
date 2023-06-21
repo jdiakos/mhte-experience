@@ -5,12 +5,12 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.Comment;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.repository.CommentRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectCommentsDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectCommentsResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -39,5 +39,25 @@ public class CommentServiceImpl implements CommentService {
                     return comment;
                 })
                 .toList();
+    }
+
+    @Override
+    public List<ProjectCommentsResponseDTO> getAllCommentsOfProject(Project project) {
+        return commentRepository.findCommentsByProjectId(project.getId())
+                .stream()
+                .map(this::toProjectCommentsResponseDTO)
+                .toList();
+    }
+
+
+    private ProjectCommentsResponseDTO toProjectCommentsResponseDTO(Comment comment) {
+        ProjectCommentsResponseDTO dto = new ProjectCommentsResponseDTO();
+        dto.setId(comment.getId());
+        dto.setMessage(comment.getMessage());
+        dto.setUsername(comment.getCreatedBy());
+        dto.setDate(comment.getCreatedAt());
+        dto.setRole(comment.getRole());
+
+        return dto;
     }
 }

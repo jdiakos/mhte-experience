@@ -33,6 +33,7 @@ public class ProjectSubcontractorController {
         return null;
     }
 
+    // @TODO - FOR REMOVAL
     @GetMapping("/{projectId}/get-all")
     public ResponseEntity<Page<ProjectSubcontractorResponseDTO>> getAllSubcontractorsByProject(
             @PathVariable Long projectId, Pageable pageable) {

@@ -63,6 +63,7 @@ public class ContractController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // @TODO - FOR REMOVAL
     @GetMapping(value="/all")
     public ResponseEntity<Page<ContractDTO>> fetchAllContractsPaginated(Pageable pageable) {
         logger.info("Fetch all contract paginated");

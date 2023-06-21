@@ -34,6 +34,7 @@ public class ProjectContractorController {
         return null;
     }
 
+    // @TODO - FOR REMOVAL
     @GetMapping("/{projectId}/get-all")
     public ResponseEntity<Page<ProjectContractorResponseDTO>> getAllContractorsByProject(@PathVariable Long projectId,
                                                                                          Pageable pageable) {
@@ -43,6 +44,7 @@ public class ProjectContractorController {
         return ResponseEntity.ok().body(response);
     }
 
+    // @TODO - FOR REMOVAL
     @GetMapping("/{id}")
     public ResponseEntity<ProjectContractorResponseDTO> getContractorForProject(@PathVariable Long id) {
         ProjectContractorResponseDTO response = projectContractorService.getContractorOfProject(id);
