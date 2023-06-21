@@ -10,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
-import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
+import com.iknowhow.mhte.projectsexperience.domain.entities.*;
 import com.iknowhow.mhte.projectsexperience.domain.entities.QProject;
 import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
-import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectSubcontractorRepository;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectCustomValidationException;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
@@ -25,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,6 @@ public class ProjectServiceImpl implements ProjectService {
     private final ContractService contractService;
     private final ProjectContractorService projectContractorService;
     private final ProjectSubcontractorService projectSubcontractorService;
-    private final ProjectSubcontractorRepository subcontractorRepo;
     private final CommentService commentService;
     private final ProjectDocumentService projectDocumentService;
 
@@ -50,8 +48,7 @@ public class ProjectServiceImpl implements ProjectService {
                               ProjectContractorService projectContractorService,
                               ProjectSubcontractorService projectSubcontractorService,
                               CommentService commentService,
-                              ProjectDocumentService projectDocumentService,
-                              ProjectSubcontractorRepository subcontractorRepo) {
+                              ProjectDocumentService projectDocumentService) {
         this.projectRepo = projectRepo;
         this.utils = utils;
         this.contractService = contractService;
@@ -59,7 +56,6 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectSubcontractorService = projectSubcontractorService;
         this.commentService = commentService;
         this.projectDocumentService = projectDocumentService;
-        this.subcontractorRepo = subcontractorRepo;
     }
     
     @Override
@@ -123,25 +119,20 @@ public class ProjectServiceImpl implements ProjectService {
     public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
     	
-    	Project project;
         validateProjectNegativeValues(dto.getFinancialElements());
         validateTotalProjectContractorPercentages(dto);
-        if(dto.getProjectDescription().getId() != null) {
-        	project = projectRepo.findById(dto.getProjectDescription().getId()).orElseThrow(() ->
-        		new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
-        } else {
-            project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
-            project.setDateCreated(LocalDateTime.now());
-            validateDuplicateProjectContractor(dto);
-            validateDuplicateProjectSubcontractor(dto);
-        }
+        validateDuplicateProjectContractor(dto);
+        validateDuplicateProjectSubcontractor(dto);
         validateContractNegativeValues(dto);
         
+        Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
+        
+        project.setDateCreated(LocalDateTime.now());
         utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
         project.setLastModifiedBy("dude");
-//      project.setLastModifiedBy(userPrincipal.getUsername());
         project.setProjectContractors(
-                projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal)
+                projectContractorService.assignContractorsToProject(dto.getProjectContractors(),
+        		project, userPrincipal)
         );
         project.setProjectSubcontractors(
                 projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles,
@@ -156,48 +147,39 @@ public class ProjectServiceImpl implements ProjectService {
         project.setProjectDocuments(
                 projectDocumentService.createDocuments(documents, project, userPrincipal)
         );
-        projectRepo.save(project);
+        try {
+            projectRepo.save(project);
+        } catch (Exception e){
+        	System.out.println(e.getMessage());
+        }
     }
 
     @Override
+    @Transactional
     public void updateProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
     	
     	Project project = projectRepo.findById(dto.getProjectDescription().getId()).orElseThrow(() ->
-        new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
+        	new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
     	
         validateProjectNegativeValues(dto.getFinancialElements());
         validateTotalProjectContractorPercentages(dto);
         validateContractNegativeValues(dto);
-        
-        List<Long> oldIds = project.getProjectSubcontractors().
-        		stream().
-        		map(ProjectSubcontractor::getId).toList();
-        List<Long> newIds = dto.getProjectSubcontractors().
-        		stream().
-        		filter(s -> s.getId() != null).
-        		map(ProjectSubcontractorDTO::getId).toList();
-        List<Long> differences = oldIds.stream()
-                .filter(element -> !newIds.contains(element))
-                .collect(Collectors.toList());
+
         utils.initModelMapperStrict().map(dto.getProjectDescription(), project);
         utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
-        subcontractorRepo.deleteAllById(differences);
         project.setLastModifiedBy("dude");
-//      project.setLastModifiedBy(userPrincipal.getUsername());
-        project.setProjectContractors(
-                projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal)
-        );
-        project.setProjectSubcontractors(
-                projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles,
-        		project, userPrincipal)
-        );
-        project.setContracts(
-                contractService.createContracts(dto.getContracts(), contractFiles, project, userPrincipal)
-        );
-        project.setComments(
-                commentService.createComments(dto.getProjectComments(), project, userPrincipal)
-        );
+        project.getProjectContractors().clear();
+        project.addContractors(projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal));
+        project.getProjectSubcontractors().clear();
+        project.addSubcontractor(projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles, project, userPrincipal));
+       
+		/*   works!!!!!!!!
+		projectContractorService.dischargeContractors(project, dto);
+		project.getProjectContractors().clear();
+		project.getProjectContractors().addAll(contractors);
+		*/
+        
         projectRepo.save(project);
     }
 

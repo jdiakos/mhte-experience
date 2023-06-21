@@ -108,7 +108,7 @@ public class ProjectController {
     		@RequestPart("subcontractorFiles") MultipartFile[] subcontractorFiles,
     		@RequestPart("contractFiles") MultipartFile[] contractFiles,
     		@RequestPart("documents") MultipartFile[] documents) {
-    	projectService.createProject(userPrincipal, dto, subcontractorFiles, contractFiles, documents);
+    	projectService.updateProject(userPrincipal, dto, subcontractorFiles, contractFiles, documents);
         return ResponseEntity.ok().build();
     }
     

@@ -5,6 +5,7 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectSubcontractorRepository;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectSubcontractorDTO;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -146,6 +148,28 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 //        dto.setContractGUID(subcontractor.getContractGUID());
 
         return dto;
+    }
+    
+    @Override
+    public List<ProjectSubcontractor> objectsToBeDeleted(Project project,  ProjectMasterDTO dto) {
+    	List<ProjectSubcontractor> subcontractors = new ArrayList<>();
+    	List<Long> oldIds = project.getProjectSubcontractors().
+        		stream().
+        		map(ProjectSubcontractor::getId).toList();
+        List<Long> newIds = dto.getProjectSubcontractors().
+        		stream().
+        		filter(s -> s.getId() != null).
+        		map(ProjectSubcontractorDTO::getId).toList();
+        List<Long> differences = oldIds.stream()
+                .filter(element -> !newIds.contains(element))
+                .collect(Collectors.toList());
+        for(int i=0; i<project.getProjectSubcontractors().size(); i++) {
+        	if(differences.contains(project.getProjectSubcontractors().get(i).getId())) {
+        		subcontractors.add(project.getProjectSubcontractors().get(i));
+        		subcontractors.get(subcontractors.size()-1).setProject(null);
+        	}
+        }
+        return subcontractors;
     }
 
     private void validateAlreadyAssignedSubcontractor(

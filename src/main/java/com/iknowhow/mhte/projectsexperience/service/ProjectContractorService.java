@@ -5,7 +5,6 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectContractor;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
-import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -20,17 +19,9 @@ public interface ProjectContractorService {
 
     ProjectContractorResponseDTO getContractorOfProject(Long id);
 
-    // @TODO - FOR REMOVAL
-    void updateProjectContractor(Long id, UpdateProjectContractorDTO dto, MhteUserPrincipal userPrincipal);
-
-//    List<ProjectContractor> assignContractorsToProject(List<ProjectContractorDTO> dtoList,
-//                                    Project project,
-//                                    MhteUserPrincipal userPrincipal);
-
-    // @TODO - FOR REMOVAL
-    void removeContractorFromProject(Long id);
-
 	List<ProjectContractor> assignContractorsToProject(List<ProjectContractorDTO> dtoList, Project project,
 			MhteUserPrincipal userPrincipal);
+
+//	void dischargeContractors(Project project, ProjectMasterDTO dto);
 
 }

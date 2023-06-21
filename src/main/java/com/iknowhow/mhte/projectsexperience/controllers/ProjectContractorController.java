@@ -1,16 +1,11 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
-import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
-import com.iknowhow.mhte.projectsexperience.dto.UpdateProjectContractorDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectContractorService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,24 +45,6 @@ public class ProjectContractorController {
         ProjectContractorResponseDTO response = projectContractorService.getContractorOfProject(id);
 
         return ResponseEntity.ok().body(response);
-    }
-
-    // @TODO - FOR REMOVAL
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateContractorOfProject(@PathVariable Long id,
-                                                          @RequestBody UpdateProjectContractorDTO dto,
-                                                          @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
-        projectContractorService.updateProjectContractor(id, dto, userPrincipal);
-
-        return ResponseEntity.ok().build();
-    }
-
-    // @TODO - FOR REMOVAL
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removeContractorFromProject(@PathVariable Long id) {
-        projectContractorService.removeContractorFromProject(id);
-
-        return ResponseEntity.ok().build();
     }
 
 }
