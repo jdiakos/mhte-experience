@@ -4,8 +4,6 @@ import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.*;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsAlreadyAssignedException;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.entities.QProject;
-import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectSubcontractorRepository;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectCustomValidationException;
@@ -30,8 +27,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
-	
-    Logger logger = LoggerFactory.getLogger(ProjectServiceImpl.class);
 	
     private final ProjectRepository projectRepo;
     private final Utils utils;
@@ -63,10 +58,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public Page<ProjectResponseDTO> fetchAllProjects(Pageable page){
-    	logger.info("fetch all projects service");
-    	ModelMapper loose = utils.initModelMapperLoose();
-        return projectRepo.findAll(page).map(project -> loose.map(project, ProjectResponseDTO.class));
+    public Page<ProjectResponseDTO> fetchAllProjects(Pageable pageable){
+        return projectRepo.findAll(pageable)
+                .map(this::toProjectResponseDTO);
     }
     
     @Override
@@ -184,9 +178,40 @@ public class ProjectServiceImpl implements ProjectService {
             booleanBuilder.and(qProject.projectCategory.eq(dto.getProjectCategory()));
         }
         
-        ModelMapper modelMapper = utils.initModelMapperLoose();
         return projectRepo.findAll(booleanBuilder, pageable)
-                .map(project -> modelMapper.map(project, ProjectResponseDTO.class));
+                .map(this::toProjectResponseDTO);
+    }
+
+    private ProjectResponseDTO toProjectResponseDTO(Project project) {
+        ModelMapper mapper = utils.initModelMapperStrict();
+        ProjectResponseDTO dto = new ProjectResponseDTO();
+        ProjectDescriptionResponseDTO descriptionDTO = mapper.map(project, ProjectDescriptionResponseDTO.class);
+        ProjectFinancialElementsDTO financialsDTO = mapper.map(project, ProjectFinancialElementsDTO.class);
+        List<ProjectContractorResponseDTO> contractorsDTOList = project.getProjectContractors()
+                .stream()
+                .map(contractor -> mapper.map(contractor, ProjectContractorResponseDTO.class))
+                .toList();
+        List<ProjectSubcontractorResponseDTO> subcontractorDTOList = project.getProjectSubcontractors()
+                .stream()
+                .map(subcontractor -> mapper.map(subcontractor, ProjectSubcontractorResponseDTO.class))
+                .toList();
+        List<ProjectDocumentsResponseDTO> documentsDTOList = project.getProjectDocuments()
+                .stream()
+                .map(projectDocument -> mapper.map(projectDocument, ProjectDocumentsResponseDTO.class))
+                .toList();
+        List<CommentsResponseDTO> commentsDTOList = project.getComments()
+                .stream()
+                .map(comment -> mapper.map(comment, CommentsResponseDTO.class))
+                .toList();
+
+        dto.setProjectDescription(descriptionDTO);
+        dto.setProjectFinancialElements(financialsDTO);
+        dto.setProjectContractors(contractorsDTOList);
+        dto.setProjectSubcontractors(subcontractorDTOList);
+        dto.setDocuments(documentsDTOList);
+        dto.setComments(commentsDTOList);
+
+        return dto;
     }
 
     private void validateProjectNegativeValues(ProjectFinancialElementsDTO dto) {
