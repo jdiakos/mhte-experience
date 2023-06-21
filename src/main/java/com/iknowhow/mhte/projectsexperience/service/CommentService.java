@@ -4,7 +4,6 @@ import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Comment;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.dto.CommentsDTO;
-import com.iknowhow.mhte.projectsexperience.dto.CommentsResponseDTO;
 
 import java.util.List;
 

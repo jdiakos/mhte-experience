@@ -4,7 +4,6 @@ import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
-import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

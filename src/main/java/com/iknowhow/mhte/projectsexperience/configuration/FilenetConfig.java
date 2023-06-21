@@ -13,8 +13,6 @@ import javax.security.auth.Subject;
 @Component
 public class FilenetConfig {
 
-//    Logger logger = Logger.getLogger(FilenetConfig.class);
-
     @Value("${app.filenet.url}")
     private String uri;
     @Value("${app.filenet.username}")
