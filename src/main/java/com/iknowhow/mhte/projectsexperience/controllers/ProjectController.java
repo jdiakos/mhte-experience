@@ -38,7 +38,7 @@ public class ProjectController {
         this.projectService = projectService;
     }
     
-    @GetMapping("/all")
+    @GetMapping("/get-all")
     public ResponseEntity<Page<ProjectResponseDTO>> getProjects(Pageable page) {
     	Page<ProjectResponseDTO> projects = projectService.fetchAllProjects(page);
         return ResponseEntity.status(HttpStatus.OK).body(projects);
@@ -65,7 +65,7 @@ public class ProjectController {
         return ResponseEntity.ok().build();
     }
     
-    @DeleteMapping(value = "/project/{id}")
+    @DeleteMapping(value = "/remove/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable(value="id") Long id){
         return ResponseEntity.ok().build();
     }

@@ -195,6 +195,10 @@ public class ProjectServiceImpl implements ProjectService {
                 .stream()
                 .map(subcontractor -> mapper.map(subcontractor, ProjectSubcontractorResponseDTO.class))
                 .toList();
+        List<ContractResponseDTO> contractDTOList = project.getContracts()
+                .stream()
+                .map(contract -> mapper.map(contract, ContractResponseDTO.class))
+                .toList();
         List<ProjectDocumentsResponseDTO> documentsDTOList = project.getProjectDocuments()
                 .stream()
                 .map(projectDocument -> mapper.map(projectDocument, ProjectDocumentsResponseDTO.class))
@@ -208,6 +212,7 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setProjectFinancialElements(financialsDTO);
         dto.setProjectContractors(contractorsDTOList);
         dto.setProjectSubcontractors(subcontractorDTOList);
+        dto.setContracts(contractDTOList);
         dto.setDocuments(documentsDTOList);
         dto.setComments(commentsDTOList);
 

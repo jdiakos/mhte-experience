@@ -6,26 +6,18 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
-import com.iknowhow.mhte.projectsexperience.dto.ContractResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
-import org.modelmapper.convention.MatchingStrategies;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ContractServiceImpl implements ContractService {
@@ -84,25 +76,6 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<ContractResponseDTO> getAllContractsByProject(Long projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow(
-                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
-        );
-
-        return contractRepository.findAllByProjectId(projectId)
-                .stream()
-                .map(this::toContractResponseDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Page<ContractDTO> fetchAllContractsPaginated(Pageable page) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-        return contractRepository.findAll(page).map(contract -> modelMapper.map(contract, ContractDTO.class));
-    }
-
-    @Override
     @Transactional
     public void uploadFile(ContractDTO dto, MultipartFile file, String username) {
         Contract contract = contractRepository.findById(dto.getId()).orElseThrow(
@@ -132,25 +105,6 @@ public class ContractServiceImpl implements ContractService {
 //        contract.setLastModifiedBy(userPrincipal.getUsername());
         contract.setContractGUID(null);
         contractRepository.save(contract);
-    }
-
-
-    private boolean negativeNumberValidator(Double n) {
-        if (n > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    private ContractResponseDTO toContractResponseDTO(Contract contract) {
-        ContractResponseDTO dto = new ContractResponseDTO();
-
-        dto.setId(contract.getId());
-        dto.setContractType(contract.getContractType());
-        dto.setContractValue(contract.getContractValue());
-        dto.setSigningDate(contract.getSigningDate());
-
-        return dto;
     }
 
 }

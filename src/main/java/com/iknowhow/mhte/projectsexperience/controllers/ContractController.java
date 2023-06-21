@@ -28,24 +28,6 @@ public class ContractController {
         this.contractService = contractService;
     }
 
-    // @TODO - FOR REMOVAL
-    @PostMapping(value= "/save-file")
-    public ResponseEntity<String> uploadFile(@RequestPart("contract") ContractDTO contract,
-                                             @RequestPart("file") MultipartFile document,
-                                             @AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
-        //@TODO - CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
-        contractService.uploadFile(contract, document, "test_user");
-        //contractService.uploadFile(contract, document, userPrincipal.getUsername());
-        return ResponseEntity.status(HttpStatus.CREATED).body("ok");
-    }
-
-    @GetMapping(value="/{projectId}/get-all")
-    public ResponseEntity<List<ContractResponseDTO>> getAllContractsByProject(@PathVariable(value="projectId") Long projectId){
-        logger.info("Fetching all contracts of project with id: " + projectId);
-        List<ContractResponseDTO> response = contractService.getAllContractsByProject(projectId);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
     // @TODO - MOVE TO PROJECT CONTROLLER
     @GetMapping("/download-file/{guid}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable("guid") String guid) {
