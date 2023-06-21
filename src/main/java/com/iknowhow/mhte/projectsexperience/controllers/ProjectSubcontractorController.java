@@ -1,6 +1,5 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
-import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectSubcontractorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

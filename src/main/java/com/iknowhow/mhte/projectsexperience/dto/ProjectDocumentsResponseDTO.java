@@ -3,7 +3,9 @@ package com.iknowhow.mhte.projectsexperience.dto;
 import lombok.Data;
 
 @Data
-public class ProjectSubcontractorResponseDTO extends ProjectSubcontractorDTO {
+public class ProjectDocumentsResponseDTO {
 
+    private Long id;
     private String filename;
+    private String guid;
 }

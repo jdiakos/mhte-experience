@@ -88,7 +88,6 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
 
         dto.setId(contractor.getId());
         dto.setContractorId(contractor.getContractorId());
-        dto.setProjectId(contractor.getProject().getId());
         dto.setParticipationType(contractor.getParticipationType());
         dto.setParticipationPercentage(contractor.getParticipationPercentage());
 

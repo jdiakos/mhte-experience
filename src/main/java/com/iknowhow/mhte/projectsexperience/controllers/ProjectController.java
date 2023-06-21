@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.iknowhow.mhte.projectsexperience.dto.CUDProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSearchDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectService;
@@ -43,12 +42,6 @@ public class ProjectController {
     public ResponseEntity<Page<ProjectResponseDTO>> getProjects(Pageable page) {
     	Page<ProjectResponseDTO> projects = projectService.fetchAllProjects(page);
         return ResponseEntity.status(HttpStatus.OK).body(projects);
-    }
-
-    @GetMapping("/project/{id}")
-    public ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable(value="id") Long id) {
-    	ProjectResponseDTO project = projectService.getProjectById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(project);
     }
 
     @PostMapping(value= "/create-project")
@@ -73,8 +66,8 @@ public class ProjectController {
     }
     
     @DeleteMapping(value = "/project/{id}")
-    public ResponseEntity<CUDProjectDTO> deleteProject(@PathVariable(value="id") Long id){
-    	return ResponseEntity.status(HttpStatus.OK).body(projectService.deleteProject(id));
+    public ResponseEntity<Void> deleteProject(@PathVariable(value="id") Long id){
+        return ResponseEntity.ok().build();
     }
     
     @PostMapping("/search")

@@ -70,16 +70,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public ProjectResponseDTO getProjectById(Long id) {
-    	logger.info("get project by id service");
-    	ModelMapper loose = utils.initModelMapperLoose();
-    	ProjectResponseDTO response = projectRepo.findById(id).map(project ->
-    		loose.map(project, ProjectResponseDTO.class)).orElseThrow(() ->
-    			new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
-    	return response;
-    }
-    
-    @Override
     @Transactional
     public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
@@ -134,10 +124,11 @@ public class ProjectServiceImpl implements ProjectService {
         List<Long> oldIds = project.getProjectSubcontractors().
         		stream().
         		map(ProjectSubcontractor::getId).toList();
-        List<Long> newIds = dto.getProjectSubcontractors().
-        		stream().
-        		filter(s -> s.getId() != null).
-        		map(ProjectSubcontractorDTO::getId).toList();
+        List<Long> newIds = dto.getProjectSubcontractors()
+                .stream()
+                .filter(s -> s.getId() != null)
+                .map(ProjectSubcontractorDTO::getId)
+                .toList();
         List<Long> differences = oldIds.stream()
                 .filter(element -> !newIds.contains(element))
                 .collect(Collectors.toList());
@@ -163,19 +154,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public CUDProjectDTO deleteProject(Long id) {
-    	logger.info("delete project service");
-
-    	ModelMapper strict = utils.initModelMapperStrict();
-
+    public void deleteProject(Long id) {
         Project projectExists = projectRepo.findById(id).orElseThrow(()->
         	new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
         );
-        CUDProjectDTO response = strict.map(projectExists, CUDProjectDTO.class);
         //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
         projectExists.setLastModifiedBy("dude");
         projectRepo.delete(projectExists);
-        return response;
     }
     
     @Override

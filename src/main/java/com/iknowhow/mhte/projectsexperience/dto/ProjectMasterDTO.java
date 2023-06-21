@@ -12,6 +12,6 @@ public class ProjectMasterDTO {
     private List<ContractDTO> contracts;
     private List<ProjectContractorDTO> projectContractors;
     private List<ProjectSubcontractorDTO> projectSubcontractors;
-    private List<ProjectCommentsDTO> projectComments;
+    private List<CommentsDTO> projectComments;
 
 }

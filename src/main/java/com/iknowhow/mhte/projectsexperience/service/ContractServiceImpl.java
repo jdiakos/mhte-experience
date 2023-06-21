@@ -85,7 +85,9 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public List<ContractResponseDTO> getAllContractsByProject(Long projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow(() -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
+        Project project = projectRepository.findById(projectId).orElseThrow(
+                () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
+        );
 
         return contractRepository.findAllByProjectId(projectId)
                 .stream()

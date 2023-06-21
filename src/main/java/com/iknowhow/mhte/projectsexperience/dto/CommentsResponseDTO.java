@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ProjectCommentsResponseDTO extends ProjectCommentsDTO {
+public class CommentsResponseDTO extends CommentsDTO {
 
     private Long id;
     private String username;

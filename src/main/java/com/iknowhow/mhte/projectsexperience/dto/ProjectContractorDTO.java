@@ -7,9 +7,7 @@ import lombok.Data;
 @Data
 public class ProjectContractorDTO {
 
-	private Long id;
-	
-    private Long projectId;
+    private Long id;
     @NotNull
     private Long contractorId;
     @NotBlank

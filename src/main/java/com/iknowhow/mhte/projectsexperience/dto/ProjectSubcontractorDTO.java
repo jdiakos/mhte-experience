@@ -9,9 +9,7 @@ import java.time.LocalDate;
 @Data
 public class ProjectSubcontractorDTO {
 
-	private Long id; 
-	
-    private Long projectId;
+    private Long id;
     @NotNull
     private Long subcontractorId;
     @NotBlank
@@ -22,7 +20,6 @@ public class ProjectSubcontractorDTO {
     private LocalDate contractDateFrom;
     @NotNull
     private LocalDate contractDateTo;
-
     private String contractGUID;
 
 }

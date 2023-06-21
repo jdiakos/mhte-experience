@@ -98,7 +98,6 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 
         dto.setId(subcontractor.getId());
         dto.setSubcontractorId(subcontractor.getSubcontractorId());
-        dto.setProjectId(subcontractor.getProject().getId());
         dto.setContractValue(subcontractor.getContractValue());
         dto.setParticipationType(subcontractor.getParticipationType());
         dto.setContractDateFrom(subcontractor.getContractDateFrom());

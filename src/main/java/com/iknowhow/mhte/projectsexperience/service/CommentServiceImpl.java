@@ -4,8 +4,7 @@ import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Comment;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.repository.CommentRepository;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectCommentsDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectCommentsResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.CommentsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> createComments(List<ProjectCommentsDTO> dtoList,
+    public List<Comment> createComments(List<CommentsDTO> dtoList,
                                         Project project,
                                         MhteUserPrincipal userPrincipal) {
 
@@ -42,16 +41,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<ProjectCommentsResponseDTO> getAllCommentsOfProject(Project project) {
+    public List<CommentsDTO> getAllCommentsOfProject(Project project) {
         return commentRepository.findCommentsByProjectId(project.getId())
                 .stream()
-                .map(this::toProjectCommentsResponseDTO)
+                .map(this::toProjectCommentsDTO)
                 .toList();
     }
 
 
-    private ProjectCommentsResponseDTO toProjectCommentsResponseDTO(Comment comment) {
-        ProjectCommentsResponseDTO dto = new ProjectCommentsResponseDTO();
+    private CommentsDTO toProjectCommentsDTO(Comment comment) {
+        CommentsDTO dto = new CommentsDTO();
         dto.setId(comment.getId());
         dto.setMessage(comment.getMessage());
         dto.setUsername(comment.getCreatedBy());
