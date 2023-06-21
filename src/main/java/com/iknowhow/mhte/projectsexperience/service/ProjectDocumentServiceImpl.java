@@ -4,7 +4,7 @@ import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectDocument;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectDocumentRepository;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectDocumentsResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectDocumentsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,7 +50,7 @@ public class ProjectDocumentServiceImpl implements ProjectDocumentService {
     }
 
     @Override
-    public List<ProjectDocumentsResponseDTO> getAllOfProject(Project project) {
+    public List<ProjectDocumentsDTO> getAllOfProject(Project project) {
         return documentRepository.findAllByProjectId(project.getId())
                 .stream()
                 .map(this::toProjectDocumentResponse)
@@ -58,8 +58,8 @@ public class ProjectDocumentServiceImpl implements ProjectDocumentService {
     }
 
 
-    private ProjectDocumentsResponseDTO toProjectDocumentResponse(ProjectDocument projectDocument) {
-        ProjectDocumentsResponseDTO dto = new ProjectDocumentsResponseDTO();
+    private ProjectDocumentsDTO toProjectDocumentResponse(ProjectDocument projectDocument) {
+        ProjectDocumentsDTO dto = new ProjectDocumentsDTO();
         dto.setId(projectDocument.getId());
         dto.setFilename(projectDocument.getFilename());
         dto.setGuid(projectDocument.getGuid());

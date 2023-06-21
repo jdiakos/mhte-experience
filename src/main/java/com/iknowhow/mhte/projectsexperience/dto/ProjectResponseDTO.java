@@ -8,10 +8,10 @@ public class ProjectResponseDTO {
 
     private ProjectDescriptionDTO projectDescription;
     private ProjectFinancialElementsDTO projectFinancialElements;
-    private List<ProjectContractorResponseDTO> projectContractors;
-    private List<ProjectSubcontractorResponseDTO> projectSubcontractors;
+    private List<ProjectContractorDTO> projectContractors;
+    private List<ProjectSubcontractorDTO> projectSubcontractors;
     private List<ContractResponseDTO> contracts;
-    private List<ProjectDocumentsResponseDTO> documents;
-    private List<CommentsResponseDTO> comments;
+    private List<ProjectDocumentsDTO> documents;
+    private List<CommentsDTO> comments;
 
 }

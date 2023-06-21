@@ -165,27 +165,27 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectResponseDTO toProjectResponseDTO(Project project) {
         ModelMapper mapper = utils.initModelMapperStrict();
         ProjectResponseDTO dto = new ProjectResponseDTO();
-        ProjectDescriptionResponseDTO descriptionDTO = mapper.map(project, ProjectDescriptionResponseDTO.class);
+        ProjectDescriptionDTO descriptionDTO = mapper.map(project, ProjectDescriptionDTO.class);
         ProjectFinancialElementsDTO financialsDTO = mapper.map(project, ProjectFinancialElementsDTO.class);
-        List<ProjectContractorResponseDTO> contractorsDTOList = project.getProjectContractors()
+        List<ProjectContractorDTO> contractorsDTOList = project.getProjectContractors()
                 .stream()
-                .map(contractor -> mapper.map(contractor, ProjectContractorResponseDTO.class))
+                .map(contractor -> mapper.map(contractor, ProjectContractorDTO.class))
                 .toList();
-        List<ProjectSubcontractorResponseDTO> subcontractorDTOList = project.getProjectSubcontractors()
+        List<ProjectSubcontractorDTO> subcontractorDTOList = project.getProjectSubcontractors()
                 .stream()
-                .map(subcontractor -> mapper.map(subcontractor, ProjectSubcontractorResponseDTO.class))
+                .map(subcontractor -> mapper.map(subcontractor, ProjectSubcontractorDTO.class))
                 .toList();
         List<ContractResponseDTO> contractDTOList = project.getContracts()
                 .stream()
                 .map(contract -> mapper.map(contract, ContractResponseDTO.class))
                 .toList();
-        List<ProjectDocumentsResponseDTO> documentsDTOList = project.getProjectDocuments()
+        List<ProjectDocumentsDTO> documentsDTOList = project.getProjectDocuments()
                 .stream()
-                .map(projectDocument -> mapper.map(projectDocument, ProjectDocumentsResponseDTO.class))
+                .map(projectDocument -> mapper.map(projectDocument, ProjectDocumentsDTO.class))
                 .toList();
-        List<CommentsResponseDTO> commentsDTOList = project.getComments()
+        List<CommentsDTO> commentsDTOList = project.getComments()
                 .stream()
-                .map(comment -> mapper.map(comment, CommentsResponseDTO.class))
+                .map(comment -> mapper.map(comment, CommentsDTO.class))
                 .toList();
 
         dto.setProjectDescription(descriptionDTO);

@@ -7,7 +7,6 @@ import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectSubcontractorRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,14 +48,14 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
     }
 
     @Override
-    public List<ProjectSubcontractorResponseDTO> getAllSubcontractorsForProject(Long projectId) {
+    public List<ProjectSubcontractorDTO> getAllSubcontractorsForProject(Long projectId) {
         // @TODO -- VARIOUS FIELDS INCLUDING name, taxId, type etc. must be filled from another MICROSERVICE
         projectRepository.findById(projectId).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
         return subcontractorRepository.findAllByProjectId(projectId)
                 .stream()
-                .map(this::toSubcontractorResponseDTO)
+                .map(this::toSubcontractorDTO)
                 .toList();
     }
 
@@ -95,8 +94,8 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         return subcontractors;
     }
 
-    private ProjectSubcontractorResponseDTO toSubcontractorResponseDTO(ProjectSubcontractor subcontractor) {
-        ProjectSubcontractorResponseDTO dto = new ProjectSubcontractorResponseDTO();
+    private ProjectSubcontractorDTO toSubcontractorDTO(ProjectSubcontractor subcontractor) {
+        ProjectSubcontractorDTO dto = new ProjectSubcontractorDTO();
 
         dto.setId(subcontractor.getId());
         dto.setSubcontractorId(subcontractor.getSubcontractorId());
@@ -104,7 +103,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
         dto.setParticipationType(subcontractor.getParticipationType());
         dto.setContractDateFrom(subcontractor.getContractDateFrom());
         dto.setContractDateTo(subcontractor.getContractDateTo());
-//        dto.setContractGUID(subcontractor.getContractGUID());
+        dto.setContractGUID(subcontractor.getContractGUID());
 
         return dto;
     }

@@ -6,7 +6,6 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectContractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectContractorRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorResponseDTO;
 import com.iknowhow.mhte.projectsexperience.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,14 +40,14 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
 
 
     @Override
-    public List<ProjectContractorResponseDTO> getAllContractorsForProject(Long projectId) {
+    public List<ProjectContractorDTO> getAllContractorsForProject(Long projectId) {
         // @TODO -- VARIOUS FIELDS INCLUDING name, taxId, type etc. must be filled from another MICROSERVICE
         projectRepository.findById(projectId).orElseThrow(
                 () -> new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
 
         return contractorRepository.findAllByProjectId(projectId)
                 .stream()
-                .map(this::toContractorResponseDTO)
+                .map(this::toContractorDTO)
                 .toList();
     }
 
@@ -81,8 +80,8 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
 
     }
 
-    private ProjectContractorResponseDTO toContractorResponseDTO(ProjectContractor contractor) {
-        ProjectContractorResponseDTO dto = new ProjectContractorResponseDTO();
+    private ProjectContractorDTO toContractorDTO(ProjectContractor contractor) {
+        ProjectContractorDTO dto = new ProjectContractorDTO();
 
         dto.setId(contractor.getId());
         dto.setContractorId(contractor.getContractorId());
