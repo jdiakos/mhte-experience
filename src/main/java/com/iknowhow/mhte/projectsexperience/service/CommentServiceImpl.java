@@ -22,9 +22,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> createComments(List<CommentsDTO> dtoList,
-                                        Project project,
-                                        MhteUserPrincipal userPrincipal) {
+    public List<Comment> assignCommentsToProject(List<CommentsDTO> dtoList,
+                                                 Project project,
+                                                 MhteUserPrincipal userPrincipal) {
 
         return dtoList
                 .stream()

@@ -17,16 +17,19 @@ import java.util.List;
 public class ProjectDocumentServiceImpl implements ProjectDocumentService {
 
     private final FileNetService fileNetService;
+    private final ProjectDocumentRepository documentRepository;
 
     @Autowired
-    public ProjectDocumentServiceImpl(FileNetService fileNetService) {
+    public ProjectDocumentServiceImpl(FileNetService fileNetService,
+                                      ProjectDocumentRepository documentRepository) {
         this.fileNetService = fileNetService;
+        this.documentRepository = documentRepository;
     }
 
     @Override
     public List<ProjectDocument> assignDocumentsToProject(MultipartFile[] documents,
-                                                 Project project,
-                                                 MhteUserPrincipal userPrincipal) {
+                                                          Project project,
+                                                          MhteUserPrincipal userPrincipal) {
 
         List<ProjectDocument> projectDocuments = new ArrayList<>();
 

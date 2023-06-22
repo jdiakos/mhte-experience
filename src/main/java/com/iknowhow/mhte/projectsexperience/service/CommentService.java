@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CommentService {
 
-    List<Comment> createComments(List<CommentsDTO> dtoList, Project project, MhteUserPrincipal userPrincipal);
+    List<Comment> assignCommentsToProject(List<CommentsDTO> dtoList, Project project, MhteUserPrincipal userPrincipal);
 
     List<CommentsDTO> getAllCommentsOfProject(Project project);
 }

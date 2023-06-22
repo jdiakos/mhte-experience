@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface ContractService {
 
-    List<Contract> createContracts(List<ContractDTO> dtoList,
-                                   MultipartFile[] contractFiles,
-                                   Project project,
-                                   MhteUserPrincipal userPrincipal);
+    List<Contract> assignContractsToProject(List<ContractDTO> dtoList,
+                                            MultipartFile[] contractFiles,
+                                            Project project,
+                                            MhteUserPrincipal userPrincipal);
 
 }
