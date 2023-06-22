@@ -64,7 +64,7 @@ public class ProjectServiceImpl implements ProjectService {
     public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
 
-        validateProjectNegativeValues(dto.getFinancialElements());
+        validateProjectNegativeValues(dto.getProjectFinancialElements());
         validateTotalProjectContractorPercentages(dto);
         validateDuplicateProjectContractor(dto);
         validateDuplicateProjectSubcontractor(dto);
@@ -76,7 +76,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         // PROJECT DETAILS
         Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
-        utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
+        utils.initModelMapperStrict().map(dto.getProjectFinancialElements(), project);
 
         project.setDateCreated(LocalDateTime.now());
         // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
@@ -114,7 +114,7 @@ public class ProjectServiceImpl implements ProjectService {
     	Project project = projectRepo.findById(dto.getProjectDescription().getId()).orElseThrow(() ->
         	new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
     	
-        validateProjectNegativeValues(dto.getFinancialElements());
+        validateProjectNegativeValues(dto.getProjectFinancialElements());
         validateTotalProjectContractorPercentages(dto);
         validateContractNegativeValues(dto);
         validateFileExtensions(subcontractorFiles);
@@ -123,7 +123,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         // PROJECT DETAILS
         utils.initModelMapperStrict().map(dto.getProjectDescription(), project);
-        utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
+        utils.initModelMapperStrict().map(dto.getProjectFinancialElements(), project);
         // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
         project.setLastModifiedBy("dude");
 

@@ -8,7 +8,7 @@ import java.util.List;
 public class ProjectMasterDTO {
 
     private ProjectDescriptionDTO projectDescription;
-    private ProjectFinancialElementsDTO financialElements;
+    private ProjectFinancialElementsDTO projectFinancialElements;
     private List<ContractDTO> contracts;
     private List<ProjectContractorDTO> projectContractors;
     private List<ProjectSubcontractorDTO> projectSubcontractors;
