@@ -72,21 +72,32 @@ public class ProjectServiceImpl implements ProjectService {
         validateFileExtensions(subcontractorFiles);
         validateFileExtensions(contractFiles);
         validateFileExtensions(documents);
-        
+
+
+        // PROJECT DETAILS
         Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
+        utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
 
         project.setDateCreated(LocalDateTime.now());
-        utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
         project.setLastModifiedBy("dude");
+
+        // DEPENDANT ENTITIES
         project.setProjectContractors(
                 projectContractorService.assignContractorsToProject(dto.getProjectContractors(),project, userPrincipal)
         );
         project.setProjectSubcontractors(
                 projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles,project, userPrincipal)
         );
-        project.setContracts(contractService.assignContractsToProject(dto.getContracts(), contractFiles, project, userPrincipal));
-        project.setComments(commentService.assignCommentsToProject(dto.getProjectComments(), project, userPrincipal));
-        project.setProjectDocuments(projectDocumentService.assignDocumentsToProject(documents, project, userPrincipal));
+        project.setContracts(
+                contractService.assignContractsToProject(dto.getContracts(), contractFiles, project, userPrincipal)
+        );
+        project.setComments(
+                commentService.assignCommentsToProject(dto.getProjectComments(), project, userPrincipal)
+        );
+        project.setProjectDocuments(
+                projectDocumentService.assignDocumentsToProject(documents, project, userPrincipal)
+        );
+
         try {
             projectRepo.save(project);
         } catch (Exception e){
@@ -106,18 +117,31 @@ public class ProjectServiceImpl implements ProjectService {
         validateTotalProjectContractorPercentages(dto);
         validateContractNegativeValues(dto);
 
+        // PROJECT DETAILS
         utils.initModelMapperStrict().map(dto.getProjectDescription(), project);
         utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
         project.setLastModifiedBy("dude");
+
+        // DEPENDANT ENTITIES
         project.getProjectContractors().clear();
         project.getProjectSubcontractors().clear();
         project.getContracts().clear();
         project.getProjectDocuments().clear();
-        project.addContractors(projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal));
-        project.addSubcontractor(projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles, project, userPrincipal));
-        project.addContracts(contractService.assignContractsToProject(dto.getContracts(), contractFiles, project, userPrincipal));
-        project.addComments(commentService.assignCommentsToProject(dto.getProjectComments(), project, userPrincipal));
-        project.addProjectDocuments(projectDocumentService.assignDocumentsToProject(documents, project, userPrincipal));
+        project.addContractors(
+                projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal)
+        );
+        project.addSubcontractor(
+                projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles, project, userPrincipal)
+        );
+        project.addContracts(
+                contractService.assignContractsToProject(dto.getContracts(), contractFiles, project, userPrincipal)
+        );
+        project.addComments(
+                commentService.assignCommentsToProject(dto.getProjectComments(), project, userPrincipal)
+        );
+        project.addProjectDocuments(
+                projectDocumentService.assignDocumentsToProject(documents, project, userPrincipal)
+        );
 
         /*   works!!!!!!!!
 			projectContractorService.dischargeContractors(project, dto);
@@ -254,7 +278,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void validateFileExtensions(MultipartFile[] files) {
-        // @TODO - LEFT TXT IN FOR TESTING
+        // @TODO - LEFT TXT IN FOR TESTING, NEED TO ADD MORE ALLOWED TYPES
         List<String> allowedFileTypes = Arrays.asList("pdf", "doc", "docx", "txt");
 
         for (MultipartFile file: files) {
