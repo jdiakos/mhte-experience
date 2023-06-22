@@ -3,6 +3,7 @@ package com.iknowhow.mhte.projectsexperience.service;
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectContractor;
+import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectContractorRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
@@ -61,9 +62,11 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                 .stream()
                 .map(dto -> {
                     ProjectContractor contractor = new ProjectContractor();
-                    if(dto.getId()==null) {
-                        contractor = new ProjectContractor();
-                    } else {
+                    if(dto.getId()!=null) {
+                		List<Long> ids = project.getProjectContractors().stream().map(ProjectContractor::getId).toList();
+                        if(!ids.contains(dto.getId())) {
+            				throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACTOR_ALREADY_ASSIGNED);
+            			}
                         contractor.setId(dto.getId());
                     }
                     contractor.setContractorId(dto.getContractorId());
@@ -77,6 +80,9 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                     return contractor;
                 })
                 .toList();
+        if(project.getId()!=null) {
+            project.getProjectContractors().clear();
+        }
         return contractors;
 
     }

@@ -64,17 +64,11 @@ public class ProjectServiceImpl implements ProjectService {
     public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
 
-        validateProjectNegativeValues(dto.getProjectFinancialElements());
-        validateTotalProjectContractorPercentages(dto);
-        validateDuplicateProjectContractor(dto);
-        validateDuplicateProjectSubcontractor(dto);
-        validateContractNegativeValues(dto);
-        validateFileExtensions(subcontractorFiles);
-        validateFileExtensions(contractFiles);
-        validateFileExtensions(documents);
+    	projectValidations(dto, subcontractorFiles, contractFiles, documents);
 
 
         // PROJECT DETAILS
+        dto.getProjectDescription().setId(null);
         Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
         utils.initModelMapperStrict().map(dto.getProjectFinancialElements(), project);
 
@@ -114,12 +108,7 @@ public class ProjectServiceImpl implements ProjectService {
     	Project project = projectRepo.findById(dto.getProjectDescription().getId()).orElseThrow(() ->
         	new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
     	
-        validateProjectNegativeValues(dto.getProjectFinancialElements());
-        validateTotalProjectContractorPercentages(dto);
-        validateContractNegativeValues(dto);
-        validateFileExtensions(subcontractorFiles);
-        validateFileExtensions(contractFiles);
-        validateFileExtensions(documents);
+    	projectValidations(dto, subcontractorFiles, contractFiles, documents);
 
         // PROJECT DETAILS
         utils.initModelMapperStrict().map(dto.getProjectDescription(), project);
@@ -128,9 +117,6 @@ public class ProjectServiceImpl implements ProjectService {
         project.setLastModifiedBy("dude");
 
         // DEPENDANT ENTITIES
-        project.getProjectContractors().clear();
-        project.getProjectSubcontractors().clear();
-        project.getContracts().clear();
         project.getProjectDocuments().clear();
         project.addContractors(
                 projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal)
@@ -190,6 +176,20 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projectRepo.findAll(booleanBuilder, pageable)
                 .map(this::toProjectResponseDTO);
+    }
+
+    private void projectValidations(ProjectMasterDTO dto, MultipartFile[] subcontractorFiles,
+    		MultipartFile[] contractFiles, MultipartFile[] documents) {
+
+        validateProjectNegativeValues(dto.getProjectFinancialElements());
+        validateTotalProjectContractorPercentages(dto);
+        validateDuplicateProjectContractor(dto);
+        validateDuplicateProjectSubcontractor(dto);
+        validateContractNegativeValues(dto);
+        validateFileExtensions(subcontractorFiles);
+        validateFileExtensions(contractFiles);
+        validateFileExtensions(documents);
+
     }
 
     private ProjectResponseDTO toProjectResponseDTO(Project project) {

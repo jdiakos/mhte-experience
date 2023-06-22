@@ -70,6 +70,10 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
     	for (int i=0; i<dtoList.size(); i++) {
     		ProjectSubcontractor subcontractor = new ProjectSubcontractor();
     		if(dtoList.get(i).getId()!=null) {
+        		List<Long> ids = project.getProjectSubcontractors().stream().map(ProjectSubcontractor::getId).toList();
+    			if(!ids.contains(dtoList.get(i).getId())) {
+    				throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.SUBCONTRACTOR_ALREADY_ASSIGNED);
+    			}
     			subcontractor.setId(dtoList.get(i).getId());
             }
             subcontractor.setSubcontractorId(dtoList.get(i).getSubcontractorId());
@@ -93,6 +97,9 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
             }
             subcontractors.add(subcontractor);
     	}
+    	if(project.getId()!=null) {
+            project.getProjectSubcontractors().clear();
+        }
         return subcontractors;
     }
 
