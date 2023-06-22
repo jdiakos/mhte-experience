@@ -208,7 +208,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .toList();
         List<CommentsDTO> commentsDTOList = project.getComments()
                 .stream()
-                .map(comment -> mapper.map(comment, CommentsDTO.class))
+                .map(this::toCommentDTO)
                 .toList();
 
         dto.setProjectDescription(descriptionDTO);
@@ -219,6 +219,17 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setDocuments(documentsDTOList);
         dto.setComments(commentsDTOList);
 
+        return dto;
+    }
+
+    private CommentsDTO toCommentDTO (Comment comment) {
+        // we need this because the field names between the dto and the entity differ, so the mapper ignores them
+        CommentsDTO dto = new CommentsDTO();
+        dto.setId(comment.getId());
+        dto.setMessage(comment.getMessage());
+        dto.setUsername(comment.getCreatedBy());
+        dto.setDate(comment.getCreatedAt());
+        dto.setRole(comment.getRole());
         return dto;
     }
 
