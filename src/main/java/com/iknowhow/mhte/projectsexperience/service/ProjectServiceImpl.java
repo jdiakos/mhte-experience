@@ -2,7 +2,7 @@ package com.iknowhow.mhte.projectsexperience.service;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.*;
-import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsAlreadyAssignedException;
+import com.iknowhow.mhte.projectsexperience.exception.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,15 +11,16 @@ import org.springframework.stereotype.Service;
 import com.iknowhow.mhte.projectsexperience.domain.entities.*;
 import com.iknowhow.mhte.projectsexperience.domain.entities.QProject;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
-import com.iknowhow.mhte.projectsexperience.exception.MhteProjectCustomValidationException;
-import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
-import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
 import com.querydsl.core.BooleanBuilder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -68,6 +69,9 @@ public class ProjectServiceImpl implements ProjectService {
         validateDuplicateProjectContractor(dto);
         validateDuplicateProjectSubcontractor(dto);
         validateContractNegativeValues(dto);
+        validateFileExtensions(subcontractorFiles);
+        validateFileExtensions(contractFiles);
+        validateFileExtensions(documents);
         
         Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
 
@@ -196,6 +200,11 @@ public class ProjectServiceImpl implements ProjectService {
         return dto;
     }
 
+    /**
+     * VALIDATORS
+     *
+     */
+
     private void validateProjectNegativeValues(ProjectFinancialElementsDTO dto) {
         if (dto.getInitialContractBudget() < 0 &&
                 dto.getInitialContractValue() < 0 &&
@@ -243,4 +252,21 @@ public class ProjectServiceImpl implements ProjectService {
             }
         });
     }
+
+    private void validateFileExtensions(MultipartFile[] files) {
+        // @TODO - LEFT TXT IN FOR TESTING
+        List<String> allowedFileTypes = Arrays.asList("pdf", "doc", "docx", "txt");
+
+        for (MultipartFile file: files) {
+            if (file != null) {
+                String extension = MimeTypeUtils.parseMimeType(
+                        Objects.requireNonNull(file.getOriginalFilename())).getSubtype().toLowerCase();
+                if (!allowedFileTypes.contains(extension)) {
+                    throw new MhteProjectFileException(MhteProjectErrorMessage.FILE_TYPE_NOT_ALLOWED.name());
+                }
+            }
+        }
+    }
+
+
 }

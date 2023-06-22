@@ -72,6 +72,14 @@ public class MhteProjectExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({MhteProjectFileException.class})
+    public ResponseEntity<MhteProjectErrorDTO> handleFileException(MhteProjectFileException ex) {
+        MhteProjectErrorDTO response = new MhteProjectErrorDTO();
+        response.setMessage(ex.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
     /**
      * FILENET EXCEPTIONS
      */
