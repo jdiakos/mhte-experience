@@ -71,6 +71,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                     contractor.setParticipationType(dto.getParticipationType());
                     contractor.setParticipationPercentage(dto.getParticipationPercentage());
                     contractor.setDateCreated(LocalDateTime.now());
+                    // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
                     contractor.setLastModifiedBy("ASTERIX");
 //                    contractor.setLastModifiedBy(userPrincipal.getUsername());
                     return contractor;

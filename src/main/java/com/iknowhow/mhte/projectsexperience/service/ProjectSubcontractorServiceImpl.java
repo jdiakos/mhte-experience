@@ -79,6 +79,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
             subcontractor.setContractDateFrom(dtoList.get(i).getContractDateFrom());
             subcontractor.setContractDateTo(dtoList.get(i).getContractDateTo());
             subcontractor.setDateCreated(LocalDateTime.now());
+            // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
             subcontractor.setLastModifiedBy("ASTERIX");
 //          contract.setLastModifiedBy(userPrincipal.getUsername());
             if (dtoList.get(i).getContractGUID() != null) {

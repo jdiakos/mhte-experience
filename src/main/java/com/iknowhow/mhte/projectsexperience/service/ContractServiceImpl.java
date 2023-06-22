@@ -49,7 +49,7 @@ public class ContractServiceImpl implements ContractService {
             contract.setProject(project);
 
             contract.setDateCreated(LocalDateTime.now());
-            //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
+            // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
             contract.setLastModifiedBy("JULIUS CAESAR");
 //          contract.setLastModifiedBy(userPrincipal.getUsername());
 

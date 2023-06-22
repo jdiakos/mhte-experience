@@ -15,6 +15,7 @@ import com.iknowhow.mhte.projectsexperience.utils.Utils;
 import com.querydsl.core.BooleanBuilder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -79,6 +80,7 @@ public class ProjectServiceImpl implements ProjectService {
         utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
 
         project.setDateCreated(LocalDateTime.now());
+        // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
         project.setLastModifiedBy("dude");
 
         // DEPENDANT ENTITIES
@@ -120,6 +122,7 @@ public class ProjectServiceImpl implements ProjectService {
         // PROJECT DETAILS
         utils.initModelMapperStrict().map(dto.getProjectDescription(), project);
         utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
+        // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
         project.setLastModifiedBy("dude");
 
         // DEPENDANT ENTITIES
@@ -283,14 +286,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         for (MultipartFile file: files) {
             if (file != null) {
-                String extension = MimeTypeUtils.parseMimeType(
-                        Objects.requireNonNull(file.getOriginalFilename())).getSubtype().toLowerCase();
+                String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
                 if (!allowedFileTypes.contains(extension)) {
                     throw new MhteProjectFileException(MhteProjectErrorMessage.FILE_TYPE_NOT_ALLOWED.name());
                 }
             }
         }
     }
-
 
 }

@@ -33,6 +33,7 @@ public class CommentServiceImpl implements CommentService {
                     comment.setMessage(dto.getMessage());
                     comment.setProject(project);
                     comment.setCreatedAt(LocalDateTime.now());
+                    // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
                     comment.setCreatedBy("ASTERIX");
 
                     return comment;
