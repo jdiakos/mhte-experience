@@ -192,8 +192,12 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectResponseDTO toProjectResponseDTO(Project project) {
         ModelMapper mapper = utils.initModelMapperStrict();
         ProjectResponseDTO dto = new ProjectResponseDTO();
+
+        // MAP PROJECT DATA
         ProjectDescriptionDTO descriptionDTO = mapper.map(project, ProjectDescriptionDTO.class);
         ProjectFinancialElementsDTO financialsDTO = mapper.map(project, ProjectFinancialElementsDTO.class);
+
+        // MAP DEPENDANT ENTITIES
         List<ProjectContractorDTO> contractorsDTOList = project.getProjectContractors()
                 .stream()
                 .map(contractor -> mapper.map(contractor, ProjectContractorDTO.class))
