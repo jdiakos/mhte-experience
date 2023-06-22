@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -171,21 +172,18 @@ public class ProjectServiceImpl implements ProjectService {
         QProject qProject = QProject.project;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-        if (dto.getAdam() != null) {
-            booleanBuilder.and(qProject.adam.eq(dto.getAdam()));
-        }
-
-        if (dto.getProtocolNumber() != null) {
-            booleanBuilder.and(qProject.protocolNumber.eq(dto.getProtocolNumber()));
-        }
-
-        if (dto.getResponsibleEntity() != null) {
-            booleanBuilder.and(qProject.responsibleEntity.eq(dto.getResponsibleEntity()));
-        }
-
-        if (dto.getProjectCategory() != null) {
-            booleanBuilder.and(qProject.projectCategory.eq(dto.getProjectCategory()));
-        }
+        Optional.ofNullable(dto.getAdam())
+                .map(qProject.adam::eq)
+                .ifPresent(booleanBuilder::and);
+        Optional.ofNullable(dto.getProtocolNumber())
+                .map(qProject.protocolNumber::eq)
+                .ifPresent(booleanBuilder::and);
+        Optional.ofNullable(dto.getResponsibleEntity())
+                .map(qProject.responsibleEntity::eq)
+                .ifPresent(booleanBuilder::and);
+        Optional.ofNullable(dto.getProjectCategory())
+                .map(qProject.projectCategory::eq)
+                .ifPresent(booleanBuilder::and);
 
         return projectRepo.findAll(booleanBuilder, pageable)
                 .map(this::toProjectResponseDTO);
