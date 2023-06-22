@@ -3,7 +3,6 @@ package com.iknowhow.mhte.projectsexperience.service;
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
-import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
@@ -11,7 +10,6 @@ import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundExcept
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -43,9 +41,9 @@ public class ContractServiceImpl implements ContractService {
 
         for (int i = 0; i < dtoList.size(); i++) {
             Contract contract = new Contract();
-            if(dtoList.get(i).getId()!=null) {
+            if (dtoList.get(i).getId() != null) {
             	List<Long> ids = project.getContracts().stream().map(Contract::getId).toList();
-    			if(ids.contains(dtoList.get(i).getId())) {
+    			if (ids.contains(dtoList.get(i).getId())) {
     				throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACTOR_ALREADY_ASSIGNED);
     			}
     			contract.setId(dtoList.get(i).getId());

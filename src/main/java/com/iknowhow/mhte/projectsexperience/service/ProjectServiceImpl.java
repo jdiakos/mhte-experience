@@ -1,6 +1,8 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
+import com.iknowhow.mhte.projectsexperience.domain.enums.ContractTypeEnum;
+import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.dto.*;
 import com.iknowhow.mhte.projectsexperience.exception.*;
 import org.modelmapper.ModelMapper;
@@ -64,7 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
     public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
 
-    	projectValidations(dto, subcontractorFiles, contractFiles, documents);
+    	validateProjectData(dto, subcontractorFiles, contractFiles, documents);
 
 
         // PROJECT DETAILS
@@ -104,11 +106,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     public void updateProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
-    	
+
+        validateProjectData(dto, subcontractorFiles, contractFiles, documents);
+
     	Project project = projectRepo.findById(dto.getProjectDescription().getId()).orElseThrow(() ->
         	new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND));
     	
-    	projectValidations(dto, subcontractorFiles, contractFiles, documents);
 
         // PROJECT DETAILS
         utils.initModelMapperStrict().map(dto.getProjectDescription(), project);
@@ -178,20 +181,6 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(this::toProjectResponseDTO);
     }
 
-    private void projectValidations(ProjectMasterDTO dto, MultipartFile[] subcontractorFiles,
-    		MultipartFile[] contractFiles, MultipartFile[] documents) {
-
-        validateProjectNegativeValues(dto.getProjectFinancialElements());
-        validateTotalProjectContractorPercentages(dto);
-        validateDuplicateProjectContractor(dto);
-        validateDuplicateProjectSubcontractor(dto);
-        validateContractNegativeValues(dto);
-        validateFileExtensions(subcontractorFiles);
-        validateFileExtensions(contractFiles);
-        validateFileExtensions(documents);
-
-    }
-
     private ProjectResponseDTO toProjectResponseDTO(Project project) {
         ModelMapper mapper = utils.initModelMapperStrict();
         ProjectResponseDTO dto = new ProjectResponseDTO();
@@ -237,6 +226,22 @@ public class ProjectServiceImpl implements ProjectService {
      * VALIDATORS
      *
      */
+
+    private void validateProjectData(ProjectMasterDTO dto, MultipartFile[] subcontractorFiles,
+                                     MultipartFile[] contractFiles, MultipartFile[] documents) {
+
+        validateProjectNegativeValues(dto.getProjectFinancialElements());
+        validateTotalProjectContractorPercentages(dto);
+        validateDuplicateProjectContractor(dto);
+        validateDuplicateProjectSubcontractor(dto);
+        validateContractNegativeValues(dto);
+        validateFileExtensions(subcontractorFiles);
+        validateFileExtensions(contractFiles);
+        validateFileExtensions(documents);
+        validateAdamForPublicProjects(dto.getProjectDescription());
+        validateInitialContract(dto.getContracts());
+
+    }
 
     private void validateProjectNegativeValues(ProjectFinancialElementsDTO dto) {
         if (dto.getInitialContractBudget() < 0 &&
@@ -284,6 +289,34 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
             }
         });
+    }
+
+    private void validateAdamForPublicProjects(ProjectDescriptionDTO dto) {
+        // ADAM NUMBER SHOULD BE USED ONLY IN PUBLIC PROJECTS
+
+        if (dto.getProjectCategory().equals(ProjectsCategoryEnum.PUBLIC_PROJECT) && dto.getAdam() == null) {
+
+            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.PUBLIC_PROJECTS_MUST_HAVE_AN_ADAM);
+
+        } else if (!dto.getProjectCategory().equals(ProjectsCategoryEnum.PUBLIC_PROJECT) && dto.getAdam() != null) {
+
+            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.NON_PUBLIC_PROJECTS_CANNOT_HAVE_AN_ADAM);
+        }
+    }
+
+    private void validateInitialContract(List<ContractDTO> dtoList) {
+        // PROJECT MUST HAVE AN INITIAL CONTRACT AND CAN'T HAVE MORE THAN ONE INITIAL CONTRACTS
+        List<ContractDTO> result = dtoList
+                .stream()
+                .filter(dto -> dto.getContractType().equals(ContractTypeEnum.INITIAL_CONTRACT))
+                .toList();
+
+        if (result.size() > 1) {
+            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.MORE_THAN_ONE_INITIAL_CONTRACTS_PRESENT);
+        } else if (result.size() < 1) {
+            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.NO_INITIAL_CONTRACT_PRESENT);
+        }
+
     }
 
     private void validateFileExtensions(MultipartFile[] files) {

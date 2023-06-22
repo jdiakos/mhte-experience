@@ -29,20 +29,16 @@ public class Contract implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @NotNull
-    @Column(name = "contract_type")
+    @Column(name = "contract_type", nullable = false)
     @Enumerated(EnumType.STRING)
     @NotAudited
     private ContractTypeEnum contractType;
 
-    @NotNull
-    @Column(name = "contract_value")
+    @Column(name = "contract_value", nullable = false)
     @NotAudited
     private Double contractValue;
 
-    @NotNull
-    @Temporal(TemporalType.DATE)
-    @Column(name = "signing_date", updatable = false)
+    @Column(name = "signing_date", updatable = false, nullable = false)
     @NotAudited
     private LocalDate signingDate;
 

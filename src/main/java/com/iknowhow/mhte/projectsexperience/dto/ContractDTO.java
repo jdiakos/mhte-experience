@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import com.iknowhow.mhte.projectsexperience.domain.enums.ContractTypeEnum;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -17,7 +16,6 @@ public class ContractDTO {
     private Double contractValue;
     @NotNull
     private LocalDate signingDate;
-    private Long projectId;
     private String contractGUID;
 
 }
