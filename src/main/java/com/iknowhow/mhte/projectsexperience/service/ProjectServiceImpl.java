@@ -14,14 +14,12 @@ import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
 import com.querydsl.core.BooleanBuilder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MimeTypeUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -118,6 +116,9 @@ public class ProjectServiceImpl implements ProjectService {
         validateProjectNegativeValues(dto.getFinancialElements());
         validateTotalProjectContractorPercentages(dto);
         validateContractNegativeValues(dto);
+        validateFileExtensions(subcontractorFiles);
+        validateFileExtensions(contractFiles);
+        validateFileExtensions(documents);
 
         // PROJECT DETAILS
         utils.initModelMapperStrict().map(dto.getProjectDescription(), project);
