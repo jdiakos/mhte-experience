@@ -172,6 +172,9 @@ public class ProjectServiceImpl implements ProjectService {
         QProject qProject = QProject.project;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
+        Optional.ofNullable(dto.getTitle())
+                .map(qProject.title::containsIgnoreCase)
+                .ifPresent(booleanBuilder::and);
         Optional.ofNullable(dto.getAdam())
                 .map(qProject.adam::eq)
                 .ifPresent(booleanBuilder::and);
@@ -179,7 +182,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(qProject.protocolNumber::eq)
                 .ifPresent(booleanBuilder::and);
         Optional.ofNullable(dto.getResponsibleEntity())
-                .map(qProject.responsibleEntity::eq)
+                .map(qProject.responsibleEntity::containsIgnoreCase)
                 .ifPresent(booleanBuilder::and);
         Optional.ofNullable(dto.getProjectCategory())
                 .map(qProject.projectCategory::eq)

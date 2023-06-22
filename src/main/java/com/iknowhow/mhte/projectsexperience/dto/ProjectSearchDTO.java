@@ -5,8 +5,11 @@ import lombok.Data;
 
 @Data
 public class ProjectSearchDTO {
+
+    private String title;
     private ProjectsCategoryEnum projectCategory;
     private String adam;
     private String protocolNumber;
     private String responsibleEntity;
+
 }
