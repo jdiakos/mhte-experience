@@ -12,13 +12,11 @@ import lombok.Data;
 public class ContractDTO {
 	
     private Long id;
-    @NotBlank
     private ContractTypeEnum contractType;
     @NotNull
     private Double contractValue;
     @NotNull
     private LocalDate signingDate;
-    @NotNull
     private Long projectId;
     private String contractGUID;
 

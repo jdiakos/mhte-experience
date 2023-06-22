@@ -3,8 +3,11 @@ package com.iknowhow.mhte.projectsexperience.service;
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Contract;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
+import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ContractRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
+import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
+import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,18 +44,19 @@ public class ContractServiceImpl implements ContractService {
         for (int i = 0; i < dtoList.size(); i++) {
             Contract contract = new Contract();
             if(dtoList.get(i).getId()!=null) {
-            	contract.setId(dtoList.get(i).getId());
+            	List<Long> ids = project.getContracts().stream().map(Contract::getId).toList();
+    			if(ids.contains(dtoList.get(i).getId())) {
+    				throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACTOR_ALREADY_ASSIGNED);
+    			}
+    			contract.setId(dtoList.get(i).getId());
             }
             contract.setContractType(dtoList.get(i).getContractType());
             contract.setContractValue(dtoList.get(i).getContractValue());
             contract.setSigningDate(dtoList.get(i).getSigningDate());
             contract.setProject(project);
-
             contract.setDateCreated(LocalDateTime.now());
-            //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
             contract.setLastModifiedBy("JULIUS CAESAR");
 //          contract.setLastModifiedBy(userPrincipal.getUsername());
-
             if (dtoList.get(i).getContractGUID() != null) {
                 contract.setContractGUID(dtoList.get(i).getContractGUID());
                 contract.setFilename(contractFiles[i].getOriginalFilename());
@@ -63,9 +67,10 @@ public class ContractServiceImpl implements ContractService {
                 contract.setFilename(contractFiles[i].getOriginalFilename());
             }
             contracts.add(contract);
-
         }
-
+        if(project.getId()!=null) {
+        	project.getContracts().clear();
+        }
         return contracts;
 
     }
