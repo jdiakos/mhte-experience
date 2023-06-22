@@ -18,6 +18,4 @@ public interface ProjectContractorService {
 	List<ProjectContractor> assignContractorsToProject(List<ProjectContractorDTO> dtoList, Project project,
 			MhteUserPrincipal userPrincipal);
 
-//	void dischargeContractors(Project project, ProjectMasterDTO dto);
-
 }

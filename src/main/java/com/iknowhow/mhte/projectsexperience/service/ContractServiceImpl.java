@@ -32,8 +32,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    @Transactional
-    public List<Contract> createContracts(List<ContractDTO> dtoList,
+    public List<Contract> assignContractsToProject(List<ContractDTO> dtoList,
                                           MultipartFile[] contractFiles,
                                           Project project,
                                           MhteUserPrincipal userPrincipal) {
@@ -41,6 +40,9 @@ public class ContractServiceImpl implements ContractService {
 
         for (int i = 0; i < dtoList.size(); i++) {
             Contract contract = new Contract();
+            if(dtoList.get(i).getId()!=null) {
+            	contract.setId(dtoList.get(i).getId());
+            }
             contract.setContractType(dtoList.get(i).getContractType());
             contract.setContractValue(dtoList.get(i).getContractValue());
             contract.setSigningDate(dtoList.get(i).getSigningDate());
@@ -56,7 +58,7 @@ public class ContractServiceImpl implements ContractService {
                 contract.setFilename(contractFiles[i].getOriginalFilename());
             } else {
                 contract.setContractGUID(
-                        fileNetService.uploadFileToFilenet(project, contractFiles[i], "ASTERIX")
+                		fileNetService.uploadFileToFilenet(project, contractFiles[i], "ASTERIX")
                 );
                 contract.setFilename(contractFiles[i].getOriginalFilename());
             }

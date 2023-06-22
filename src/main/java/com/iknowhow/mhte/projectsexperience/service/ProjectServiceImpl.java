@@ -75,22 +75,14 @@ public class ProjectServiceImpl implements ProjectService {
         utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
         project.setLastModifiedBy("dude");
         project.setProjectContractors(
-                projectContractorService.assignContractorsToProject(dto.getProjectContractors(),
-        		project, userPrincipal)
+                projectContractorService.assignContractorsToProject(dto.getProjectContractors(),project, userPrincipal)
         );
         project.setProjectSubcontractors(
-                projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles,
-        		project, userPrincipal)
+                projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles,project, userPrincipal)
         );
-        project.setContracts(
-                contractService.createContracts(dto.getContracts(), contractFiles, project, userPrincipal)
-        );
-        project.setComments(
-                commentService.createComments(dto.getProjectComments(), project, userPrincipal)
-        );
-        project.setProjectDocuments(
-                projectDocumentService.createDocuments(documents, project, userPrincipal)
-        );
+        project.setContracts(contractService.assignContractsToProject(dto.getContracts(), contractFiles, project, userPrincipal));
+        project.setComments(commentService.assignCommentsToProject(dto.getProjectComments(), project, userPrincipal));
+        project.setProjectDocuments(projectDocumentService.assignDocumentsToProject(documents, project, userPrincipal));
         try {
             projectRepo.save(project);
         } catch (Exception e){
@@ -114,14 +106,19 @@ public class ProjectServiceImpl implements ProjectService {
         utils.initModelMapperStrict().map(dto.getFinancialElements(), project);
         project.setLastModifiedBy("dude");
         project.getProjectContractors().clear();
-        project.addContractors(projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal));
         project.getProjectSubcontractors().clear();
+        project.getContracts().clear();
+        project.getProjectDocuments().clear();
+        project.addContractors(projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal));
         project.addSubcontractor(projectSubcontractorService.assignSubcontractorsToProject(dto.getProjectSubcontractors(), subcontractorFiles, project, userPrincipal));
+        project.addContracts(contractService.assignContractsToProject(dto.getContracts(), contractFiles, project, userPrincipal));
+        project.addComments(commentService.assignCommentsToProject(dto.getProjectComments(), project, userPrincipal));
+        project.addProjectDocuments(projectDocumentService.assignDocumentsToProject(documents, project, userPrincipal));
 
-		/*   works!!!!!!!!
-		projectContractorService.dischargeContractors(project, dto);
-		project.getProjectContractors().clear();
-		project.getProjectContractors().addAll(contractors);
+        /*   works!!!!!!!!
+			projectContractorService.dischargeContractors(project, dto);
+			project.getProjectContractors().clear();
+			project.getProjectContractors().addAll(contractors);
 		*/
 
         projectRepo.save(project);
