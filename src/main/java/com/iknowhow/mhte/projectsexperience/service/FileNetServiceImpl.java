@@ -58,8 +58,8 @@ public class FileNetServiceImpl implements FileNetService {
             document.checkin(AutoClassify.DO_NOT_AUTO_CLASSIFY, CheckinType.MAJOR_VERSION);
             document.save(RefreshMode.REFRESH);
 
-            // ASSIGN TO FOLDER - IF FOLDER DOES NOT EXIST, CREATE BASED ON PROJECT ADAM
-            Folder folder = fetchFolder(objectStore, project.getAdam());
+            // ASSIGN TO FOLDER - IF FOLDER DOES NOT EXIST, CREATE BASED ON PROJECT PROTOCOL NUMBER
+            Folder folder = fetchFolder(objectStore, project.getProtocolNumber());
             ReferentialContainmentRelationship rcr = folder.file(
                     document, AutoUniqueName.AUTO_UNIQUE, "TEST", DefineSecurityParentage.DO_NOT_DEFINE_SECURITY_PARENTAGE
             );
