@@ -3,7 +3,6 @@ package com.iknowhow.mhte.projectsexperience.domain.entities;
 import com.iknowhow.mhte.projectsexperience.domain.enums.ContractTypeEnum;
 import com.iknowhow.mhte.projectsexperience.utils.listeners.ContractAuditListener;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;

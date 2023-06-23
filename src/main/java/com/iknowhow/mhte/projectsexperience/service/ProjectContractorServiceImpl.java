@@ -3,7 +3,6 @@ package com.iknowhow.mhte.projectsexperience.service;
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectContractor;
-import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectContractorRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;

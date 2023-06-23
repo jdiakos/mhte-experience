@@ -38,7 +38,7 @@ public class MhteProjectExceptionHandler {
     @ExceptionHandler({DataIntegrityViolationException.class})
     public ResponseEntity<MhteProjectErrorDTO> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         MhteProjectErrorDTO response = new MhteProjectErrorDTO();
-        response.setMessage(MhteProjectErrorMessage.DATABASE_DATA_INTEGRITY_VIOLATION.name());
+        response.setMessage(MhteProjectErrorMessage.DATA_INTEGRITY_VIOLATION.name());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
