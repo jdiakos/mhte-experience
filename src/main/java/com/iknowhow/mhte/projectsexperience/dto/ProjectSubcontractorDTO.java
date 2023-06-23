@@ -21,5 +21,6 @@ public class ProjectSubcontractorDTO {
     @NotNull
     private LocalDate contractDateTo;
     private String contractGUID;
+    private String contractFilename;
 
 }
