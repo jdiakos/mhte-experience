@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -162,15 +163,19 @@ public class ProjectServiceImpl implements ProjectService {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
         Optional.ofNullable(dto.getTitle())
+                .filter(Predicate.not(String::isEmpty))
                 .map(qProject.title::containsIgnoreCase)
                 .ifPresent(booleanBuilder::and);
         Optional.ofNullable(dto.getAdam())
+                .filter(Predicate.not(String::isEmpty))
                 .map(qProject.adam::eq)
                 .ifPresent(booleanBuilder::and);
         Optional.ofNullable(dto.getProtocolNumber())
+                .filter(Predicate.not(String::isEmpty))
                 .map(qProject.protocolNumber::eq)
                 .ifPresent(booleanBuilder::and);
         Optional.ofNullable(dto.getResponsibleEntity())
+                .filter(Predicate.not(String::isEmpty))
                 .map(qProject.responsibleEntity::containsIgnoreCase)
                 .ifPresent(booleanBuilder::and);
         Optional.ofNullable(dto.getProjectCategory())
