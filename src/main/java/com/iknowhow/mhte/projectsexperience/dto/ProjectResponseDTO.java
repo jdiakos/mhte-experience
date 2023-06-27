@@ -10,7 +10,7 @@ public class ProjectResponseDTO {
     private ProjectFinancialElementsDTO projectFinancialElements;
     private List<ProjectContractorDTO> projectContractors;
     private List<ProjectSubcontractorDTO> projectSubcontractors;
-    private List<ContractResponseDTO> contracts;
+    private List<ContractDTO> contracts;
     private List<ProjectDocumentsDTO> documents;
     private List<CommentsDTO> comments;
 

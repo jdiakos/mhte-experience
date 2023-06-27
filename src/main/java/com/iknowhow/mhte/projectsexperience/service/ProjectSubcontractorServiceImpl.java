@@ -88,7 +88,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 //          contract.setLastModifiedBy(userPrincipal.getUsername());
             if (dtoList.get(i).getContractGUID() != null) {
             	subcontractor.setContractGUID(dtoList.get(i).getContractGUID());
-                subcontractor.setContractFilename(subcontractorFiles[i].getOriginalFilename());
+                subcontractor.setContractFilename(dtoList.get(i).getContractFilename());
             } else {
             	subcontractor.setContractGUID(
                         fileNetService.uploadFileToFilenet(project, subcontractorFiles[i], "ASTERIX")

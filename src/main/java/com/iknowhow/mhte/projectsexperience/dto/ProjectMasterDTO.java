@@ -28,5 +28,6 @@ public class ProjectMasterDTO {
     private List<ProjectSubcontractorDTO> projectSubcontractors;
     @NotNull
     private List<CommentsDTO> projectComments;
+    private List<ProjectDocumentsDTO> projectDocuments;
 
 }

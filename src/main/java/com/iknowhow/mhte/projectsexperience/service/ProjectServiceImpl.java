@@ -93,7 +93,7 @@ public class ProjectServiceImpl implements ProjectService {
                 commentService.assignCommentsToProject(dto.getProjectComments(), project, userPrincipal)
         );
         project.setProjectDocuments(
-                projectDocumentService.assignDocumentsToProject(documents, project, userPrincipal)
+                projectDocumentService.assignDocumentsToProject(dto.getProjectDocuments(), documents, project, userPrincipal)
         );
 
         try {
@@ -121,7 +121,6 @@ public class ProjectServiceImpl implements ProjectService {
         project.setLastModifiedBy("dude");
 
         // DEPENDANT ENTITIES
-        project.getProjectDocuments().clear();
         project.addContractors(
                 projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal)
         );
@@ -135,7 +134,7 @@ public class ProjectServiceImpl implements ProjectService {
                 commentService.assignCommentsToProject(dto.getProjectComments(), project, userPrincipal)
         );
         project.addProjectDocuments(
-                projectDocumentService.assignDocumentsToProject(documents, project, userPrincipal)
+                projectDocumentService.assignDocumentsToProject(dto.getProjectDocuments(), documents, project, userPrincipal)
         );
 
         /*   works!!!!!!!!
@@ -203,9 +202,9 @@ public class ProjectServiceImpl implements ProjectService {
                 .stream()
                 .map(subcontractor -> mapper.map(subcontractor, ProjectSubcontractorDTO.class))
                 .toList();
-        List<ContractResponseDTO> contractDTOList = project.getContracts()
+        List<ContractDTO> contractDTOList = project.getContracts()
                 .stream()
-                .map(contract -> mapper.map(contract, ContractResponseDTO.class))
+                .map(contract -> mapper.map(contract, ContractDTO.class))
                 .toList();
         List<ProjectDocumentsDTO> documentsDTOList = project.getProjectDocuments()
                 .stream()
@@ -338,7 +337,7 @@ public class ProjectServiceImpl implements ProjectService {
     private void validateFileExtensions(MultipartFile[] files) {
         // @TODO - LEFT TXT IN FOR TESTING, NEED TO ADD MORE ALLOWED TYPES
         List<String> allowedFileTypes = Arrays.asList("pdf", "doc", "docx", "txt");
-        if(files!=null && files.length>0) {
+        if(files != null && files.length>0) {
 	        for (MultipartFile file: files) {
 	            if (file != null) {
 	                String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());

@@ -58,7 +58,7 @@ public class ContractServiceImpl implements ContractService {
 //          contract.setLastModifiedBy(userPrincipal.getUsername());
             if (dtoList.get(i).getContractGUID() != null) {
                 contract.setContractGUID(dtoList.get(i).getContractGUID());
-                contract.setFilename(contractFiles[i].getOriginalFilename());
+                contract.setFilename(dtoList.get(i).getFilename());
             } else {
                 contract.setContractGUID(
                 		fileNetService.uploadFileToFilenet(project, contractFiles[i], "ASTERIX")
