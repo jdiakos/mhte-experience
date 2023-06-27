@@ -62,9 +62,9 @@ public class ProjectController {
     @PutMapping(value= "/update-project")
     public ResponseEntity<Void> updateProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal,
                                               @Valid @RequestPart ProjectMasterDTO dto,
-                                              @RequestPart("subcontractorFiles") MultipartFile[] subcontractorFiles,
-                                              @RequestPart("contractFiles") MultipartFile[] contractFiles,
-                                              @RequestPart("documents") MultipartFile[] documents) {
+                                              @RequestPart(name="subcontractorFiles", required=false) MultipartFile[] subcontractorFiles,
+                                              @RequestPart(name="contractFiles", required=false) MultipartFile[] contractFiles,
+                                              @RequestPart(name="documents", required=false) MultipartFile[] documents) {
     	projectService.updateProject(userPrincipal, dto, subcontractorFiles, contractFiles, documents);
         return ResponseEntity.ok().build();
     }
