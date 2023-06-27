@@ -50,7 +50,7 @@ public class ProjectController {
 
     @PostMapping(value= "/create-project")
     public ResponseEntity<Void> createProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal,
-                                              @Valid  @RequestPart ProjectMasterDTO dto,
+                                              @Valid @RequestPart ProjectMasterDTO dto,
                                               @RequestPart("subcontractorFiles") MultipartFile[] subcontractorFiles,
                                               @RequestPart("contractFiles") MultipartFile[] contractFiles,
                                               @RequestPart("documents") MultipartFile[] documents) {
@@ -61,7 +61,7 @@ public class ProjectController {
     
     @PutMapping(value= "/update-project")
     public ResponseEntity<Void> updateProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal,
-                                              @Valid  @RequestPart ProjectMasterDTO dto,
+                                              @Valid @RequestPart ProjectMasterDTO dto,
                                               @RequestPart("subcontractorFiles") MultipartFile[] subcontractorFiles,
                                               @RequestPart("contractFiles") MultipartFile[] contractFiles,
                                               @RequestPart("documents") MultipartFile[] documents) {
