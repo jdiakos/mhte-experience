@@ -65,7 +65,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
                                                                     MultipartFile[] subcontractorFiles,
                                                                     Project project,
                                                                     MhteUserPrincipal userPrincipal) {
-    	
+    	int fileIndex=0;
     	List<ProjectSubcontractor> subcontractors = new ArrayList<>();
     	for (int i=0; i<dtoList.size(); i++) {
     		ProjectSubcontractor subcontractor = new ProjectSubcontractor();
@@ -90,10 +90,14 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
             	subcontractor.setContractGUID(dtoList.get(i).getContractGUID());
                 subcontractor.setContractFilename(dtoList.get(i).getContractFilename());
             } else {
+            	if(subcontractorFiles==null || subcontractorFiles.length<=fileIndex) {
+            		throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.MISSING_FILE);
+            	}
             	subcontractor.setContractGUID(
-                        fileNetService.uploadFileToFilenet(project, subcontractorFiles[i], "ASTERIX")
+                        fileNetService.uploadFileToFilenet(project, subcontractorFiles[fileIndex], "ASTERIX")
                 );
-                subcontractor.setContractFilename(subcontractorFiles[i].getOriginalFilename());
+                subcontractor.setContractFilename(subcontractorFiles[fileIndex].getOriginalFilename());
+                fileIndex++;
             }
             subcontractors.add(subcontractor);
     	}

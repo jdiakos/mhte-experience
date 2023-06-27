@@ -38,7 +38,7 @@ public class ContractServiceImpl implements ContractService {
                                           Project project,
                                           MhteUserPrincipal userPrincipal) {
         List<Contract> contracts = new ArrayList<>();
-
+        int fileIndex=0;
         for (int i = 0; i < dtoList.size(); i++) {
             Contract contract = new Contract();
             if (dtoList.get(i).getId() != null) {
@@ -60,10 +60,14 @@ public class ContractServiceImpl implements ContractService {
                 contract.setContractGUID(dtoList.get(i).getContractGUID());
                 contract.setFilename(dtoList.get(i).getFilename());
             } else {
+            	if(contractFiles==null || contractFiles.length<=fileIndex) {
+            		throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.MISSING_FILE);
+            	}
                 contract.setContractGUID(
-                		fileNetService.uploadFileToFilenet(project, contractFiles[i], "ASTERIX")
+                		fileNetService.uploadFileToFilenet(project, contractFiles[fileIndex], "ASTERIX")
                 );
-                contract.setFilename(contractFiles[i].getOriginalFilename());
+                contract.setFilename(contractFiles[fileIndex].getOriginalFilename());
+                fileIndex++;
             }
             contracts.add(contract);
 
