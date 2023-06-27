@@ -338,14 +338,15 @@ public class ProjectServiceImpl implements ProjectService {
     private void validateFileExtensions(MultipartFile[] files) {
         // @TODO - LEFT TXT IN FOR TESTING, NEED TO ADD MORE ALLOWED TYPES
         List<String> allowedFileTypes = Arrays.asList("pdf", "doc", "docx", "txt");
-
-        for (MultipartFile file: files) {
-            if (file != null) {
-                String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-                if (!allowedFileTypes.contains(extension)) {
-                    throw new MhteProjectFileException(MhteProjectErrorMessage.FILE_TYPE_NOT_ALLOWED.name());
-                }
-            }
+        if(files!=null && files.length>0) {
+	        for (MultipartFile file: files) {
+	            if (file != null) {
+	                String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+	                if (!allowedFileTypes.contains(extension)) {
+	                    throw new MhteProjectFileException(MhteProjectErrorMessage.FILE_TYPE_NOT_ALLOWED.name());
+	                }
+	            }
+	        }
         }
     }
 
