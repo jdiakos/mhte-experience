@@ -26,7 +26,7 @@ public class CommentServiceImpl implements CommentService {
                                                  Project project,
                                                  MhteUserPrincipal userPrincipal) {
 
-        return dtoList.stream().
+    	return dtoList.stream().
         		filter(dto->dto.getId()==null).map(dto -> {
 		        	Comment comment = new Comment();
 			        comment.setCreatedAt(LocalDateTime.now());
@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
 			        comment.setMessage(dto.getMessage());
 			        comment.setProject(project);
 			        comment.setRole(dto.getRole());
-			        comment.setCreatedBy(userPrincipal.getUsername());
+			        comment.setCreatedBy(userPrincipal.getFirstName() + " " + userPrincipal.getLastName());
 				    return comment;
 				}).toList();
     }
