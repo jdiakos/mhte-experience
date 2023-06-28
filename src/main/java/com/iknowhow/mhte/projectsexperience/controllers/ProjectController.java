@@ -77,7 +77,6 @@ public class ProjectController {
     @PostMapping("/search")
     public ResponseEntity<Page<ProjectDTO>> searchForProjects(@RequestBody ProjectSearchDTO dto,
                                                               Pageable pageable) {
-        logger.info("Search for users");
         Page<ProjectDTO> result = projectService.search(dto, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
