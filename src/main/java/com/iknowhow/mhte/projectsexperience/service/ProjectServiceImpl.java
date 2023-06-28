@@ -57,14 +57,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public Page<ProjectResponseDTO> fetchAllProjects(Pageable pageable){
+    public Page<ProjectDTO> fetchAllProjects(Pageable pageable){
         return projectRepo.findAll(pageable)
-                .map(this::toProjectResponseDTO);
+                .map(this::toProjectDTO);
     }
 
     @Override
     @Transactional
-    public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
+    public void createProject(MhteUserPrincipal userPrincipal, ProjectDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
 
     	validateProjectData(dto, subcontractorFiles, contractFiles, documents);
@@ -74,10 +74,8 @@ public class ProjectServiceImpl implements ProjectService {
         dto.getProjectDescription().setId(null);
         Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
         utils.initModelMapperStrict().map(dto.getProjectFinancialElements(), project);
-
         project.setDateCreated(LocalDateTime.now());
-        // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-        project.setLastModifiedBy("dude");
+        project.setLastModifiedBy(userPrincipal.getUsername());
 
         // DEPENDANT ENTITIES
         project.setProjectContractors(
@@ -93,7 +91,7 @@ public class ProjectServiceImpl implements ProjectService {
                 commentService.assignCommentsToProject(dto.getProjectComments(), project, userPrincipal)
         );
         project.setProjectDocuments(
-                projectDocumentService.assignDocumentsToProject(documents, project, userPrincipal)
+                projectDocumentService.assignDocumentsToProject(dto.getProjectDocuments(), documents, project, userPrincipal)
         );
 
         try {
@@ -105,7 +103,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public void updateProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
+    public void updateProject(MhteUserPrincipal userPrincipal, ProjectDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
 
         validateProjectData(dto, subcontractorFiles, contractFiles, documents);
@@ -117,11 +115,9 @@ public class ProjectServiceImpl implements ProjectService {
         // PROJECT DETAILS
         utils.initModelMapperStrict().map(dto.getProjectDescription(), project);
         utils.initModelMapperStrict().map(dto.getProjectFinancialElements(), project);
-        // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-        project.setLastModifiedBy("dude");
+        project.setLastModifiedBy(userPrincipal.getUsername());
 
         // DEPENDANT ENTITIES
-        project.getProjectDocuments().clear();
         project.addContractors(
                 projectContractorService.assignContractorsToProject(dto.getProjectContractors(), project, userPrincipal)
         );
@@ -135,7 +131,7 @@ public class ProjectServiceImpl implements ProjectService {
                 commentService.assignCommentsToProject(dto.getProjectComments(), project, userPrincipal)
         );
         project.addProjectDocuments(
-                projectDocumentService.assignDocumentsToProject(documents, project, userPrincipal)
+                projectDocumentService.assignDocumentsToProject(dto.getProjectDocuments(), documents, project, userPrincipal)
         );
 
         /*   works!!!!!!!!
@@ -148,17 +144,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void deleteProject(Long id) {
+    public void deleteProject(Long id, MhteUserPrincipal userPrincipal) {
         Project projectExists = projectRepo.findById(id).orElseThrow(()->
         	new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
         );
-        //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-        projectExists.setLastModifiedBy("dude");
+        projectExists.setLastModifiedBy(userPrincipal.getUsername());
         projectRepo.delete(projectExists);
     }
     
     @Override
-    public Page<ProjectResponseDTO> search(ProjectSearchDTO dto, Pageable pageable) {
+    public Page<ProjectDTO> search(ProjectSearchDTO dto, Pageable pageable) {
         QProject qProject = QProject.project;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
@@ -183,12 +178,12 @@ public class ProjectServiceImpl implements ProjectService {
                 .ifPresent(booleanBuilder::and);
 
         return projectRepo.findAll(booleanBuilder, pageable)
-                .map(this::toProjectResponseDTO);
+                .map(this::toProjectDTO);
     }
 
-    private ProjectResponseDTO toProjectResponseDTO(Project project) {
+    private ProjectDTO toProjectDTO(Project project) {
         ModelMapper mapper = utils.initModelMapperStrict();
-        ProjectResponseDTO dto = new ProjectResponseDTO();
+        ProjectDTO dto = new ProjectDTO();
 
         // MAP PROJECT DATA
         ProjectDescriptionDTO descriptionDTO = mapper.map(project, ProjectDescriptionDTO.class);
@@ -203,9 +198,9 @@ public class ProjectServiceImpl implements ProjectService {
                 .stream()
                 .map(subcontractor -> mapper.map(subcontractor, ProjectSubcontractorDTO.class))
                 .toList();
-        List<ContractResponseDTO> contractDTOList = project.getContracts()
+        List<ContractDTO> contractDTOList = project.getContracts()
                 .stream()
-                .map(contract -> mapper.map(contract, ContractResponseDTO.class))
+                .map(contract -> mapper.map(contract, ContractDTO.class))
                 .toList();
         List<ProjectDocumentsDTO> documentsDTOList = project.getProjectDocuments()
                 .stream()
@@ -221,8 +216,8 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setProjectContractors(contractorsDTOList);
         dto.setProjectSubcontractors(subcontractorDTOList);
         dto.setContracts(contractDTOList);
-        dto.setDocuments(documentsDTOList);
-        dto.setComments(commentsDTOList);
+        dto.setProjectDocuments(documentsDTOList);
+        dto.setProjectComments(commentsDTOList);
 
         return dto;
     }
@@ -243,7 +238,7 @@ public class ProjectServiceImpl implements ProjectService {
      *
      */
 
-    private void validateProjectData(ProjectMasterDTO dto, MultipartFile[] subcontractorFiles,
+    private void validateProjectData(ProjectDTO dto, MultipartFile[] subcontractorFiles,
                                      MultipartFile[] contractFiles, MultipartFile[] documents) {
 
         validateProjectNegativeValues(dto.getProjectFinancialElements());
@@ -269,7 +264,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    private void validateTotalProjectContractorPercentages(ProjectMasterDTO dto) {
+    private void validateTotalProjectContractorPercentages(ProjectDTO dto) {
         if (dto.getProjectContractors()
                 .stream()
                 .mapToDouble(ProjectContractorDTO::getParticipationPercentage)
@@ -278,7 +273,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    private void validateDuplicateProjectContractor(ProjectMasterDTO dto) {
+    private void validateDuplicateProjectContractor(ProjectDTO dto) {
         Set<Long> uniqueContractors = dto.getProjectContractors()
                 .stream()
                 .map(ProjectContractorDTO::getContractorId)
@@ -289,7 +284,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    private void validateDuplicateProjectSubcontractor(ProjectMasterDTO dto) {
+    private void validateDuplicateProjectSubcontractor(ProjectDTO dto) {
         Set<Long> uniqueSubcontractors = dto.getProjectSubcontractors()
                 .stream()
                 .map(ProjectSubcontractorDTO::getSubcontractorId)
@@ -299,7 +294,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    private void validateContractNegativeValues(ProjectMasterDTO dto) {
+    private void validateContractNegativeValues(ProjectDTO dto) {
         dto.getContracts().forEach(contract -> {
             if (contract.getContractValue() < 0) {
                 throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
@@ -338,14 +333,15 @@ public class ProjectServiceImpl implements ProjectService {
     private void validateFileExtensions(MultipartFile[] files) {
         // @TODO - LEFT TXT IN FOR TESTING, NEED TO ADD MORE ALLOWED TYPES
         List<String> allowedFileTypes = Arrays.asList("pdf", "doc", "docx", "txt");
-
-        for (MultipartFile file: files) {
-            if (file != null) {
-                String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-                if (!allowedFileTypes.contains(extension)) {
-                    throw new MhteProjectFileException(MhteProjectErrorMessage.FILE_TYPE_NOT_ALLOWED.name());
-                }
-            }
+        if(files != null && files.length>0) {
+	        for (MultipartFile file: files) {
+	            if (file != null) {
+	                String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+	                if (!allowedFileTypes.contains(extension)) {
+	                    throw new MhteProjectFileException(MhteProjectErrorMessage.FILE_TYPE_NOT_ALLOWED.name());
+	                }
+	            }
+	        }
         }
     }
 

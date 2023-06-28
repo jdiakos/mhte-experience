@@ -5,7 +5,7 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectSubcontractorRepository;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
@@ -65,7 +65,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
                                                                     MultipartFile[] subcontractorFiles,
                                                                     Project project,
                                                                     MhteUserPrincipal userPrincipal) {
-    	
+    	int fileIndex=0;
     	List<ProjectSubcontractor> subcontractors = new ArrayList<>();
     	for (int i=0; i<dtoList.size(); i++) {
     		ProjectSubcontractor subcontractor = new ProjectSubcontractor();
@@ -83,17 +83,19 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
             subcontractor.setContractDateFrom(dtoList.get(i).getContractDateFrom());
             subcontractor.setContractDateTo(dtoList.get(i).getContractDateTo());
             subcontractor.setDateCreated(LocalDateTime.now());
-            // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-            subcontractor.setLastModifiedBy("ASTERIX");
-//          contract.setLastModifiedBy(userPrincipal.getUsername());
+            subcontractor.setLastModifiedBy(userPrincipal.getUsername());
             if (dtoList.get(i).getContractGUID() != null) {
             	subcontractor.setContractGUID(dtoList.get(i).getContractGUID());
-                subcontractor.setContractFilename(subcontractorFiles[i].getOriginalFilename());
+                subcontractor.setContractFilename(dtoList.get(i).getContractFilename());
             } else {
+            	if(subcontractorFiles==null || subcontractorFiles.length<=fileIndex) {
+            		throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.MISSING_FILE);
+            	}
             	subcontractor.setContractGUID(
-                        fileNetService.uploadFileToFilenet(project, subcontractorFiles[i], "ASTERIX")
+                        fileNetService.uploadFileToFilenet(project, subcontractorFiles[fileIndex], userPrincipal.getUsername())
                 );
-                subcontractor.setContractFilename(subcontractorFiles[i].getOriginalFilename());
+                subcontractor.setContractFilename(subcontractorFiles[fileIndex].getOriginalFilename());
+                fileIndex++;
             }
             subcontractors.add(subcontractor);
     	}
@@ -118,7 +120,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
     }
 
     @Override
-    public List<ProjectSubcontractor> objectsToBeDeleted(Project project,  ProjectMasterDTO dto) {
+    public List<ProjectSubcontractor> objectsToBeDeleted(Project project,  ProjectDTO dto) {
     	List<ProjectSubcontractor> subcontractors = new ArrayList<>();
     	List<Long> oldIds = project.getProjectSubcontractors().
         		stream().

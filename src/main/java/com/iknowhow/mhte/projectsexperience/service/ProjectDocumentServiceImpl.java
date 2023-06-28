@@ -27,24 +27,30 @@ public class ProjectDocumentServiceImpl implements ProjectDocumentService {
     }
 
     @Override
-    public List<ProjectDocument> assignDocumentsToProject(MultipartFile[] documents,
+    public List<ProjectDocument> assignDocumentsToProject(List<ProjectDocumentsDTO> dtoList, MultipartFile[] documents,
                                                           Project project,
                                                           MhteUserPrincipal userPrincipal) {
 
         List<ProjectDocument> projectDocuments = new ArrayList<>();
-
-        for (MultipartFile multipartFile : documents) {
-            ProjectDocument document = new ProjectDocument();
-            document.setDateCreated(LocalDateTime.now());
-            // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-            document.setLastModifiedBy("ASTERIX");
-//            document.setLastModifiedBy(userPrincipal.getUsername());
-            document.setGuid(fileNetService.uploadFileToFilenet(project, multipartFile, "ASTERIX"));
-            document.setFilename(multipartFile.getOriginalFilename());
-            document.setProject(project);
-            projectDocuments.add(document);
+        if(dtoList!=null && dtoList.size()!=0) {
+        	projectDocuments.addAll(documentRepository.findAllById(
+        			dtoList.stream().map(d -> d.getId()).toList()));
         }
-
+        
+        if(documents!=null && documents.length>0) {
+	        for (MultipartFile multipartFile : documents) {
+	            ProjectDocument document = new ProjectDocument();
+	            document.setDateCreated(LocalDateTime.now());
+	            document.setLastModifiedBy(userPrincipal.getUsername());
+	            document.setGuid(fileNetService.uploadFileToFilenet(project, multipartFile, userPrincipal.getUsername()));
+	            document.setFilename(multipartFile.getOriginalFilename());
+	            document.setProject(project);
+	            projectDocuments.add(document);
+	        }
+        }
+        if(project.getId()!=null) {
+        	project.getProjectDocuments().clear();
+        }
         return projectDocuments;
     }
 

@@ -2,7 +2,7 @@ package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectDTO;
 import com.iknowhow.mhte.projectsexperience.service.FileNetService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectResponseDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSearchDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectService;
 
@@ -43,14 +42,14 @@ public class ProjectController {
     }
     
     @GetMapping("/get-all")
-    public ResponseEntity<Page<ProjectResponseDTO>> getProjects(Pageable page) {
-    	Page<ProjectResponseDTO> projects = projectService.fetchAllProjects(page);
+    public ResponseEntity<Page<ProjectDTO>> getProjects(Pageable page) {
+    	Page<ProjectDTO> projects = projectService.fetchAllProjects(page);
         return ResponseEntity.status(HttpStatus.OK).body(projects);
     }
 
     @PostMapping(value= "/create-project")
     public ResponseEntity<Void> createProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal,
-                                              @Valid  @RequestPart ProjectMasterDTO dto,
+                                              @Valid @RequestPart ProjectDTO dto,
                                               @RequestPart("subcontractorFiles") MultipartFile[] subcontractorFiles,
                                               @RequestPart("contractFiles") MultipartFile[] contractFiles,
                                               @RequestPart("documents") MultipartFile[] documents) {
@@ -61,25 +60,24 @@ public class ProjectController {
     
     @PutMapping(value= "/update-project")
     public ResponseEntity<Void> updateProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal,
-                                              @Valid  @RequestPart ProjectMasterDTO dto,
-                                              @RequestPart("subcontractorFiles") MultipartFile[] subcontractorFiles,
-                                              @RequestPart("contractFiles") MultipartFile[] contractFiles,
-                                              @RequestPart("documents") MultipartFile[] documents) {
+                                              @Valid @RequestPart ProjectDTO dto,
+                                              @RequestPart(name="subcontractorFiles", required=false) MultipartFile[] subcontractorFiles,
+                                              @RequestPart(name="contractFiles", required=false) MultipartFile[] contractFiles,
+                                              @RequestPart(name="documents", required=false) MultipartFile[] documents) {
     	projectService.updateProject(userPrincipal, dto, subcontractorFiles, contractFiles, documents);
         return ResponseEntity.ok().build();
     }
     
     @DeleteMapping(value = "/remove/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable(value="id") Long id){
-        projectService.deleteProject(id);
+    public ResponseEntity<Void> deleteProject(@PathVariable(value="id") Long id, @AuthenticationPrincipal MhteUserPrincipal userPrincipal){
+        projectService.deleteProject(id, userPrincipal);
         return ResponseEntity.ok().build();
     }
     
     @PostMapping("/search")
-    public ResponseEntity<Page<ProjectResponseDTO>> searchForProjects(@RequestBody ProjectSearchDTO dto,
-                                                                      Pageable pageable) {
-        logger.info("Search for users");
-        Page<ProjectResponseDTO> result = projectService.search(dto, pageable);
+    public ResponseEntity<Page<ProjectDTO>> searchForProjects(@RequestBody ProjectSearchDTO dto,
+                                                              Pageable pageable) {
+        Page<ProjectDTO> result = projectService.search(dto, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

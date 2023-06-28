@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ProjectDocumentService {
 
-    List<ProjectDocument> assignDocumentsToProject(MultipartFile[] documents, Project project, MhteUserPrincipal userPrincipal);
+    List<ProjectDocument> assignDocumentsToProject(List<ProjectDocumentsDTO> dto, MultipartFile[] documents, Project project, MhteUserPrincipal userPrincipal);
 
     List<ProjectDocumentsDTO> getAllOfProject(Project project);
 }

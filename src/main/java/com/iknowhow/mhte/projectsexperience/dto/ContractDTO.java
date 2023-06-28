@@ -17,5 +17,6 @@ public class ContractDTO {
     @NotNull
     private LocalDate signingDate;
     private String contractGUID;
+    private String filename;
 
 }

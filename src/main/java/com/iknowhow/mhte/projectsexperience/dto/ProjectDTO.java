@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 @Data
-public class ProjectMasterDTO {
+public class ProjectDTO {
 
 	@NotNull
 	@Valid
@@ -28,5 +28,6 @@ public class ProjectMasterDTO {
     private List<ProjectSubcontractorDTO> projectSubcontractors;
     @NotNull
     private List<CommentsDTO> projectComments;
+    private List<ProjectDocumentsDTO> projectDocuments;
 
 }

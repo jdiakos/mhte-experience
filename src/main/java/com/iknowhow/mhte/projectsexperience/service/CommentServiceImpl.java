@@ -26,19 +26,18 @@ public class CommentServiceImpl implements CommentService {
                                                  Project project,
                                                  MhteUserPrincipal userPrincipal) {
 
-        return dtoList
-                .stream()
-                .map(dto -> {
-                    Comment comment = new Comment();
-                    comment.setMessage(dto.getMessage());
-                    comment.setProject(project);
-                    comment.setCreatedAt(LocalDateTime.now());
-                    // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-                    comment.setCreatedBy("ASTERIX");
-
-                    return comment;
-                })
-                .toList();
+        return dtoList.stream().
+        		filter(dto->dto.getId()==null).map(dto -> {
+		        	Comment comment = new Comment();
+			        comment.setCreatedAt(LocalDateTime.now());
+			    	comment.setId(dto.getId());
+			    	comment.setCreatedAt(dto.getDate());
+			        comment.setMessage(dto.getMessage());
+			        comment.setProject(project);
+			        comment.setRole(dto.getRole());
+			        comment.setCreatedBy(userPrincipal.getUsername());
+				    return comment;
+				}).toList();
     }
 
     @Override
