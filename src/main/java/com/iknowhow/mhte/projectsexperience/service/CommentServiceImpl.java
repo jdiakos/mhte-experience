@@ -30,12 +30,16 @@ public class CommentServiceImpl implements CommentService {
                 .stream()
                 .map(dto -> {
                     Comment comment = new Comment();
+                    if(dto.getId()==null) {
+                        comment.setCreatedAt(LocalDateTime.now());
+                    } else {
+                    	comment.setId(dto.getId());
+                    	comment.setCreatedAt(dto.getDate());
+                    }
                     comment.setMessage(dto.getMessage());
                     comment.setProject(project);
-                    comment.setCreatedAt(LocalDateTime.now());
                     // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
                     comment.setCreatedBy("ASTERIX");
-
                     return comment;
                 })
                 .toList();
