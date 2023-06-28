@@ -33,7 +33,8 @@ public class ProjectDocumentServiceImpl implements ProjectDocumentService {
 
         List<ProjectDocument> projectDocuments = new ArrayList<>();
         if(dtoList!=null && dtoList.size()!=0) {
-        	projectDocuments.addAll(documentRepository.findAllByProjectId(project.getId()));
+        	projectDocuments.addAll(documentRepository.findAllById(
+        			dtoList.stream().map(d -> d.getId()).toList()));
         }
         
         if(documents!=null && documents.length>0) {
