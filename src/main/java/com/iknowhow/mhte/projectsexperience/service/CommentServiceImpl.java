@@ -34,8 +34,8 @@ public class CommentServiceImpl implements CommentService {
 			    	comment.setCreatedAt(dto.getDate());
 			        comment.setMessage(dto.getMessage());
 			        comment.setProject(project);
-			        // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-			        comment.setCreatedBy("ASTERIX");
+			        comment.setRole(dto.getRole());
+			        comment.setCreatedBy(userPrincipal.getUsername());
 				    return comment;
 				}).toList();
     }

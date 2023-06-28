@@ -41,10 +41,8 @@ public class ProjectDocumentServiceImpl implements ProjectDocumentService {
 	        for (MultipartFile multipartFile : documents) {
 	            ProjectDocument document = new ProjectDocument();
 	            document.setDateCreated(LocalDateTime.now());
-	            // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-	            document.setLastModifiedBy("ASTERIX");
-	//            document.setLastModifiedBy(userPrincipal.getUsername());
-	            document.setGuid(fileNetService.uploadFileToFilenet(project, multipartFile, "ASTERIX"));
+	            document.setLastModifiedBy(userPrincipal.getUsername());
+	            document.setGuid(fileNetService.uploadFileToFilenet(project, multipartFile, userPrincipal.getUsername()));
 	            document.setFilename(multipartFile.getOriginalFilename());
 	            document.setProject(project);
 	            projectDocuments.add(document);

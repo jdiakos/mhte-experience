@@ -53,9 +53,7 @@ public class ContractServiceImpl implements ContractService {
             contract.setSigningDate(dtoList.get(i).getSigningDate());
             contract.setProject(project);
             contract.setDateCreated(LocalDateTime.now());
-            // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-            contract.setLastModifiedBy("JULIUS CAESAR");
-//          contract.setLastModifiedBy(userPrincipal.getUsername());
+            contract.setLastModifiedBy(userPrincipal.getUsername());
             if (dtoList.get(i).getContractGUID() != null) {
                 contract.setContractGUID(dtoList.get(i).getContractGUID());
                 contract.setFilename(dtoList.get(i).getFilename());
@@ -64,7 +62,7 @@ public class ContractServiceImpl implements ContractService {
             		throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.MISSING_FILE);
             	}
                 contract.setContractGUID(
-                		fileNetService.uploadFileToFilenet(project, contractFiles[fileIndex], "ASTERIX")
+                		fileNetService.uploadFileToFilenet(project, contractFiles[fileIndex], userPrincipal.getUsername())
                 );
                 contract.setFilename(contractFiles[fileIndex].getOriginalFilename());
                 fileIndex++;

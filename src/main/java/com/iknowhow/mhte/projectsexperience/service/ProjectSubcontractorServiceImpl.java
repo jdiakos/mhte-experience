@@ -83,9 +83,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
             subcontractor.setContractDateFrom(dtoList.get(i).getContractDateFrom());
             subcontractor.setContractDateTo(dtoList.get(i).getContractDateTo());
             subcontractor.setDateCreated(LocalDateTime.now());
-            // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-            subcontractor.setLastModifiedBy("ASTERIX");
-//          contract.setLastModifiedBy(userPrincipal.getUsername());
+            subcontractor.setLastModifiedBy(userPrincipal.getUsername());
             if (dtoList.get(i).getContractGUID() != null) {
             	subcontractor.setContractGUID(dtoList.get(i).getContractGUID());
                 subcontractor.setContractFilename(dtoList.get(i).getContractFilename());
@@ -94,7 +92,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
             		throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.MISSING_FILE);
             	}
             	subcontractor.setContractGUID(
-                        fileNetService.uploadFileToFilenet(project, subcontractorFiles[fileIndex], "ASTERIX")
+                        fileNetService.uploadFileToFilenet(project, subcontractorFiles[fileIndex], userPrincipal.getUsername())
                 );
                 subcontractor.setContractFilename(subcontractorFiles[fileIndex].getOriginalFilename());
                 fileIndex++;

@@ -18,7 +18,7 @@ public interface ProjectService {
 					   MultipartFile[] contractFiles,
 					   MultipartFile[] documents);
 		
-	void deleteProject(Long id);
+	void deleteProject(Long id, MhteUserPrincipal userPrincipal);
 	
 	Page<ProjectDTO> search(ProjectSearchDTO dto, Pageable pageable);
 

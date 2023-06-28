@@ -74,10 +74,8 @@ public class ProjectServiceImpl implements ProjectService {
         dto.getProjectDescription().setId(null);
         Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
         utils.initModelMapperStrict().map(dto.getProjectFinancialElements(), project);
-
         project.setDateCreated(LocalDateTime.now());
-        // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-        project.setLastModifiedBy("dude");
+        project.setLastModifiedBy(userPrincipal.getUsername());
 
         // DEPENDANT ENTITIES
         project.setProjectContractors(
@@ -117,8 +115,7 @@ public class ProjectServiceImpl implements ProjectService {
         // PROJECT DETAILS
         utils.initModelMapperStrict().map(dto.getProjectDescription(), project);
         utils.initModelMapperStrict().map(dto.getProjectFinancialElements(), project);
-        // @TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-        project.setLastModifiedBy("dude");
+        project.setLastModifiedBy(userPrincipal.getUsername());
 
         // DEPENDANT ENTITIES
         project.addContractors(
@@ -147,12 +144,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void deleteProject(Long id) {
+    public void deleteProject(Long id, MhteUserPrincipal userPrincipal) {
         Project projectExists = projectRepo.findById(id).orElseThrow(()->
         	new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
         );
-        //@TODO - PLACEHOLDER: CHANGE WITH USER PRINCIPAL
-        projectExists.setLastModifiedBy("dude");
+        projectExists.setLastModifiedBy(userPrincipal.getUsername());
         projectRepo.delete(projectExists);
     }
     

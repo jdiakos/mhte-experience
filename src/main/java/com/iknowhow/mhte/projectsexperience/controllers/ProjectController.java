@@ -69,8 +69,8 @@ public class ProjectController {
     }
     
     @DeleteMapping(value = "/remove/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable(value="id") Long id){
-        projectService.deleteProject(id);
+    public ResponseEntity<Void> deleteProject(@PathVariable(value="id") Long id, @AuthenticationPrincipal MhteUserPrincipal userPrincipal){
+        projectService.deleteProject(id, userPrincipal);
         return ResponseEntity.ok().build();
     }
     
