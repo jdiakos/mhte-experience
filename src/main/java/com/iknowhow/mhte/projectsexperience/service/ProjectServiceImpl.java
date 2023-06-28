@@ -57,14 +57,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public Page<ProjectResponseDTO> fetchAllProjects(Pageable pageable){
+    public Page<ProjectDTO> fetchAllProjects(Pageable pageable){
         return projectRepo.findAll(pageable)
-                .map(this::toProjectResponseDTO);
+                .map(this::toProjectDTO);
     }
 
     @Override
     @Transactional
-    public void createProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
+    public void createProject(MhteUserPrincipal userPrincipal, ProjectDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
 
     	validateProjectData(dto, subcontractorFiles, contractFiles, documents);
@@ -105,7 +105,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public void updateProject(MhteUserPrincipal userPrincipal, ProjectMasterDTO dto,
+    public void updateProject(MhteUserPrincipal userPrincipal, ProjectDTO dto,
     		MultipartFile[] subcontractorFiles, MultipartFile[] contractFiles, MultipartFile[] documents) {
 
         validateProjectData(dto, subcontractorFiles, contractFiles, documents);
@@ -157,7 +157,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public Page<ProjectResponseDTO> search(ProjectSearchDTO dto, Pageable pageable) {
+    public Page<ProjectDTO> search(ProjectSearchDTO dto, Pageable pageable) {
         QProject qProject = QProject.project;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
@@ -182,12 +182,12 @@ public class ProjectServiceImpl implements ProjectService {
                 .ifPresent(booleanBuilder::and);
 
         return projectRepo.findAll(booleanBuilder, pageable)
-                .map(this::toProjectResponseDTO);
+                .map(this::toProjectDTO);
     }
 
-    private ProjectResponseDTO toProjectResponseDTO(Project project) {
+    private ProjectDTO toProjectDTO(Project project) {
         ModelMapper mapper = utils.initModelMapperStrict();
-        ProjectResponseDTO dto = new ProjectResponseDTO();
+        ProjectDTO dto = new ProjectDTO();
 
         // MAP PROJECT DATA
         ProjectDescriptionDTO descriptionDTO = mapper.map(project, ProjectDescriptionDTO.class);
@@ -220,8 +220,8 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setProjectContractors(contractorsDTOList);
         dto.setProjectSubcontractors(subcontractorDTOList);
         dto.setContracts(contractDTOList);
-        dto.setDocuments(documentsDTOList);
-        dto.setComments(commentsDTOList);
+        dto.setProjectDocuments(documentsDTOList);
+        dto.setProjectComments(commentsDTOList);
 
         return dto;
     }
@@ -242,7 +242,7 @@ public class ProjectServiceImpl implements ProjectService {
      *
      */
 
-    private void validateProjectData(ProjectMasterDTO dto, MultipartFile[] subcontractorFiles,
+    private void validateProjectData(ProjectDTO dto, MultipartFile[] subcontractorFiles,
                                      MultipartFile[] contractFiles, MultipartFile[] documents) {
 
         validateProjectNegativeValues(dto.getProjectFinancialElements());
@@ -268,7 +268,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    private void validateTotalProjectContractorPercentages(ProjectMasterDTO dto) {
+    private void validateTotalProjectContractorPercentages(ProjectDTO dto) {
         if (dto.getProjectContractors()
                 .stream()
                 .mapToDouble(ProjectContractorDTO::getParticipationPercentage)
@@ -277,7 +277,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    private void validateDuplicateProjectContractor(ProjectMasterDTO dto) {
+    private void validateDuplicateProjectContractor(ProjectDTO dto) {
         Set<Long> uniqueContractors = dto.getProjectContractors()
                 .stream()
                 .map(ProjectContractorDTO::getContractorId)
@@ -288,7 +288,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    private void validateDuplicateProjectSubcontractor(ProjectMasterDTO dto) {
+    private void validateDuplicateProjectSubcontractor(ProjectDTO dto) {
         Set<Long> uniqueSubcontractors = dto.getProjectSubcontractors()
                 .stream()
                 .map(ProjectSubcontractorDTO::getSubcontractorId)
@@ -298,7 +298,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    private void validateContractNegativeValues(ProjectMasterDTO dto) {
+    private void validateContractNegativeValues(ProjectDTO dto) {
         dto.getContracts().forEach(contract -> {
             if (contract.getContractValue() < 0) {
                 throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);

@@ -5,7 +5,7 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectSubcontractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectSubcontractorRepository;
-import com.iknowhow.mhte.projectsexperience.dto.ProjectMasterDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
@@ -122,7 +122,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
     }
 
     @Override
-    public List<ProjectSubcontractor> objectsToBeDeleted(Project project,  ProjectMasterDTO dto) {
+    public List<ProjectSubcontractor> objectsToBeDeleted(Project project,  ProjectDTO dto) {
     	List<ProjectSubcontractor> subcontractors = new ArrayList<>();
     	List<Long> oldIds = project.getProjectSubcontractors().
         		stream().

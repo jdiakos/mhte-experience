@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 @Data
-public class ProjectMasterDTO {
+public class ProjectDTO {
 
 	@NotNull
 	@Valid
