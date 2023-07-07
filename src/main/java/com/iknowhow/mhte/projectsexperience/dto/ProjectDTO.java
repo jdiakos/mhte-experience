@@ -14,16 +14,11 @@ public class ProjectDTO {
 	@NotNull
 	@Valid
     private ProjectDescriptionDTO projectDescription;
-	@NotNull
-	@Valid
     private ProjectFinancialElementsDTO projectFinancialElements;
-    @NotEmpty
     @Valid
     private List<ContractDTO> contracts;
-    @NotEmpty
     @Valid
     private List<ProjectContractorDTO> projectContractors;
-    @NotNull
     @Valid
     private List<ProjectSubcontractorDTO> projectSubcontractors;
     @NotNull
