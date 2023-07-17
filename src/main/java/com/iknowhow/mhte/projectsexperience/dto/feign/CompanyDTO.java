@@ -7,6 +7,7 @@ import java.time.LocalDate;
 @Data
 public class CompanyDTO {
 
+    private Long id;
     private String protocolNumber;
     private CompanyInfoDTO companyInfo;
     private Boolean recommended;
