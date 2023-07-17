@@ -48,9 +48,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
     @Override
     public Page<CompanyInfoResponseDTO> searchProjectSubcontractors(SearchCompanyInfoDTO dto,
                                                                     Pageable pageable) {
-        // @TODO -- PLACEHOLDER -- MICROSERVICE
-        // @TODO -- QUERYDSL SEARCH WITH MEEP, Name, TaxId that fetches a DTO from another Microservice
-        // @TODO -- Paginated DTOs return fields: MEEP, Name, TaxId, LegalType, Address, Series, DegreeValidUntil
+        // @TODO -- MEEP, Grade, DegreeValidTo to be added
 
         return companiesFeignClient.searchCompanyInfo(dto, pageable);
     }
