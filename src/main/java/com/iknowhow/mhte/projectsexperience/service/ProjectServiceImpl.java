@@ -69,7 +69,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     	validateProjectData(dto, subcontractorFiles, contractFiles, documents);
 
-
         // PROJECT DETAILS
         dto.getProjectDescription().setId(null);
         Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
@@ -255,17 +254,17 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void validateProjectNegativeValues(ProjectFinancialElementsDTO dto) {
-        if (dto.getInitialContractBudget() < 0 &&
-                dto.getInitialContractValue() < 0 &&
-                dto.getSupplementaryContractValue() < 0 &&
-                dto.getApeValue() < 0 &&
-                dto.getTotalValue() < 0) {
+        if (dto.getInitialContractBudget()!=null && dto.getInitialContractBudget() < 0 &&
+        		dto.getInitialContractValue()!=null && dto.getInitialContractValue() < 0 &&
+				dto.getSupplementaryContractValue()!=null && dto.getSupplementaryContractValue() < 0 &&
+				dto.getApeValue()!=null && dto.getApeValue() < 0 &&
+				dto.getTotalValue()!=null && dto.getTotalValue() < 0) {
             throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
         }
     }
 
     private void validateTotalProjectContractorPercentages(ProjectDTO dto) {
-        if (dto.getProjectContractors()
+        if (dto.getProjectContractors()!= null && dto.getProjectContractors()
                 .stream()
                 .mapToDouble(ProjectContractorDTO::getParticipationPercentage)
                 .sum() > 100) {
@@ -279,7 +278,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(ProjectContractorDTO::getContractorId)
                 .collect(Collectors.toSet());
 
-        if (dto.getProjectContractors().size() != uniqueContractors.size()) {
+        if (dto.getProjectContractors() != null && dto.getProjectContractors().size() != uniqueContractors.size()) {
             throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
         }
     }
@@ -289,7 +288,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .stream()
                 .map(ProjectSubcontractorDTO::getSubcontractorId)
                 .collect(Collectors.toSet());
-        if (dto.getProjectSubcontractors().size() != uniqueSubcontractors.size()) {
+        if (dto.getProjectSubcontractors() != null && dto.getProjectSubcontractors().size() != uniqueSubcontractors.size()) {
             throw new MhteProjectsAlreadyAssignedException(MhteProjectErrorMessage.ALREADY_ASSIGNED.name());
         }
     }
