@@ -294,11 +294,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void validateContractNegativeValues(ProjectDTO dto) {
-        dto.getContracts().forEach(contract -> {
-            if (contract.getContractValue() < 0) {
-                throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
-            }
-        });
+        if (dto != null) {
+            dto.getContracts().forEach(contract -> {
+                if (contract.getContractValue() < 0) {
+                    throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.VALUES_CANNOT_BE_NEGATIVE);
+                }
+            });
+        }
     }
 
     private void validateAdamForPublicProjects(ProjectDescriptionDTO dto) {
@@ -315,16 +317,18 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void validateInitialContract(List<ContractDTO> dtoList) {
-        // PROJECT MUST HAVE AN INITIAL CONTRACT AND CAN'T HAVE MORE THAN ONE INITIAL CONTRACTS
-        List<ContractDTO> result = dtoList
-                .stream()
-                .filter(dto -> dto.getContractType().equals(ContractTypeEnum.INITIAL_CONTRACT))
-                .toList();
+        if (dtoList != null && dtoList.size() != 0) {
+            // PROJECT MUST HAVE AN INITIAL CONTRACT AND CAN'T HAVE MORE THAN ONE INITIAL CONTRACTS
+            List<ContractDTO> result = dtoList
+                    .stream()
+                    .filter(dto -> dto.getContractType().equals(ContractTypeEnum.INITIAL_CONTRACT))
+                    .toList();
 
-        if (result.size() > 1) {
-            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.MORE_THAN_ONE_INITIAL_CONTRACTS_PRESENT);
-        } else if (result.size() < 1) {
-            throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.NO_INITIAL_CONTRACT_PRESENT);
+            if (result.size() > 1) {
+                throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.MORE_THAN_ONE_INITIAL_CONTRACTS_PRESENT);
+            } else if (result.size() < 1) {
+                throw new MhteProjectCustomValidationException(MhteProjectErrorMessage.NO_INITIAL_CONTRACT_PRESENT);
+            }
         }
 
     }
