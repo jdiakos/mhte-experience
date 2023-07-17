@@ -1,8 +1,11 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
+import com.iknowhow.mhte.projectsexperience.dto.feign.CompanyInfoResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.SearchCompanyInfoDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectContractorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +21,12 @@ public class ProjectContractorController {
     }
 
     @PostMapping("/search-by-params")
-    public ResponseEntity<?> searchContractorsByParams() {
-        // @TODO -- PLACEHOLDER: PENDING MICROSERVICE TO IMPLEMENT
-        Page<?> response = projectContractorService.searchProjectContractors();
+    public ResponseEntity<Page<CompanyInfoResponseDTO>> searchContractorsByParams(@RequestBody SearchCompanyInfoDTO dto,
+                                                                                  Pageable pageable) {
 
-        return null;
+        Page<CompanyInfoResponseDTO> response = projectContractorService.searchProjectContractors(dto, pageable);
+
+        return ResponseEntity.ok().body(response);
     }
 
 }
