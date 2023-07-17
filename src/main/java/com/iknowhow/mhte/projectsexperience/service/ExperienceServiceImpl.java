@@ -37,6 +37,7 @@ public class ExperienceServiceImpl implements ExperienceService {
                                     .ifPresent(x -> {
                                         experience.setPersonId(dto.getPersonId());
                                         experience.setRole(dto.getRole());
+                                        experience.setOccupation(dto.getOccupation());
                                     });
                     experience.setExperienceFrom(dto.getExperienceFrom());
                     experience.setExperienceTo(dto.getExperienceTo());
