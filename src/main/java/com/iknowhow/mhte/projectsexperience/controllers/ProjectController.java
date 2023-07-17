@@ -50,9 +50,9 @@ public class ProjectController {
     @PostMapping(value= "/create-project")
     public ResponseEntity<Void> createProject(@AuthenticationPrincipal MhteUserPrincipal userPrincipal,
                                               @Valid @RequestPart ProjectDTO dto,
-                                              @RequestPart("subcontractorFiles") MultipartFile[] subcontractorFiles,
-                                              @RequestPart("contractFiles") MultipartFile[] contractFiles,
-                                              @RequestPart("documents") MultipartFile[] documents) {
+                                              @RequestPart(value = "subcontractorFiles", required = false) MultipartFile[] subcontractorFiles,
+                                              @RequestPart(value = "contractFiles", required = false) MultipartFile[] contractFiles,
+                                              @RequestPart(value = "documents", required = false) MultipartFile[] documents) {
         //@TODO - CHANGE WITH PRINCIPAL USERNAME WHEN OKAY
     	projectService.createProject(userPrincipal, dto, subcontractorFiles, contractFiles, documents);
         return ResponseEntity.ok().build();

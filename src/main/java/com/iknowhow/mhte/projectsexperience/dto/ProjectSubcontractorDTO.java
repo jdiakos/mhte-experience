@@ -10,15 +10,10 @@ import java.time.LocalDate;
 public class ProjectSubcontractorDTO {
 
     private Long id;
-    @NotNull
     private Long subcontractorId;
-    @NotBlank
     private String participationType;
-    @NotNull
     private Double contractValue;
-    @NotNull
     private LocalDate contractDateFrom;
-    @NotNull
     private LocalDate contractDateTo;
     private String contractGUID;
     private String contractFilename;

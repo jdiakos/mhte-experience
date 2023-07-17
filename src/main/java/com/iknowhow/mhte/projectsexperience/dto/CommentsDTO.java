@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 public class CommentsDTO {
 
     private Long id;
-    @NotBlank
     private String message;
     private String username;
     private LocalDateTime date;

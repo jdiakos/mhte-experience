@@ -12,9 +12,7 @@ public class ContractDTO {
 	
     private Long id;
     private ContractTypeEnum contractType;
-    @NotNull
     private Double contractValue;
-    @NotNull
     private LocalDate signingDate;
     private String contractGUID;
     private String filename;

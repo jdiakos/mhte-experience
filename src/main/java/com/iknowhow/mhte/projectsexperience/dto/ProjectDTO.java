@@ -15,13 +15,9 @@ public class ProjectDTO {
 	@Valid
     private ProjectDescriptionDTO projectDescription;
     private ProjectFinancialElementsDTO projectFinancialElements;
-    @Valid
     private List<ContractDTO> contracts;
-    @Valid
     private List<ProjectContractorDTO> projectContractors;
-    @Valid
     private List<ProjectSubcontractorDTO> projectSubcontractors;
-    @NotNull
     private List<CommentsDTO> projectComments;
     private List<ProjectDocumentsDTO> projectDocuments;
 
