@@ -56,6 +56,9 @@ public class Experience implements Serializable {
     @Column(name = "person_id")
     private Long personId;
 
+    @Column(name = "company_id")
+    private Long companyId;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
