@@ -9,7 +9,9 @@ import java.time.LocalDate;
 @Data
 public class ExperienceDTO {
 
-    private Long experienceOwnerId;
+    private Long id;
+    private Long companyId;
+    private Long personId;
     private LocalDate experienceFrom;
     private LocalDate experienceTo;
     private StudyCategories category;
