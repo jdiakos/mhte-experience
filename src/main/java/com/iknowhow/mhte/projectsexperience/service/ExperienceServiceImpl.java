@@ -32,12 +32,12 @@ public class ExperienceServiceImpl implements ExperienceService {
                 .map(dto -> {
                     Experience experience = new Experience();
                     Optional.ofNullable(dto.getCompanyId())
-                                    .ifPresent(x -> experience.setCompanyId(dto.getCompanyId()));
+                                    .ifPresent(id -> experience.setCompanyId(dto.getCompanyId()));
                     Optional.ofNullable(dto.getPersonId())
-                                    .ifPresent(x -> {
+                                    .ifPresent(id -> {
                                         experience.setPersonId(dto.getPersonId());
-                                        experience.setRole(dto.getRole());
                                         experience.setOccupation(dto.getOccupation());
+                                        experience.setRole(dto.getRole());
                                     });
                     experience.setExperienceFrom(dto.getExperienceFrom());
                     experience.setExperienceTo(dto.getExperienceTo());
