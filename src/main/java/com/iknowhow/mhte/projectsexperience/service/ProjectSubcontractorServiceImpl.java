@@ -7,10 +7,14 @@ import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectSubcontractorRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.CompanyInfoResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.SearchCompanyInfoDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
+import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,24 +31,28 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
     private final ProjectSubcontractorRepository subcontractorRepository;
     private final ProjectRepository projectRepository;
     private final FileNetService fileNetService;
+    private final CompaniesFeignClient companiesFeignClient;
 
     @Autowired
     public ProjectSubcontractorServiceImpl(ProjectSubcontractorRepository subcontractorRepository,
                                            ProjectRepository projectRepository,
-                                           FileNetService fileNetService) {
+                                           FileNetService fileNetService,
+                                           CompaniesFeignClient companiesFeignClient) {
     	this.fileNetService = fileNetService;
         this.subcontractorRepository = subcontractorRepository;
         this.projectRepository = projectRepository;
+        this.companiesFeignClient = companiesFeignClient;
     }
 
 
     @Override
-    public Page<?> searchProjectSubcontractors() {
+    public Page<CompanyInfoResponseDTO> searchProjectSubcontractors(SearchCompanyInfoDTO dto,
+                                                                    Pageable pageable) {
         // @TODO -- PLACEHOLDER -- MICROSERVICE
         // @TODO -- QUERYDSL SEARCH WITH MEEP, Name, TaxId that fetches a DTO from another Microservice
         // @TODO -- Paginated DTOs return fields: MEEP, Name, TaxId, LegalType, Address, Series, DegreeValidUntil
 
-        return null;
+        return companiesFeignClient.searchCompanyInfo(dto, pageable);
     }
 
     @Override
