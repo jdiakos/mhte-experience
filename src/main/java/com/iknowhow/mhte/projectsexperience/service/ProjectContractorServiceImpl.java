@@ -6,8 +6,8 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectContractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectContractorRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
-import com.iknowhow.mhte.projectsexperience.dto.feign.CompanyInfoResponseDTO;
-import com.iknowhow.mhte.projectsexperience.dto.feign.SearchCompanyInfoDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.CompanyDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.SearchCompanyFiltersDTO;
 import com.iknowhow.mhte.projectsexperience.exception.*;
 import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +37,8 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
     }
 
     @Override
-    public Page<CompanyInfoResponseDTO> searchProjectContractors(SearchCompanyInfoDTO dto,
-                                                                 Pageable pageable) {
+    public Page<CompanyDTO> searchProjectContractors(SearchCompanyFiltersDTO dto,
+                                                     Pageable pageable) {
         // @TODO -- MEEP, Grade, DegreeValidTo to be added
 
         return companiesFeignClient.searchCompanyInfo(dto, pageable);

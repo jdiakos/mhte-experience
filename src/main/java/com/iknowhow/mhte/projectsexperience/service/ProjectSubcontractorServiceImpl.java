@@ -7,8 +7,8 @@ import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectSubcontractorRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSubcontractorDTO;
-import com.iknowhow.mhte.projectsexperience.dto.feign.CompanyInfoResponseDTO;
-import com.iknowhow.mhte.projectsexperience.dto.feign.SearchCompanyInfoDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.CompanyDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.SearchCompanyFiltersDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
@@ -46,8 +46,8 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 
 
     @Override
-    public Page<CompanyInfoResponseDTO> searchProjectSubcontractors(SearchCompanyInfoDTO dto,
-                                                                    Pageable pageable) {
+    public Page<CompanyDTO> searchProjectSubcontractors(SearchCompanyFiltersDTO dto,
+                                                        Pageable pageable) {
         // @TODO -- MEEP, Grade, DegreeValidTo to be added
 
         return companiesFeignClient.searchCompanyInfo(dto, pageable);
