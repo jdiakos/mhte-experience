@@ -10,6 +10,7 @@ import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -190,6 +191,15 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
+    public ProjectDTO getProjectById(Long projectId) {
+        Project project = projectRepo.findById(projectId).orElseThrow(()->
+                new MhteProjectsNotFoundException(MhteProjectErrorMessage.PROJECT_NOT_FOUND)
+        );
+
+        return toProjectDTO(project);
+    }
+
+    @Override
     public List<AuditHistoryDTO> getProjectAuditHistory(Long projectId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         List<Object[]> history = auditReader.createQuery()
@@ -210,6 +220,22 @@ public class ProjectServiceImpl implements ProjectService {
                     return dto;
                 })
                 .toList();
+    }
+
+    @Override
+    public Project getProjectAuditByRevisionNumber(Integer revisionNumber) {
+        // @TODO - DRAFT: THIS WILL NOT RETURN AN ENTITY
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+//        List<Project> projects = auditReader.createQuery()
+//                .forEntitiesAtRevision(Project.class, revisionNumber)
+//                .getResultList();
+
+//        return projects.isEmpty() ? null : projects.get(0);
+        return (Project) auditReader.createQuery()
+                .forEntitiesAtRevision(Project.class, revisionNumber)
+                .getResultList()
+                .get(0);
+
     }
 
     private ProjectDTO toProjectDTO(Project project) {

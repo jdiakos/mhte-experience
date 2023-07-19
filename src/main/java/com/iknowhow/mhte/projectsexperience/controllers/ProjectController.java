@@ -1,10 +1,12 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
+import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.dto.AuditHistoryDTO;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectDTO;
 import com.iknowhow.mhte.projectsexperience.service.FileNetService;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,6 +86,13 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<ProjectDTO> getProjectById(@PathVariable("id") Long projectId) {
+        ProjectDTO response = projectService.getProjectById(projectId);
+
+        return ResponseEntity.ok().body(response);
+    }
+
     @GetMapping("/download-file/{guid}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable("guid") String guid) {
         logger.info("Downloading file");
@@ -108,6 +117,13 @@ public class ProjectController {
         List<AuditHistoryDTO> response = projectService.getProjectAuditHistory(projectId);
 
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/audit-version/{revision}")
+    private ResponseEntity<?> getProjectRevision(@PathVariable("revision") Integer revisionNumber) {
+        Project project = projectService.getProjectAuditByRevisionNumber(revisionNumber);
+
+        return ResponseEntity.ok().body(project.toString());
     }
 
 }

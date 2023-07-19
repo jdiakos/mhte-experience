@@ -197,4 +197,40 @@ public class Project implements Serializable {
 //    public ProjectContractor getContractorById(Long id) {
 //    	return this.projectContractors.stream().filter(p -> p.getId()==id).findFirst().orElse(new ProjectContractor());
 //    }
+
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id=" + id +
+                ", projectCategory=" + projectCategory +
+                ", adam='" + adam + '\'' +
+                ", protocolNumber='" + protocolNumber + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", responsibleEntity='" + responsibleEntity + '\'' +
+                ", contractingAuthority='" + contractingAuthority + '\'' +
+                ", headAuthority='" + headAuthority + '\'' +
+                ", projectContractors=" + projectContractors +
+                ", projectSubcontractors=" + projectSubcontractors +
+                ", contracts=" + contracts +
+                ", comments=" + comments +
+                ", projectDocuments=" + projectDocuments +
+                ", experiences=" + experiences +
+                ", dateCreated=" + dateCreated +
+                ", lastModificationDate=" + lastModificationDate +
+                ", lastModifiedBy='" + lastModifiedBy + '\'' +
+                ", initialContractBudget=" + initialContractBudget +
+                ", initialContractValue=" + initialContractValue +
+                ", supplementaryContractValue=" + supplementaryContractValue +
+                ", apeValue=" + apeValue +
+                ", totalValue=" + totalValue +
+                ", dateOfSigning=" + dateOfSigning +
+                ", estimatedCompletionDate=" + estimatedCompletionDate +
+                ", completionDate=" + completionDate +
+                ", receiptProtocolDate=" + receiptProtocolDate +
+                ", receiptProtocolNumber='" + receiptProtocolNumber + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }
