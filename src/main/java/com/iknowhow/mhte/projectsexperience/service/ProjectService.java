@@ -28,6 +28,6 @@ public interface ProjectService {
 	void updateProject(MhteUserPrincipal userPrincipal, ProjectDTO dto, MultipartFile[] subcontractorFiles,
 					   MultipartFile[] contractFiles, MultipartFile[] documents);
 
-	List<AuditHistoryDTO> getAuditHistory(Long id);
+	List<AuditHistoryDTO> getProjectAuditHistory(Long projectId);
 
 }

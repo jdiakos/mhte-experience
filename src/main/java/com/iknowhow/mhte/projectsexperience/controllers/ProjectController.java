@@ -104,8 +104,8 @@ public class ProjectController {
     }
 
     @GetMapping("/history/{id}")
-    public ResponseEntity<?> getHistory(@PathVariable("id") Long id) {
-        List<AuditHistoryDTO> response = projectService.getAuditHistory(id);
+    public ResponseEntity<List<AuditHistoryDTO>> getHistory(@PathVariable("id") Long projectId) {
+        List<AuditHistoryDTO> response = projectService.getProjectAuditHistory(projectId);
 
         return ResponseEntity.ok().body(response);
     }

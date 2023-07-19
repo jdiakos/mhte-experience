@@ -190,11 +190,11 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
-    public List<AuditHistoryDTO> getAuditHistory(Long id) {
+    public List<AuditHistoryDTO> getProjectAuditHistory(Long projectId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         List<Object[]> history = auditReader.createQuery()
                 .forRevisionsOfEntityWithChanges(Project.class, true)
-                .add(AuditEntity.id().eq(id))
+                .add(AuditEntity.id().eq(projectId))
                 .getResultList();
 
         return history
