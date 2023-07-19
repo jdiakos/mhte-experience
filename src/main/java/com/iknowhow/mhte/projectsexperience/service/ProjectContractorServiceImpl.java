@@ -6,9 +6,13 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectContractor;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectContractorRepository;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectContractorDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.CompanyDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.SearchCompanyFiltersDTO;
 import com.iknowhow.mhte.projectsexperience.exception.*;
+import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,21 +25,23 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
 
     private final ProjectContractorRepository contractorRepository;
     private final ProjectRepository projectRepository;
+    private final CompaniesFeignClient companiesFeignClient;
 
     @Autowired
     public ProjectContractorServiceImpl(ProjectContractorRepository contractorRepository,
-                                        ProjectRepository projectRepository) {
+                                        ProjectRepository projectRepository,
+                                        CompaniesFeignClient companiesFeignClient) {
         this.contractorRepository = contractorRepository;
         this.projectRepository = projectRepository;
+        this.companiesFeignClient = companiesFeignClient;
     }
 
     @Override
-    public Page<?> searchProjectContractors() {
-        // @TODO -- PLACEHOLDER -- MICROSERVICE
-        // @TODO -- QUERYDSL SEARCH WITH MEEP, Name, TaxId that fetches a DTO from another Microservice
-        // @TODO -- Paginated DTOs return fields: MEEP, Name, TaxId, LegalType, Address, Series, DegreeValidUntil
+    public Page<CompanyDTO> searchProjectContractors(SearchCompanyFiltersDTO dto,
+                                                     Pageable pageable) {
+        // @TODO -- MEEP, Grade, DegreeValidTo to be added
 
-        return null;
+        return companiesFeignClient.searchCompanyInfo(dto, pageable);
     }
 
 

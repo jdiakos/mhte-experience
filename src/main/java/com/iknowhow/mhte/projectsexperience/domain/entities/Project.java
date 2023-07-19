@@ -84,6 +84,10 @@ public class Project implements Serializable {
     @NotAudited
     private List<ProjectDocument> projectDocuments;
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotAudited
+    private List<Experience> experiences;
+
     @CreatedDate
     @Column(name = "created_date", updatable = false, nullable = false)
     @NotAudited
