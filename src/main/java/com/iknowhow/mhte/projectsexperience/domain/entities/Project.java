@@ -21,7 +21,7 @@ import java.util.Objects;
 @Table(name = "project")
 @Getter
 @Setter
-@Audited
+@Audited(withModifiedFlag = true)
 @EntityListeners(ProjectAuditListener.class)
 public class Project implements Serializable {
 
@@ -164,10 +164,10 @@ public class Project implements Serializable {
         return Objects.hash(id);
     }
     
-    public void removeContractor(ProjectContractor contractor) {
-    	contractor.setProject(null);
-    	this.projectContractors.remove(contractor);
-    }
+//    public void removeContractor(ProjectContractor contractor) {
+//    	contractor.setProject(null);
+//    	this.projectContractors.remove(contractor);
+//    }
     
     public void addContractors(List<ProjectContractor> contractors) {
     	this.projectContractors.addAll(contractors);
@@ -189,12 +189,12 @@ public class Project implements Serializable {
     	this.projectSubcontractors.addAll(subcontractors);
     }
     
-    public void removeSubcontractor(ProjectSubcontractor subcontractor) {
-    	subcontractor.setProject(null);
-    	this.projectSubcontractors.remove(subcontractor);
-    }
-    
-    public ProjectContractor getContractorById(Long id) {
-    	return this.projectContractors.stream().filter(p -> p.getId()==id).findFirst().orElse(new ProjectContractor());
-    }
+//    public void removeSubcontractor(ProjectSubcontractor subcontractor) {
+//    	subcontractor.setProject(null);
+//    	this.projectSubcontractors.remove(subcontractor);
+//    }
+//
+//    public ProjectContractor getContractorById(Long id) {
+//    	return this.projectContractors.stream().filter(p -> p.getId()==id).findFirst().orElse(new ProjectContractor());
+//    }
 }

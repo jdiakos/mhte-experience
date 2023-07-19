@@ -5,6 +5,11 @@ import com.iknowhow.mhte.projectsexperience.domain.enums.ContractTypeEnum;
 import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.dto.*;
 import com.iknowhow.mhte.projectsexperience.exception.*;
+import jakarta.persistence.EntityManager;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.DefaultRevisionEntity;
+import org.hibernate.envers.query.AuditEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,6 +42,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectSubcontractorService projectSubcontractorService;
     private final CommentService commentService;
     private final ProjectDocumentService projectDocumentService;
+    private final EntityManager entityManager;
 
 
     @Autowired
@@ -46,7 +52,8 @@ public class ProjectServiceImpl implements ProjectService {
                               ProjectContractorService projectContractorService,
                               ProjectSubcontractorService projectSubcontractorService,
                               CommentService commentService,
-                              ProjectDocumentService projectDocumentService) {
+                              ProjectDocumentService projectDocumentService,
+                              EntityManager entityManager) {
         this.projectRepo = projectRepo;
         this.utils = utils;
         this.contractService = contractService;
@@ -54,6 +61,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectSubcontractorService = projectSubcontractorService;
         this.commentService = commentService;
         this.projectDocumentService = projectDocumentService;
+        this.entityManager = entityManager;
     }
     
     @Override
@@ -178,6 +186,30 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projectRepo.findAll(booleanBuilder, pageable)
                 .map(this::toProjectDTO);
+    }
+
+
+    @Override
+    public List<AuditHistoryDTO> getAuditHistory(Long id) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        List<Object[]> history = auditReader.createQuery()
+                .forRevisionsOfEntityWithChanges(Project.class, true)
+                .add(AuditEntity.id().eq(id))
+                .getResultList();
+
+        return history
+                .stream()
+                .map(obj -> {
+                    Project project = (Project) obj[0];
+                    DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) obj[1];
+
+                    AuditHistoryDTO dto = new AuditHistoryDTO();
+                    dto.setRevisionNumber(revisionEntity.getId());
+                    dto.setLastModifiedBy(project.getLastModifiedBy());
+                    dto.setLastModificationDate(project.getLastModificationDate());
+                    return dto;
+                })
+                .toList();
     }
 
     private ProjectDTO toProjectDTO(Project project) {

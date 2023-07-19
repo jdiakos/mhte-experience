@@ -1,6 +1,7 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
+import com.iknowhow.mhte.projectsexperience.dto.AuditHistoryDTO;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectDTO;
 import com.iknowhow.mhte.projectsexperience.service.FileNetService;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSearchDTO;
 import com.iknowhow.mhte.projectsexperience.service.ProjectService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/projects")
@@ -98,6 +101,13 @@ public class ProjectController {
                 .headers(httpHeaders)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(dto.getFile());
+    }
+
+    @GetMapping("/history/{id}")
+    public ResponseEntity<?> getHistory(@PathVariable("id") Long id) {
+        List<AuditHistoryDTO> response = projectService.getAuditHistory(id);
+
+        return ResponseEntity.ok().body(response);
     }
 
 }

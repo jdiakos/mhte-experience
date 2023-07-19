@@ -1,12 +1,15 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
+import com.iknowhow.mhte.projectsexperience.dto.AuditHistoryDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.iknowhow.mhte.projectsexperience.dto.ProjectSearchDTO;
+
+import java.util.List;
 
 public interface ProjectService {
 	
@@ -24,5 +27,7 @@ public interface ProjectService {
 
 	void updateProject(MhteUserPrincipal userPrincipal, ProjectDTO dto, MultipartFile[] subcontractorFiles,
 					   MultipartFile[] contractFiles, MultipartFile[] documents);
+
+	List<AuditHistoryDTO> getAuditHistory(Long id);
 
 }
