@@ -29,8 +29,8 @@
     <repositories>
         <repository>
             <id>ikh</id>
-            <!--            <url>https://nexus.iknowhow.com/repository/ikh/</url>-->
-            <url>http://192.168.209.12:8081/repository/ikh/</url>
+                        <url>https://nexus.iknowhow.com/repository/ikh/</url>
+<!--            <url>http://192.168.209.12:8081/repository/ikh/</url>-->
         </repository>
     </repositories>
 
@@ -160,6 +160,11 @@
             <artifactId>auth-security</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>com.ibm.filenet</groupId>
