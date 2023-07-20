@@ -65,15 +65,12 @@ public class Project implements Serializable {
     private String headAuthority;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @NotAudited
     private List<ProjectContractor> projectContractors;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @NotAudited
     private List<ProjectSubcontractor> projectSubcontractors;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @NotAudited
     private List<Contract> contracts;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -81,11 +78,9 @@ public class Project implements Serializable {
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @NotAudited
     private List<ProjectDocument> projectDocuments;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @NotAudited
     private List<Experience> experiences;
 
     @CreatedDate

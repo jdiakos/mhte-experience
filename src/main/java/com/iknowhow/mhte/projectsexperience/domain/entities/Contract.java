@@ -19,7 +19,7 @@ import java.util.Objects;
 @Table(name = "contract")
 @Getter
 @Setter
-@Audited
+@Audited(withModifiedFlag = true)
 @EntityListeners(ContractAuditListener.class)
 public class Contract implements Serializable {
 
@@ -49,7 +49,6 @@ public class Contract implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
-    @NotAudited
     private Project project;
 
     @CreatedDate
@@ -76,5 +75,20 @@ public class Contract implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, contractType, contractValue, signingDate, contractGUID, project);
+    }
+
+    @Override
+    public String toString() {
+        return "Contract{" +
+                "id=" + id +
+                ", contractType=" + contractType +
+                ", contractValue=" + contractValue +
+                ", signingDate=" + signingDate +
+                ", contractGUID='" + contractGUID + '\'' +
+                ", filename='" + filename + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", lastModificationDate=" + lastModificationDate +
+                ", lastModifiedBy='" + lastModifiedBy + '\'' +
+                '}';
     }
 }

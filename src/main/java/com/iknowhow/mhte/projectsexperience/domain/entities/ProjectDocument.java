@@ -35,7 +35,6 @@ public class ProjectDocument implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
-    @NotAudited
     private Project project;
 
     @CreatedDate

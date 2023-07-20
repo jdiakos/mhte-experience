@@ -223,20 +223,87 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project getProjectAuditByRevisionNumber(Integer revisionNumber) {
+    public ProjectDTO getProjectAuditByRevisionNumber(Integer revisionNumber) {
         // @TODO - DRAFT: THIS WILL NOT RETURN AN ENTITY
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
-//        List<Project> projects = auditReader.createQuery()
-//                .forEntitiesAtRevision(Project.class, revisionNumber)
-//                .getResultList();
-
-//        return projects.isEmpty() ? null : projects.get(0);
-        return (Project) auditReader.createQuery()
+        List<Object[]> obj = auditReader.createQuery()
+                .forEntitiesModifiedAtRevision(Project.class, revisionNumber)
+                .getResultList();
+        Project project = (Project) auditReader
+                .createQuery()
                 .forEntitiesAtRevision(Project.class, revisionNumber)
                 .getResultList()
                 .get(0);
 
+        return toAuditProjectDTO(project, revisionNumber);
     }
+
+
+    private ProjectDTO toAuditProjectDTO(Project project, Integer revisionNumber) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        ModelMapper mapper = utils.initModelMapperStrict();
+        ProjectDTO dto = new ProjectDTO();
+
+        dto.setProjectDescription(mapper.map(project, ProjectDescriptionDTO.class));
+        dto.setProjectFinancialElements(mapper.map(project, ProjectFinancialElementsDTO.class));
+
+        // contractors
+        if (!project.getProjectContractors().isEmpty()) {
+            List<ProjectContractor> contractors = (List<ProjectContractor>) auditReader
+                    .createQuery()
+                    .forEntitiesAtRevision(ProjectContractor.class, revisionNumber)
+                    .getResultList();
+            List<ProjectContractorDTO> projectContractorDTOs = contractors
+                    .stream()
+                    .map(contractor -> mapper.map(contractor, ProjectContractorDTO.class))
+                    .toList();
+            dto.setProjectContractors(projectContractorDTOs);
+        }
+
+        // subcontractors
+        if (!project.getProjectSubcontractors().isEmpty()) {
+            List<ProjectSubcontractor> subcontractors = (List<ProjectSubcontractor>) auditReader
+                    .createQuery()
+                    .forEntitiesAtRevision(ProjectSubcontractor.class, revisionNumber)
+                    .getResultList();
+            List<ProjectSubcontractorDTO> subcontractorDTOs = subcontractors
+                    .stream()
+                    .map(subcontractor -> mapper.map(subcontractor, ProjectSubcontractorDTO.class))
+                    .toList();
+            dto.setProjectSubcontractors(subcontractorDTOs);
+        }
+
+        // contracts
+        if (!project.getContracts().isEmpty()) {
+            List<Contract> contracts = (List<Contract>) auditReader
+                    .createQuery()
+                    .forEntitiesAtRevision(Contract.class, revisionNumber)
+                    .getResultList();
+            List<ContractDTO> contractDTOs = contracts
+                    .stream()
+                    .map(contract -> mapper.map(contract, ContractDTO.class))
+                    .toList();
+            dto.setContracts(contractDTOs);
+        }
+
+        // documents
+        if (!project.getProjectDocuments().isEmpty()) {
+            List<ProjectDocument> documents = (List<ProjectDocument>) auditReader
+                    .createQuery()
+                    .forEntitiesAtRevision(ProjectDocument.class, revisionNumber)
+                    .getResultList();
+            List<ProjectDocumentsDTO> projectDocumentsDTOs = documents
+                    .stream()
+                    .map(projectDocument -> mapper.map(projectDocument, ProjectDocumentsDTO.class))
+                    .toList();
+            dto.setProjectDocuments(projectDocumentsDTOs);
+        }
+
+        // experiences
+
+        return dto;
+    }
+
 
     private ProjectDTO toProjectDTO(Project project) {
         ModelMapper mapper = utils.initModelMapperStrict();

@@ -1,12 +1,10 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
-import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.dto.AuditHistoryDTO;
 import com.iknowhow.mhte.projectsexperience.dto.DownloadFileDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectDTO;
 import com.iknowhow.mhte.projectsexperience.service.FileNetService;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,10 +118,10 @@ public class ProjectController {
     }
 
     @GetMapping("/audit-version/{revision}")
-    private ResponseEntity<?> getProjectRevision(@PathVariable("revision") Integer revisionNumber) {
-        Project project = projectService.getProjectAuditByRevisionNumber(revisionNumber);
+    private ResponseEntity<ProjectDTO> getProjectRevision(@PathVariable("revision") Integer revisionNumber) {
+        ProjectDTO response = projectService.getProjectAuditByRevisionNumber(revisionNumber);
 
-        return ResponseEntity.ok().body(project.toString());
+        return ResponseEntity.ok().body(response);
     }
 
 }

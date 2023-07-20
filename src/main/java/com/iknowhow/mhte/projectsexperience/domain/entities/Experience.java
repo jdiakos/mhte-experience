@@ -6,6 +6,7 @@ import com.iknowhow.mhte.projectsexperience.domain.enums.StudyCategories;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.util.Objects;
 @Table(name = "experience")
 @Getter
 @Setter
+@Audited
 public class Experience implements Serializable {
 
     @Id
