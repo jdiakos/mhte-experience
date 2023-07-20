@@ -31,8 +31,7 @@ public class ProjectSubcontractor implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Project project;
 
-    @Column(name = "subcontractor_id", nullable = false, updatable = false)
-    @NotAudited
+    @Column(name = "subcontractor_id", nullable = false)
     private Long subcontractorId;
 
     @Column(name = "participation_type", nullable = false)
@@ -47,7 +46,7 @@ public class ProjectSubcontractor implements Serializable {
     @Column(name = "contract_date_to", nullable = false)
     private LocalDate contractDateTo;
 
-    @Column(name = "contract_guid", nullable = false, updatable = false)
+    @Column(name = "contract_guid", nullable = false)
     private String contractGUID;
 
     @Column(name = "contract_filename")

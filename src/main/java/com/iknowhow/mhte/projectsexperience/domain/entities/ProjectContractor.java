@@ -30,8 +30,7 @@ public class ProjectContractor implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Project project;
 
-    @Column(name = "contractor_id", nullable = false, updatable = false)
-    @NotAudited
+    @Column(name = "contractor_id", nullable = false)
     private Long contractorId;
 
     @Column(name = "participation_type", nullable = false)

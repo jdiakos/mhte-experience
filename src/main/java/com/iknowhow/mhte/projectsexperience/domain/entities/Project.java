@@ -34,34 +34,27 @@ public class Project implements Serializable {
 
     @Column(name = "project_category")
     @Enumerated(EnumType.STRING)
-    @NotAudited
     private ProjectsCategoryEnum projectCategory;
 
     @Column(name = "adam", unique = true)
-    @NotAudited
     private String adam;
 
     @Column(name = "protocol_number", unique = true)
-    @NotAudited
     private String protocolNumber;
 
     @Column(name = "title")
-    @NotAudited
     private String title;
 
     @Column(name = "description")
     private String description;
 
     @Column(name = "responsible_entity")
-    @NotAudited
     private String responsibleEntity;
 
     @Column(name = "contracting_authority")
-    @NotAudited
     private String contractingAuthority;
 
     @Column(name = "head_authority")
-    @NotAudited
     private String headAuthority;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -99,51 +92,40 @@ public class Project implements Serializable {
     // Financials
 
     @Column(name = "initial_contract_budget")
-    @NotAudited
     private Double initialContractBudget;
 
     @Column(name = "initial_contract_value")
-    @NotAudited
     private Double initialContractValue;
 
     @Column(name = "supplementary_value")
-    @NotAudited
     private Double supplementaryContractValue;
 
     @Column(name = "ape_value")
-    @NotAudited
     private Double apeValue;
 
     @Column(name = "total_value")
-    @NotAudited
     private Double totalValue;
 
     @Column(name = "date_of_signing")
     @Temporal(TemporalType.DATE)
-    @NotAudited
     private LocalDate dateOfSigning;
 
     @Column(name = "estimated_completion_date")
     @Temporal(TemporalType.DATE)
-    @NotAudited
     private LocalDate estimatedCompletionDate;
 
     @Column(name = "completion_date")
     @Temporal(TemporalType.DATE)
-    @NotAudited
     private LocalDate completionDate;
 
     @Column(name = "receipt_protocol_date")
     @Temporal(TemporalType.DATE)
-    @NotAudited
     private LocalDate receiptProtocolDate;
 
     @Column(name = "receipt_protocol_number")
-    @NotAudited
     private String receiptProtocolNumber;
 
     @Column(name = "\"type\"")
-    @NotAudited
     private String type;
     
     @Override

@@ -30,15 +30,12 @@ public class Contract implements Serializable {
 
     @Column(name = "contract_type", nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotAudited
     private ContractTypeEnum contractType;
 
     @Column(name = "contract_value", nullable = false)
-    @NotAudited
     private Double contractValue;
 
     @Column(name = "signing_date", updatable = false, nullable = false)
-    @NotAudited
     private LocalDate signingDate;
 
     @Column(name = "contract_guid")
