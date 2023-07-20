@@ -12,6 +12,7 @@ import com.iknowhow.mhte.projectsexperience.dto.feign.SearchCompanyFiltersDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +47,7 @@ public class ProjectSubcontractorServiceImpl implements ProjectSubcontractorServ
 
 
     @Override
+    @Retry(name = "retryService")
     public Page<CompanyDTO> searchProjectSubcontractors(SearchCompanyFiltersDTO dto,
                                                         Pageable pageable) {
         // @TODO -- MEEP, Grade, DegreeValidTo to be added

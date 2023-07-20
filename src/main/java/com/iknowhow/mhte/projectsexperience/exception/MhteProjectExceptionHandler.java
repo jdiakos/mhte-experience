@@ -91,6 +91,16 @@ public class MhteProjectExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * MICROSERVICE EXCEPTIONS
+     */
+    @ExceptionHandler({MhteProjectServiceNotAvailableException.class})
+    public ResponseEntity<MhteProjectErrorDTO> handleServiceNotAvailableException(MhteProjectServiceNotAvailableException e) {
+        MhteProjectErrorDTO response = new MhteProjectErrorDTO();
+        response.setMessage(MhteProjectErrorMessage.SERVICE_NOT_AVAILABLE.name());
+
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     /**
      * GENERIC EXCEPTIONS

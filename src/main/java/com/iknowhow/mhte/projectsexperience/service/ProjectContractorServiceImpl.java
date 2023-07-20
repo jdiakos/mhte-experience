@@ -10,6 +10,7 @@ import com.iknowhow.mhte.projectsexperience.dto.feign.CompanyDTO;
 import com.iknowhow.mhte.projectsexperience.dto.feign.SearchCompanyFiltersDTO;
 import com.iknowhow.mhte.projectsexperience.exception.*;
 import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +38,7 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
     }
 
     @Override
+    @Retry(name = "retryService")
     public Page<CompanyDTO> searchProjectContractors(SearchCompanyFiltersDTO dto,
                                                      Pageable pageable) {
         // @TODO -- MEEP, Grade, DegreeValidTo to be added
