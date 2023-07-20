@@ -1,7 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.service;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
-import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.dto.AuditHistoryDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectDTO;
 import org.springframework.data.domain.Page;
