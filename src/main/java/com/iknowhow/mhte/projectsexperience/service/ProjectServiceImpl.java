@@ -10,7 +10,6 @@ import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -224,7 +223,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDTO getProjectAuditByRevisionNumber(Integer revisionNumber) {
-        // @TODO - DRAFT: THIS WILL NOT RETURN AN ENTITY
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         List<Object[]> obj = auditReader.createQuery()
                 .forEntitiesModifiedAtRevision(Project.class, revisionNumber)
@@ -236,6 +234,59 @@ public class ProjectServiceImpl implements ProjectService {
                 .get(0);
 
         return toAuditProjectDTO(project, revisionNumber);
+    }
+
+
+    private ProjectDTO toProjectDTO(Project project) {
+        ModelMapper mapper = utils.initModelMapperStrict();
+        ProjectDTO dto = new ProjectDTO();
+
+        // MAP PROJECT DATA
+        ProjectDescriptionDTO descriptionDTO = mapper.map(project, ProjectDescriptionDTO.class);
+        ProjectFinancialElementsDTO financialsDTO = mapper.map(project, ProjectFinancialElementsDTO.class);
+
+        // MAP DEPENDANT ENTITIES
+        List<ProjectContractorDTO> contractorsDTOList = project.getProjectContractors()
+                .stream()
+                .map(contractor -> mapper.map(contractor, ProjectContractorDTO.class))
+                .toList();
+        List<ProjectSubcontractorDTO> subcontractorDTOList = project.getProjectSubcontractors()
+                .stream()
+                .map(subcontractor -> mapper.map(subcontractor, ProjectSubcontractorDTO.class))
+                .toList();
+        List<ContractDTO> contractDTOList = project.getContracts()
+                .stream()
+                .map(contract -> mapper.map(contract, ContractDTO.class))
+                .toList();
+        List<ProjectDocumentsDTO> documentsDTOList = project.getProjectDocuments()
+                .stream()
+                .map(projectDocument -> mapper.map(projectDocument, ProjectDocumentsDTO.class))
+                .toList();
+        List<CommentsDTO> commentsDTOList = project.getComments()
+                .stream()
+                .map(this::toCommentDTO)
+                .toList();
+
+        dto.setProjectDescription(descriptionDTO);
+        dto.setProjectFinancialElements(financialsDTO);
+        dto.setProjectContractors(contractorsDTOList);
+        dto.setProjectSubcontractors(subcontractorDTOList);
+        dto.setContracts(contractDTOList);
+        dto.setProjectDocuments(documentsDTOList);
+        dto.setProjectComments(commentsDTOList);
+
+        return dto;
+    }
+
+    private CommentsDTO toCommentDTO (Comment comment) {
+        // we need this because the field names between the dto and the entity differ, so the mapper ignores them
+        CommentsDTO dto = new CommentsDTO();
+        dto.setId(comment.getId());
+        dto.setMessage(comment.getMessage());
+        dto.setUsername(comment.getCreatedBy());
+        dto.setDate(comment.getCreatedAt());
+        dto.setRole(comment.getRole());
+        return dto;
     }
 
 
@@ -304,58 +355,6 @@ public class ProjectServiceImpl implements ProjectService {
         return dto;
     }
 
-
-    private ProjectDTO toProjectDTO(Project project) {
-        ModelMapper mapper = utils.initModelMapperStrict();
-        ProjectDTO dto = new ProjectDTO();
-
-        // MAP PROJECT DATA
-        ProjectDescriptionDTO descriptionDTO = mapper.map(project, ProjectDescriptionDTO.class);
-        ProjectFinancialElementsDTO financialsDTO = mapper.map(project, ProjectFinancialElementsDTO.class);
-
-        // MAP DEPENDANT ENTITIES
-        List<ProjectContractorDTO> contractorsDTOList = project.getProjectContractors()
-                .stream()
-                .map(contractor -> mapper.map(contractor, ProjectContractorDTO.class))
-                .toList();
-        List<ProjectSubcontractorDTO> subcontractorDTOList = project.getProjectSubcontractors()
-                .stream()
-                .map(subcontractor -> mapper.map(subcontractor, ProjectSubcontractorDTO.class))
-                .toList();
-        List<ContractDTO> contractDTOList = project.getContracts()
-                .stream()
-                .map(contract -> mapper.map(contract, ContractDTO.class))
-                .toList();
-        List<ProjectDocumentsDTO> documentsDTOList = project.getProjectDocuments()
-                .stream()
-                .map(projectDocument -> mapper.map(projectDocument, ProjectDocumentsDTO.class))
-                .toList();
-        List<CommentsDTO> commentsDTOList = project.getComments()
-                .stream()
-                .map(this::toCommentDTO)
-                .toList();
-
-        dto.setProjectDescription(descriptionDTO);
-        dto.setProjectFinancialElements(financialsDTO);
-        dto.setProjectContractors(contractorsDTOList);
-        dto.setProjectSubcontractors(subcontractorDTOList);
-        dto.setContracts(contractDTOList);
-        dto.setProjectDocuments(documentsDTOList);
-        dto.setProjectComments(commentsDTOList);
-
-        return dto;
-    }
-
-    private CommentsDTO toCommentDTO (Comment comment) {
-        // we need this because the field names between the dto and the entity differ, so the mapper ignores them
-        CommentsDTO dto = new CommentsDTO();
-        dto.setId(comment.getId());
-        dto.setMessage(comment.getMessage());
-        dto.setUsername(comment.getCreatedBy());
-        dto.setDate(comment.getCreatedAt());
-        dto.setRole(comment.getRole());
-        return dto;
-    }
 
     /**
      * VALIDATORS

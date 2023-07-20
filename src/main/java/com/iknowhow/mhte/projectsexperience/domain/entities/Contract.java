@@ -77,18 +77,4 @@ public class Contract implements Serializable {
         return Objects.hash(id, contractType, contractValue, signingDate, contractGUID, project);
     }
 
-    @Override
-    public String toString() {
-        return "Contract{" +
-                "id=" + id +
-                ", contractType=" + contractType +
-                ", contractValue=" + contractValue +
-                ", signingDate=" + signingDate +
-                ", contractGUID='" + contractGUID + '\'' +
-                ", filename='" + filename + '\'' +
-                ", dateCreated=" + dateCreated +
-                ", lastModificationDate=" + lastModificationDate +
-                ", lastModifiedBy='" + lastModifiedBy + '\'' +
-                '}';
-    }
 }
