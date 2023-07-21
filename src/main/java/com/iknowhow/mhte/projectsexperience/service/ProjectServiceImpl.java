@@ -224,9 +224,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO getProjectAuditByRevisionNumber(Integer revisionNumber) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
-        List<Object[]> obj = auditReader.createQuery()
-                .forEntitiesModifiedAtRevision(Project.class, revisionNumber)
-                .getResultList();
         Project project = (Project) auditReader
                 .createQuery()
                 .forEntitiesAtRevision(Project.class, revisionNumber)

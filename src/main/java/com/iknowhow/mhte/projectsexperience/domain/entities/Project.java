@@ -25,8 +25,6 @@ import java.util.Objects;
 @EntityListeners(ProjectAuditListener.class)
 public class Project implements Serializable {
 
-    //@TODO - PROBABLY WE HAVE TO CHANGE WHICH FIELDS ARE GOING TO BE AUDITED
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
