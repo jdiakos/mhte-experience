@@ -11,6 +11,7 @@ import com.iknowhow.mhte.projectsexperience.dto.feign.SearchCompanyFiltersDTO;
 import com.iknowhow.mhte.projectsexperience.exception.*;
 import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
 import io.github.resilience4j.retry.annotation.Retry;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import java.util.List;
 
 
 @Service
+@Slf4j
 public class ProjectContractorServiceImpl implements ProjectContractorService {
 
     private final ProjectContractorRepository contractorRepository;
@@ -70,10 +72,10 @@ public class ProjectContractorServiceImpl implements ProjectContractorService {
                 .map(dto -> {
                     ProjectContractor contractor = new ProjectContractor();
                     if(dto.getId()!=null) {
-                		List<Long> ids = project.getProjectContractors().stream().map(ProjectContractor::getId).toList();
-                        if(!ids.contains(dto.getId())) {
-            				throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACTOR_ALREADY_ASSIGNED);
-            			}
+//                		List<Long> ids = project.getProjectContractors().stream().map(ProjectContractor::getId).toList();
+//                        if(!ids.contains(dto.getId())) {
+//            				throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACTOR_ALREADY_ASSIGNED);
+//            			}
                         contractor.setId(dto.getId());
                     }
                     contractor.setContractorId(dto.getContractorId());

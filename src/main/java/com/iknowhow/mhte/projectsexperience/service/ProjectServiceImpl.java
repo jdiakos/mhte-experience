@@ -363,8 +363,8 @@ public class ProjectServiceImpl implements ProjectService {
 
         validateProjectNegativeValues(dto.getProjectFinancialElements());
         validateTotalProjectContractorPercentages(dto);
-//        validateDuplicateProjectContractor(dto);
-//        validateDuplicateProjectSubcontractor(dto);
+        validateDuplicateProjectContractor(dto);
+        validateDuplicateProjectSubcontractor(dto);
         validateContractNegativeValues(dto);
         validateFileExtensions(subcontractorFiles);
         validateFileExtensions(contractFiles);

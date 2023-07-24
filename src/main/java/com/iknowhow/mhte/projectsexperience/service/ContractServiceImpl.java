@@ -8,6 +8,7 @@ import com.iknowhow.mhte.projectsexperience.dto.ContractDTO;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectErrorMessage;
 import com.iknowhow.mhte.projectsexperience.exception.MhteProjectsNotFoundException;
 import com.iknowhow.mhte.projectsexperience.utils.Utils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,19 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ContractServiceImpl implements ContractService {
 
-    private final ContractRepository contractRepository;
     private final FileNetService fileNetService;
-    private final Utils utils;
 
     @Autowired
-    public ContractServiceImpl(ContractRepository contractRepository,
-                               FileNetService fileNetService,
-                               Utils utils) {
-        this.contractRepository = contractRepository;
+    public ContractServiceImpl(FileNetService fileNetService) {
         this.fileNetService = fileNetService;
-        this.utils = utils;
     }
 
     @Override
@@ -42,10 +38,11 @@ public class ContractServiceImpl implements ContractService {
         for (int i = 0; i < dtoList.size(); i++) {
             Contract contract = new Contract();
             if (dtoList.get(i).getId() != null) {
-            	List<Long> ids = project.getContracts().stream().map(Contract::getId).toList();
-    			if (ids.contains(dtoList.get(i).getId())) {
-    				throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACTOR_ALREADY_ASSIGNED);
-    			}
+//            	List<Long> ids = project.getContracts().stream().map(Contract::getId).toList();
+//    			if (ids.contains(dtoList.get(i).getId())) {
+//                    log.error("ERROR CONTRACT " + dtoList.get(i).getFilename());
+//    				throw new MhteProjectsNotFoundException(MhteProjectErrorMessage.CONTRACT_ALREADY_ASSIGNED);
+//    			}
     			contract.setId(dtoList.get(i).getId());
             }
             contract.setContractType(dtoList.get(i).getContractType());

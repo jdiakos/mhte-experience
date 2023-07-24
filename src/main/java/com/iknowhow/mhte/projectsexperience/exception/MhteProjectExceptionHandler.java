@@ -20,7 +20,7 @@ public class MhteProjectExceptionHandler {
      * CRUD EXCEPTIONS
      */
     @ExceptionHandler({MhteProjectsNotFoundException.class})
-    public ResponseEntity<MhteProjectErrorDTO> handleInternalError(MhteProjectsNotFoundException ex) {
+    public ResponseEntity<MhteProjectErrorDTO> handleNotFoundException(MhteProjectsNotFoundException ex) {
     	MhteProjectErrorDTO response = new MhteProjectErrorDTO();
 	    response.setMessage(ex.getMessage());
 
