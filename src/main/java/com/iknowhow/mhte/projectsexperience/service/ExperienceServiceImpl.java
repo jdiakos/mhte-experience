@@ -31,6 +31,10 @@ public class ExperienceServiceImpl implements ExperienceService {
                 .stream()
                 .map(dto -> {
                     Experience experience = new Experience();
+                    if (dto.getId() != null) {
+                        experience.setId(dto.getId());
+                    }
+
                     Optional.ofNullable(dto.getCompanyId())
                                     .ifPresent(id -> experience.setCompanyId(dto.getCompanyId()));
                     Optional.ofNullable(dto.getPersonId())
@@ -44,6 +48,10 @@ public class ExperienceServiceImpl implements ExperienceService {
                     experience.setValue(dto.getValue());
                     experience.setCategory(dto.getCategory());
                     experience.setProject(project);
+
+                    if (project.getId() != null) {
+                        project.getExperiences().clear();
+                    }
 
                     return experience;
                 })

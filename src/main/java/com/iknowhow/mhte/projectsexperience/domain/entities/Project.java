@@ -163,6 +163,10 @@ public class Project implements Serializable {
     public void addSubcontractor(List<ProjectSubcontractor> subcontractors) {
     	this.projectSubcontractors.addAll(subcontractors);
     }
+
+    public void addExperiences(List<Experience> experiences) {
+        this.experiences.addAll(experiences);
+    }
     
 //    public void removeSubcontractor(ProjectSubcontractor subcontractor) {
 //    	subcontractor.setProject(null);

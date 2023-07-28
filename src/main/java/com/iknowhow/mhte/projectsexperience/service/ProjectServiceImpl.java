@@ -148,6 +148,9 @@ public class ProjectServiceImpl implements ProjectService {
         project.addProjectDocuments(
                 projectDocumentService.assignDocumentsToProject(dto.getProjectDocuments(), documents, project, userPrincipal)
         );
+        project.addExperiences(
+                experienceService.assignExperienceToProject(dto.getExperiences(), project, userPrincipal)
+        );
 
         /*   works!!!!!!!!
 			projectContractorService.dischargeContractors(project, dto);
