@@ -6,6 +6,7 @@ import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.dto.*;
 import com.iknowhow.mhte.projectsexperience.exception.*;
 import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.DefaultRevisionEntity;
@@ -33,6 +34,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepo;
@@ -42,6 +44,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectSubcontractorService projectSubcontractorService;
     private final CommentService commentService;
     private final ProjectDocumentService projectDocumentService;
+    private final ExperienceService experienceService;
     private final EntityManager entityManager;
 
 
@@ -53,6 +56,7 @@ public class ProjectServiceImpl implements ProjectService {
                               ProjectSubcontractorService projectSubcontractorService,
                               CommentService commentService,
                               ProjectDocumentService projectDocumentService,
+                              ExperienceService experienceService,
                               EntityManager entityManager) {
         this.projectRepo = projectRepo;
         this.utils = utils;
@@ -61,6 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectSubcontractorService = projectSubcontractorService;
         this.commentService = commentService;
         this.projectDocumentService = projectDocumentService;
+        this.experienceService = experienceService;
         this.entityManager = entityManager;
     }
     
@@ -100,11 +105,14 @@ public class ProjectServiceImpl implements ProjectService {
         project.setProjectDocuments(
                 projectDocumentService.assignDocumentsToProject(dto.getProjectDocuments(), documents, project, userPrincipal)
         );
+        project.setExperiences(
+                experienceService.assignExperienceToProject(dto.getExperiences(), project, userPrincipal)
+        );
 
         try {
             projectRepo.save(project);
         } catch (Exception e){
-        	System.out.println(e.getMessage());
+        	log.error(e.getMessage());
         }
     }
 
@@ -263,6 +271,10 @@ public class ProjectServiceImpl implements ProjectService {
                 .stream()
                 .map(this::toCommentDTO)
                 .toList();
+        List<ExperienceDTO> experienceDTOList = project.getExperiences()
+                .stream()
+                .map(experience -> mapper.map(experience, ExperienceDTO.class))
+                .toList();
 
         dto.setProjectDescription(descriptionDTO);
         dto.setProjectFinancialElements(financialsDTO);
@@ -271,6 +283,7 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setContracts(contractDTOList);
         dto.setProjectDocuments(documentsDTOList);
         dto.setProjectComments(commentsDTOList);
+        dto.setExperiences(experienceDTOList);
 
         return dto;
     }

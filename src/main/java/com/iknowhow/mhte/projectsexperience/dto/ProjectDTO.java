@@ -19,5 +19,6 @@ public class ProjectDTO {
     private List<ProjectSubcontractorDTO> projectSubcontractors;
     private List<CommentsDTO> projectComments;
     private List<ProjectDocumentsDTO> projectDocuments;
+    private List<ExperienceDTO> experiences;
 
 }
