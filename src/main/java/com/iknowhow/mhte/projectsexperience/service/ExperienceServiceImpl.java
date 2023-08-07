@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,34 +28,39 @@ public class ExperienceServiceImpl implements ExperienceService {
     public List<Experience> assignExperienceToProject(List<ExperienceDTO> dtoList,
                                                       Project project,
                                                       MhteUserPrincipal userPrincipal) {
-        return dtoList
-                .stream()
-                .map(dto -> {
-                    Experience experience = new Experience();
-                    if (dto.getId() != null) {
-                        experience.setId(dto.getId());
-                    }
 
-                    Optional.ofNullable(dto.getCompanyId())
-                                    .ifPresent(id -> experience.setCompanyId(dto.getCompanyId()));
-                    Optional.ofNullable(dto.getPersonId())
-                                    .ifPresent(id -> {
-                                        experience.setPersonId(dto.getPersonId());
-                                        experience.setOccupation(dto.getOccupation());
-                                        experience.setRole(dto.getRole());
-                                    });
-                    experience.setExperienceFrom(dto.getExperienceFrom());
-                    experience.setExperienceTo(dto.getExperienceTo());
-                    experience.setValue(dto.getValue());
-                    experience.setCategory(dto.getCategory());
-                    experience.setProject(project);
+        if (dtoList != null && !dtoList.isEmpty()) {
+            return dtoList
+                    .stream()
+                    .map(dto -> {
+                        Experience experience = new Experience();
+                        if (dto.getId() != null) {
+                            experience.setId(dto.getId());
+                        }
 
-                    if (project.getId() != null) {
-                        project.getExperiences().clear();
-                    }
+                        Optional.ofNullable(dto.getCompanyId())
+                                .ifPresent(id -> experience.setCompanyId(dto.getCompanyId()));
+                        Optional.ofNullable(dto.getPersonId())
+                                .ifPresent(id -> {
+                                    experience.setPersonId(dto.getPersonId());
+                                    experience.setOccupation(dto.getOccupation());
+                                    experience.setRole(dto.getRole());
+                                });
+                        experience.setExperienceFrom(dto.getExperienceFrom());
+                        experience.setExperienceTo(dto.getExperienceTo());
+                        experience.setValue(dto.getValue());
+                        experience.setCategory(dto.getCategory());
+                        experience.setProject(project);
 
-                    return experience;
-                })
-                .toList();
+                        if (project.getId() != null) {
+                            project.getExperiences().clear();
+                        }
+
+                        return experience;
+                    })
+                    .toList();
+        } else {
+            return new ArrayList<>();
+        }
     }
 }
