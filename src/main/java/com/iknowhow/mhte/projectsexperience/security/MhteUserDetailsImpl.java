@@ -38,6 +38,8 @@ public class MhteUserDetailsImpl implements MhteUserDetailsService {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .authorities(grantedAuthorities)
+                .registries(user.getRegistries())
+                .roleNames(user.getRoleNames())
                 .build();
     }
 }
