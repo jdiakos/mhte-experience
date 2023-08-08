@@ -2,6 +2,7 @@ package com.iknowhow.mhte.projectsexperience.feign;
 
 import com.iknowhow.mhte.projectsexperience.configuration.FeignClientAuthInterceptor;
 import com.iknowhow.mhte.projectsexperience.dto.feign.CompanyDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.CompanyIdsRequestDTO;
 import com.iknowhow.mhte.projectsexperience.dto.feign.SearchCompanyFiltersDTO;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -24,5 +25,8 @@ public interface CompaniesFeignClient {
     
     @GetMapping("/companies/experience")
     List<Long> getExperienceIds(@RequestParam Long companyId);
+
+    @PostMapping("/companies/get-by-ids")
+    List<CompanyDTO> getNamesByIds(@RequestBody CompanyIdsRequestDTO dto);
 
 }
