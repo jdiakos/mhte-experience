@@ -5,7 +5,12 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.Experience;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ExperienceRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ExperienceDTO;
+import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +22,13 @@ import java.util.Optional;
 public class ExperienceServiceImpl implements ExperienceService {
 
     private final ExperienceRepository experienceRepository;
+    private final CompaniesFeignClient companyClient;
 
     @Autowired
-    public ExperienceServiceImpl(ExperienceRepository experienceRepository) {
+    public ExperienceServiceImpl(ExperienceRepository experienceRepository,
+    		CompaniesFeignClient companyClient) {
         this.experienceRepository = experienceRepository;
+        this.companyClient = companyClient;
     }
 
     @Override
@@ -61,4 +69,24 @@ public class ExperienceServiceImpl implements ExperienceService {
             return new ArrayList<>();
         }
     }
+    
+    @Override
+    public Page<ExperienceDTO> getExperienceByCompanyId(Long companyId, Pageable page){
+    	List<Long> experienceIds = companyClient.getExperienceIds(companyId);
+    	Page<Experience> experiences = experienceRepository.findAllByIdIn(experienceIds, page);
+    	List<ExperienceDTO> experienceDto = experiences.getContent().stream().map(e -> {
+    		ExperienceDTO dto = new ExperienceDTO();
+    		dto.setCategory(e.getCategory());
+    		dto.setExperienceFrom(e.getExperienceFrom());
+    		dto.setExperienceTo(e.getExperienceTo());
+    		dto.setId(e.getId());
+    		dto.setOccupation(e.getOccupation());
+    		dto.setPersonTaxId(e.getPersonTaxId());
+    		dto.setRole(e.getRole());
+    		dto.setValue(e.getValue());
+    		return dto;
+    	}).toList();
+    	return new PageImpl<>(experienceDto, page, experienceDto.size());
+    }
+
 }
