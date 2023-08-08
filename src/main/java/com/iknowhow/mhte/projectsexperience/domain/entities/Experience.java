@@ -55,8 +55,8 @@ public class Experience implements Serializable {
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private Project project;
 
-    @Column(name = "person_id")
-    private Long personId;
+    @Column(name = "person_tax_id")
+    private String personTaxId;
 
     @Column(name = "company_id")
     private Long companyId;

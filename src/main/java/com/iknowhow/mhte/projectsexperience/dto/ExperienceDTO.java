@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class ExperienceDTO {
 
     private Long id;
-    private Long personId;
+    private String personTaxId;
     private LocalDate experienceFrom;
     private LocalDate experienceTo;
     private StudyCategories category;
