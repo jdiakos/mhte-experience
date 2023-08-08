@@ -38,8 +38,6 @@ public class ExperienceServiceImpl implements ExperienceService {
                             experience.setId(dto.getId());
                         }
 
-                        Optional.ofNullable(dto.getCompanyId())
-                                .ifPresent(id -> experience.setCompanyId(dto.getCompanyId()));
                         Optional.ofNullable(dto.getPersonId())
                                 .ifPresent(id -> {
                                     experience.setPersonId(dto.getPersonId());
