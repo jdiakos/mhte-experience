@@ -3,6 +3,7 @@ package com.iknowhow.mhte.projectsexperience.service;
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Experience;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
+import com.iknowhow.mhte.projectsexperience.domain.enums.StudyCategories;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ExperienceRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ExperienceDTO;
 import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
@@ -69,24 +70,37 @@ public class ExperienceServiceImpl implements ExperienceService {
             return new ArrayList<>();
         }
     }
-    
+
     @Override
     public Page<ExperienceDTO> getExperienceByCompanyId(Long companyId, Pageable page){
     	List<Long> experienceIds = companyClient.getExperienceIds(companyId);
     	Page<Experience> experiences = experienceRepository.findAllByIdIn(experienceIds, page);
-    	List<ExperienceDTO> experienceDto = experiences.getContent().stream().map(e -> {
-    		ExperienceDTO dto = new ExperienceDTO();
-    		dto.setCategory(e.getCategory());
-    		dto.setExperienceFrom(e.getExperienceFrom());
-    		dto.setExperienceTo(e.getExperienceTo());
-    		dto.setId(e.getId());
-    		dto.setOccupation(e.getOccupation());
-    		dto.setPersonTaxId(e.getPersonTaxId());
-    		dto.setRole(e.getRole());
-    		dto.setValue(e.getValue());
-    		return dto;
-    	}).toList();
+    	List<ExperienceDTO> experienceDto = experiences.getContent().stream().map(this::toExperienceDTO).toList();
     	return new PageImpl<>(experienceDto, page, experienceDto.size());
     }
 
+
+
+    @Override
+    public Page<ExperienceDTO> getAllByStudyCategoryAndPersonTaxId(StudyCategories category,
+                                                                   String personTaxId,
+                                                                   Pageable pageable) {
+        return experienceRepository.findAllByCategoryAndPersonTaxId(category, personTaxId, pageable)
+                .map(this::toExperienceDTO);
+    }
+
+
+    private ExperienceDTO toExperienceDTO(Experience experience) {
+        ExperienceDTO dto = new ExperienceDTO();
+        dto.setId(experience.getId());
+        dto.setPersonTaxId(experience.getPersonTaxId());
+        dto.setExperienceFrom(experience.getExperienceFrom());
+        dto.setExperienceTo(experience.getExperienceTo());
+        dto.setCategory(experience.getCategory());
+        dto.setOccupation(experience.getOccupation());
+        dto.setRole(experience.getRole());
+        dto.setValue(experience.getValue());
+
+        return dto;
+    }
 }
