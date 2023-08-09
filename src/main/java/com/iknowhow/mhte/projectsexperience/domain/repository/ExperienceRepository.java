@@ -12,7 +12,9 @@ import java.util.List;
 @Repository
 public interface ExperienceRepository extends JpaRepository<Experience, Long> {
 
-    Page<Experience> findAllByCategoryAndPersonTaxId(StudyCategories category, String personTaxId, Pageable pageable);
+    Page<Experience> findAllByCategoryAndPersonTaxIdIn(StudyCategories category,
+                                                       List<String> personTaxIds,
+                                                       Pageable pageable);
 
 
 	Page<Experience> findAllByIdIn(List<Long> experienceIds, Pageable page);

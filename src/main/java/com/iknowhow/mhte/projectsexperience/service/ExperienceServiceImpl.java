@@ -83,9 +83,10 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public Page<ExperienceDTO> getAllByStudyCategoryAndPersonTaxId(StudyCategories category,
-                                                                   String personTaxId,
+                                                                   List<String> taxIds,
                                                                    Pageable pageable) {
-        return experienceRepository.findAllByCategoryAndPersonTaxId(category, personTaxId, pageable)
+
+        return experienceRepository.findAllByCategoryAndPersonTaxIdIn(category, taxIds, pageable)
                 .map(this::toExperienceDTO);
     }
 
