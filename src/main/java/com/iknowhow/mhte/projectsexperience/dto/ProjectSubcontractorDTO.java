@@ -11,6 +11,7 @@ public class ProjectSubcontractorDTO {
 
     private Long id;
     private Long subcontractorId;
+    private String subcontractorName;
     private String participationType;
     private Double contractValue;
     private LocalDate contractDateFrom;

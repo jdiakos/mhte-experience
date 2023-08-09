@@ -9,6 +9,7 @@ public class ProjectContractorDTO {
 
     private Long id;
     private Long contractorId;
+    private String contractorName;
     private String participationType;
     private Double participationPercentage;
 

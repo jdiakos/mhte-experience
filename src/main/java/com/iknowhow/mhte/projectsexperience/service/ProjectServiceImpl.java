@@ -4,7 +4,9 @@ import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.enums.ContractTypeEnum;
 import com.iknowhow.mhte.projectsexperience.domain.enums.ProjectsCategoryEnum;
 import com.iknowhow.mhte.projectsexperience.dto.*;
+import com.iknowhow.mhte.projectsexperience.dto.feign.CompanyDTO;
 import com.iknowhow.mhte.projectsexperience.exception.*;
+import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.AuditReader;
@@ -45,6 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final CommentService commentService;
     private final ProjectDocumentService projectDocumentService;
     private final ExperienceService experienceService;
+    private final CompaniesFeignClient companiesFeignClient;
     private final EntityManager entityManager;
 
 
@@ -57,6 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
                               CommentService commentService,
                               ProjectDocumentService projectDocumentService,
                               ExperienceService experienceService,
+                              CompaniesFeignClient companiesFeignClient,
                               EntityManager entityManager) {
         this.projectRepo = projectRepo;
         this.utils = utils;
@@ -66,6 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.commentService = commentService;
         this.projectDocumentService = projectDocumentService;
         this.experienceService = experienceService;
+        this.companiesFeignClient = companiesFeignClient;
         this.entityManager = entityManager;
     }
     
@@ -245,6 +250,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
+    /**
+     * MAPPERS
+     */
+
     private ProjectDTO toProjectDTO(Project project) {
         ModelMapper mapper = utils.initModelMapperStrict();
         ProjectDTO dto = new ProjectDTO();
@@ -258,10 +267,14 @@ public class ProjectServiceImpl implements ProjectService {
                 .stream()
                 .map(contractor -> mapper.map(contractor, ProjectContractorDTO.class))
                 .toList();
+        // @TODO -> THIS MIGHT NEED TO BE CACHED FOR GET ALL PROJECTS, TO BE CHECKED LATER
+        getContractorNames(contractorsDTOList);
         List<ProjectSubcontractorDTO> subcontractorDTOList = project.getProjectSubcontractors()
                 .stream()
                 .map(subcontractor -> mapper.map(subcontractor, ProjectSubcontractorDTO.class))
                 .toList();
+        // @TODO -> THIS MIGHT NEED TO BE CACHED FOR GET ALL PROJECTS, TO BE CHECKED LATER
+        getSubcontractorNames(subcontractorDTOList);
         List<ContractDTO> contractDTOList = project.getContracts()
                 .stream()
                 .map(contract -> mapper.map(contract, ContractDTO.class))
@@ -368,10 +381,39 @@ public class ProjectServiceImpl implements ProjectService {
         return dto;
     }
 
+    /**
+     * FEIGN MAPPERS
+     */
+    private void getContractorNames(List<ProjectContractorDTO> contractors) {
+        List<Long> contractorIds = contractors.stream().map(ProjectContractorDTO::getContractorId).toList();
+        List<CompanyDTO> companies = companiesFeignClient.getNamesByIds(contractorIds);
+        contractors.forEach(contractor -> {
+            companies
+                    .stream()
+                    .filter(company -> company.getId().equals(contractor.getContractorId()))
+                    .findFirst()
+                    .ifPresent(companyDTO ->
+                            contractor.setContractorName(companyDTO.getCompanyInfo().getCompanyName()));
+        });
+
+    }
+
+    private void getSubcontractorNames(List<ProjectSubcontractorDTO> subcontractors) {
+        List<Long> subcontractorIds = subcontractors.stream().map(ProjectSubcontractorDTO::getSubcontractorId).toList();
+        List<CompanyDTO> companies = companiesFeignClient.getNamesByIds(subcontractorIds);
+        subcontractors.forEach(subcontractor -> {
+            companies
+                    .stream()
+                    .filter(company -> company.getId().equals(subcontractor.getSubcontractorId()))
+                    .findFirst()
+                    .ifPresent(companyDTO ->
+                            subcontractor.setSubcontractorName(companyDTO.getCompanyInfo().getCompanyName()));
+        });
+    }
+
 
     /**
      * VALIDATORS
-     *
      */
 
     private void validateProjectData(ProjectDTO dto, MultipartFile[] subcontractorFiles,
