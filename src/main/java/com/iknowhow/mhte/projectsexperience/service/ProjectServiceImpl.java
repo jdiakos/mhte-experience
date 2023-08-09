@@ -334,6 +334,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .stream()
                     .map(contractor -> mapper.map(contractor, ProjectContractorDTO.class))
                     .toList();
+            getContractorNames(projectContractorDTOs);
             dto.setProjectContractors(projectContractorDTOs);
         }
 
@@ -347,6 +348,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .stream()
                     .map(subcontractor -> mapper.map(subcontractor, ProjectSubcontractorDTO.class))
                     .toList();
+            getSubcontractorNames(subcontractorDTOs);
             dto.setProjectSubcontractors(subcontractorDTOs);
         }
 
