@@ -124,4 +124,11 @@ public class ProjectController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/whoami")
+    public ResponseEntity<?> whoami(@AuthenticationPrincipal MhteUserPrincipal userPrincipal) {
+        System.out.println(userPrincipal);
+
+        return ResponseEntity.ok().body(userPrincipal);
+    }
+
 }
