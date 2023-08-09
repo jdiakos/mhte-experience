@@ -110,7 +110,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     private ExperienceResponseDTO toExperienceResponseDTO(Experience experience) {
         ExperienceResponseDTO dto = new ExperienceResponseDTO();
-        dto.setId(dto.getId());
+        dto.setId(experience.getId());
         dto.setCategory(experience.getCategory());
         dto.setAdam(experience.getProject().getAdam());
         dto.setProtocolNumber(experience.getProject().getProtocolNumber());
