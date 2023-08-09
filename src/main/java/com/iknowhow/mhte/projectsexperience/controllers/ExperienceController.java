@@ -32,4 +32,10 @@ public class ExperienceController {
 
         return ResponseEntity.ok().body(response);
     }
+
+    @GetMapping("/get-company-experience")
+    public Page<ExperienceDTO> getExperienceByCompanyId(@RequestParam(name="companyId") Long companyId, Pageable page){
+        return experienceService.getExperienceByCompanyId(companyId, page);
+    }
+
 }
