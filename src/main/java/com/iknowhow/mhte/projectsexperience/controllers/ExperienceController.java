@@ -24,7 +24,7 @@ public class ExperienceController {
     }
 
 
-    @GetMapping("/get-all/{category}")
+    @PostMapping("/get-all/{category}")
     public ResponseEntity<Page<ExperienceResponseDTO>> getAllByCategoryAndPersonTaxId(@PathVariable("category") StudyCategories category,
                                                                               @RequestBody List<String> taxIds,
                                                                               Pageable pageable) {
