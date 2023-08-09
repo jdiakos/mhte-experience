@@ -8,6 +8,7 @@ import com.iknowhow.mhte.projectsexperience.dto.ExperienceDTO;
 
 import java.util.List;
 
+import com.iknowhow.mhte.projectsexperience.dto.feign.ExperienceResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,8 +20,8 @@ public interface ExperienceService {
     
     Page<ExperienceDTO> getExperienceByCompanyId(Long companyId, Pageable page);
 
-    Page<ExperienceDTO> getAllByStudyCategoryAndPersonTaxId(StudyCategories category,
-                                                            List<String> taxIds,
-                                                            Pageable pageable);
+    Page<ExperienceResponseDTO> getAllByStudyCategoryAndPersonTaxId(StudyCategories category,
+                                                                    List<String> taxIds,
+                                                                    Pageable pageable);
 
 }

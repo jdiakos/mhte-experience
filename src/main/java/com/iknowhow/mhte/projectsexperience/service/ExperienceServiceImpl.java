@@ -6,6 +6,7 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.enums.StudyCategories;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ExperienceRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ExperienceDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.ExperienceResponseDTO;
 import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Period;
+import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -82,12 +86,12 @@ public class ExperienceServiceImpl implements ExperienceService {
 
 
     @Override
-    public Page<ExperienceDTO> getAllByStudyCategoryAndPersonTaxId(StudyCategories category,
+    public Page<ExperienceResponseDTO> getAllByStudyCategoryAndPersonTaxId(StudyCategories category,
                                                                    List<String> taxIds,
                                                                    Pageable pageable) {
 
         return experienceRepository.findAllByCategoryAndPersonTaxIdIn(category, taxIds, pageable)
-                .map(this::toExperienceDTO);
+                .map(this::toExperienceResponseDTO);
     }
 
 
@@ -101,6 +105,25 @@ public class ExperienceServiceImpl implements ExperienceService {
         dto.setOccupation(experience.getOccupation());
         dto.setRole(experience.getRole());
         dto.setValue(experience.getValue());
+
+        return dto;
+    }
+
+
+    private ExperienceResponseDTO toExperienceResponseDTO(Experience experience) {
+        ExperienceResponseDTO dto = new ExperienceResponseDTO();
+        dto.setId(dto.getId());
+        dto.setCategory(experience.getCategory());
+        dto.setAdam(experience.getProject().getAdam());
+        dto.setProtocolNumber(experience.getProject().getProtocolNumber());
+        dto.setTitle(experience.getProject().getTitle());
+        dto.setProjectEntity(experience.getProject().getResponsibleEntity());
+        dto.setProjectValue(experience.getValue());
+        dto.setFrom(experience.getExperienceFrom());
+        dto.setTo(experience.getExperienceTo());
+
+        long totalMonths = ChronoUnit.MONTHS.between(dto.getFrom(), dto.getTo());
+        dto.setTotalMonths(totalMonths);
 
         return dto;
     }

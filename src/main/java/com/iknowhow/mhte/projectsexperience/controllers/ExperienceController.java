@@ -2,6 +2,7 @@ package com.iknowhow.mhte.projectsexperience.controllers;
 
 import com.iknowhow.mhte.projectsexperience.domain.enums.StudyCategories;
 import com.iknowhow.mhte.projectsexperience.dto.ExperienceDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.ExperienceResponseDTO;
 import com.iknowhow.mhte.projectsexperience.service.ExperienceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,10 +25,10 @@ public class ExperienceController {
 
 
     @GetMapping("/get-all/{category}")
-    public ResponseEntity<Page<ExperienceDTO>> getAllByCategoryAndPersonTaxId(@PathVariable("category") StudyCategories category,
+    public ResponseEntity<Page<ExperienceResponseDTO>> getAllByCategoryAndPersonTaxId(@PathVariable("category") StudyCategories category,
                                                                               @RequestBody List<String> taxIds,
                                                                               Pageable pageable) {
-        Page<ExperienceDTO> response = experienceService.getAllByStudyCategoryAndPersonTaxId(category, taxIds, pageable);
+        Page<ExperienceResponseDTO> response = experienceService.getAllByStudyCategoryAndPersonTaxId(category, taxIds, pageable);
 
         return ResponseEntity.ok().body(response);
     }
