@@ -379,6 +379,17 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         // experiences
+        if (!project.getExperiences().isEmpty()) {
+            List<Experience> experiences = (List<Experience>) auditReader
+                    .createQuery()
+                    .forEntitiesAtRevision(Experience.class, revisionNumber)
+                    .getResultList();
+            List<ExperienceDTO> experienceDTOs = experiences
+                    .stream()
+                    .map(experience -> mapper.map(experience, ExperienceDTO.class))
+                    .toList();
+            dto.setExperiences(experienceDTOs);
+        }
 
         return dto;
     }
