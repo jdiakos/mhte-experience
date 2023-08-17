@@ -111,7 +111,7 @@ public class ProjectServiceImpl implements ProjectService {
                 projectDocumentService.assignDocumentsToProject(dto.getProjectDocuments(), documents, project, userPrincipal)
         );
         project.setExperiences(
-                experienceService.assignExperienceToProject(dto.getExperiences(), project, userPrincipal)
+                experienceService.assignExperienceToProject(dto.getProjectExperience(), project, userPrincipal)
         );
 
         try {
@@ -154,7 +154,7 @@ public class ProjectServiceImpl implements ProjectService {
                 projectDocumentService.assignDocumentsToProject(dto.getProjectDocuments(), documents, project, userPrincipal)
         );
         project.addExperiences(
-                experienceService.assignExperienceToProject(dto.getExperiences(), project, userPrincipal)
+                experienceService.assignExperienceToProject(dto.getProjectExperience(), project, userPrincipal)
         );
 
         /*   works!!!!!!!!
@@ -299,7 +299,7 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setContracts(contractDTOList);
         dto.setProjectDocuments(documentsDTOList);
         dto.setProjectComments(commentsDTOList);
-        dto.setExperiences(experienceDTOList);
+        dto.setProjectExperience(experienceDTOList);
 
         return dto;
     }
@@ -388,7 +388,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .stream()
                     .map(experience -> mapper.map(experience, ExperienceDTO.class))
                     .toList();
-            dto.setExperiences(experienceDTOs);
+            dto.setProjectExperience(experienceDTOs);
         }
 
         return dto;
