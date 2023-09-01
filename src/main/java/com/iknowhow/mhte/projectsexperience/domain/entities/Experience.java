@@ -2,7 +2,7 @@ package com.iknowhow.mhte.projectsexperience.domain.entities;
 
 import com.iknowhow.mhte.projectsexperience.domain.enums.ExperienceOccupation;
 import com.iknowhow.mhte.projectsexperience.domain.enums.ExperienceRole;
-import com.iknowhow.mhte.projectsexperience.domain.enums.StudyCategories;
+import com.iknowhow.mhte.projectsexperience.domain.enums.ExperienceCategories;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +32,7 @@ public class Experience implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
-    private StudyCategories category;
+    private ExperienceCategories category;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")

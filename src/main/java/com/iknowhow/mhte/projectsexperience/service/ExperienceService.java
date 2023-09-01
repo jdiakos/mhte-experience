@@ -3,7 +3,7 @@ package com.iknowhow.mhte.projectsexperience.service;
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Experience;
 import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
-import com.iknowhow.mhte.projectsexperience.domain.enums.StudyCategories;
+import com.iknowhow.mhte.projectsexperience.domain.enums.ExperienceCategories;
 import com.iknowhow.mhte.projectsexperience.dto.ExperienceDTO;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public interface ExperienceService {
     
     Page<ExperienceDTO> getExperienceByCompanyId(Long companyId, Pageable page);
 
-    Page<ExperienceResponseDTO> getAllByStudyCategoryAndPersonTaxId(StudyCategories category,
+    Page<ExperienceResponseDTO> getAllByStudyCategoryAndPersonTaxId(ExperienceCategories category,
                                                                     List<String> taxIds,
                                                                     Pageable pageable);
 

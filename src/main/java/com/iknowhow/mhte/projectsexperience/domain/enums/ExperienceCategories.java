@@ -1,6 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.domain.enums;
 
-public enum StudyCategories {
+public enum ExperienceCategories {
 
     INDUSTRIAL ("Industrial studies"),
     TOPOGRAPHICAL ("Topographical studies"),
@@ -29,12 +29,18 @@ public enum StudyCategories {
     HARBOR_WORKS_STUDIES ("Harbor Projects Studies"),
     STUDIES_OF_MEANS_OF_TRANSPORT ("Studies Of Means Of Transport"),
     STUDIES_OF_HYDRAULIC_PROJECTS ("Studies Of Hydraulic Projects And Water Resources Management"),
-    ENERGY_STUDIES ("Energy Studies")
+    ENERGY_STUDIES ("Energy Studies"),
+    ROAD_CONSTRUCTION ("Road Construction"),
+    CONSTRUCTION ("Construction"),
+    HYDRAULIC ("Hydraulic"),
+    ELECTROMECHANICAL ("Electromechanical"),
+    PORT ("Port"),
+    INDUSTRIAL_ENERGY ("Industrial_Energy")
     ;
 
     final String label;
 
-    StudyCategories(String label) {
+    ExperienceCategories(String label) {
         this.label = label;
     }
 

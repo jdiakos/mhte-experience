@@ -1,6 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.dto.feign;
 
-import com.iknowhow.mhte.projectsexperience.domain.enums.StudyCategories;
+import com.iknowhow.mhte.projectsexperience.domain.enums.ExperienceCategories;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class ExperienceResponseDTO {
 
     private Long id;
-    private StudyCategories category;
+    private ExperienceCategories category;
     private String adam;
     private String protocolNumber;
     private String title;

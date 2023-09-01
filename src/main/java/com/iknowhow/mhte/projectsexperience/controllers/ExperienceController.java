@@ -1,6 +1,6 @@
 package com.iknowhow.mhte.projectsexperience.controllers;
 
-import com.iknowhow.mhte.projectsexperience.domain.enums.StudyCategories;
+import com.iknowhow.mhte.projectsexperience.domain.enums.ExperienceCategories;
 import com.iknowhow.mhte.projectsexperience.dto.ExperienceDTO;
 import com.iknowhow.mhte.projectsexperience.dto.feign.ExperienceResponseDTO;
 import com.iknowhow.mhte.projectsexperience.service.ExperienceService;
@@ -25,7 +25,7 @@ public class ExperienceController {
 
 
     @PostMapping("/get-all/{category}")
-    public ResponseEntity<Page<ExperienceResponseDTO>> getAllByCategoryAndPersonTaxId(@PathVariable("category") StudyCategories category,
+    public ResponseEntity<Page<ExperienceResponseDTO>> getAllByCategoryAndPersonTaxId(@PathVariable("category") ExperienceCategories category,
                                                                               @RequestBody List<String> taxIds,
                                                                               Pageable pageable) {
         Page<ExperienceResponseDTO> response = experienceService.getAllByStudyCategoryAndPersonTaxId(category, taxIds, pageable);
