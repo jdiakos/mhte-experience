@@ -57,6 +57,9 @@ public class Experience implements Serializable {
 
     @Column(name = "person_tax_id")
     private String personTaxId;
+    
+    @Column(name = "company_tax_id")
+    private String companyTaxId;
 
     @Override
     public boolean equals(Object o) {

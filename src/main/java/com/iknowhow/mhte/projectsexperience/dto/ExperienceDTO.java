@@ -12,6 +12,7 @@ public class ExperienceDTO {
 
     private Long id;
     private String personTaxId;
+    private String companyTaxId;
     private LocalDate experienceFrom;
     private LocalDate experienceTo;
     private ExperienceCategories category;
