@@ -3,8 +3,6 @@ package com.iknowhow.mhte.projectsexperience.dto.feign;
 import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
-
-import com.iknowhow.mhte.companies.dto.FinancialDataDTO;
 import com.iknowhow.mhte.projectsexperience.domain.enums.CompanyStatusEnum;
 
 @Data
