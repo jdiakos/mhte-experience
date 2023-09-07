@@ -3,7 +3,7 @@ package com.iknowhow.mhte.projectsexperience.domain.enums;
 public enum ExperienceRole {
 
     SUPERVISOR("Supervisor"),
-    WORKER("Worker"),
+    OPERATOR("Operator"),
     OVERSEER("Overseer"),
     ;
 
