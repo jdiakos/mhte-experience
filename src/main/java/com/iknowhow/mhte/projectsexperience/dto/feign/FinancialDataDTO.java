@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class CompanyFinancialDataDTO {
+public class FinancialDataDTO {
 
     private Double operatingCycle;
     private Double personalFunds;
