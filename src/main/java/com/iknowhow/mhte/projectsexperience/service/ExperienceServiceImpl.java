@@ -79,7 +79,7 @@ public class ExperienceServiceImpl implements ExperienceService {
     	List<Long> experienceIds = companyClient.getExperienceIds(companyId);
     	Page<Experience> experiences = experienceRepository.findAllByIdIn(experienceIds, page);
     	List<ExperienceDTO> experienceDto = experiences.getContent().stream().map(this::toExperienceDTO).toList();
-    	return new PageImpl<>(experienceDto, page, experienceDto.size());
+    	return new PageImpl<>(experienceDto, page, experiences.getTotalElements());
     }
 
 
