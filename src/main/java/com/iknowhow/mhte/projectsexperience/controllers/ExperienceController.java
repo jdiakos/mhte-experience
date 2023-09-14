@@ -3,6 +3,7 @@ package com.iknowhow.mhte.projectsexperience.controllers;
 import com.iknowhow.mhte.projectsexperience.domain.enums.ExperienceCategories;
 import com.iknowhow.mhte.projectsexperience.dto.ExperienceDTO;
 import com.iknowhow.mhte.projectsexperience.dto.feign.ExperienceResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.SearchExperienceByDTO;
 import com.iknowhow.mhte.projectsexperience.service.ExperienceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,13 @@ public class ExperienceController {
     @GetMapping("/get-company-experience")
     public Page<ExperienceDTO> getExperienceByCompanyId(@RequestParam(name="companyId") Long companyId, Pageable page){
         return experienceService.getExperienceByCompanyId(companyId, page);
+    }
+
+    @PostMapping("/get-by-company-category-date-from")
+    public ResponseEntity<List<ExperienceDTO>> getExperiencesByCompanyAndCategoryAndDateFrom(@RequestBody SearchExperienceByDTO dto) {
+        List<ExperienceDTO> response = experienceService.getAllByCompanyAndCategoryAndDateFrom(dto);
+
+        return ResponseEntity.ok().body(response);
     }
 
 }

@@ -7,6 +7,7 @@ import com.iknowhow.mhte.projectsexperience.domain.enums.ExperienceCategories;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ExperienceRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ExperienceDTO;
 import com.iknowhow.mhte.projectsexperience.dto.feign.ExperienceResponseDTO;
+import com.iknowhow.mhte.projectsexperience.dto.feign.SearchExperienceByDTO;
 import com.iknowhow.mhte.projectsexperience.feign.CompaniesFeignClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +95,14 @@ public class ExperienceServiceImpl implements ExperienceService {
                 .map(this::toExperienceResponseDTO);
     }
 
+    @Override
+    public List<ExperienceDTO> getAllByCompanyAndCategoryAndDateFrom(SearchExperienceByDTO dto) {
+        return experienceRepository
+                .findAllByCompanyTaxIdAndCategoryAndExperienceFromAfter(dto.getCompanyTaxId(), dto.getCategory(), dto.getDateFrom())
+                .stream()
+                .map(this::toExperienceDTO)
+                .toList();
+    }
 
     private ExperienceDTO toExperienceDTO(Experience experience) {
         ExperienceDTO dto = new ExperienceDTO();
