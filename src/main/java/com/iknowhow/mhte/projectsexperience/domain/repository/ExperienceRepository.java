@@ -24,4 +24,5 @@ public interface ExperienceRepository extends JpaRepository<Experience, Long> {
                                                                             ExperienceCategories category,
                                                                             LocalDate experienceFrom);
 
+    List<Experience> findAllByCompanyTaxId(String taxId);
 }

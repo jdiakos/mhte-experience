@@ -28,4 +28,6 @@ public interface ExperienceService {
 
     List<ExperienceResponseDTO> getAllByCompanyAndCategoryAndDateFrom(SearchExperienceByDTO dto);
 
+    List<ExperienceResponseDTO> getAllByCompanyId(String companyTaxId);
+
 }
