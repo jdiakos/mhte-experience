@@ -96,11 +96,11 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
-    public List<ExperienceDTO> getAllByCompanyAndCategoryAndDateFrom(SearchExperienceByDTO dto) {
+    public List<ExperienceResponseDTO> getAllByCompanyAndCategoryAndDateFrom(SearchExperienceByDTO dto) {
         return experienceRepository
                 .findAllByCompanyTaxIdAndCategoryAndExperienceFromAfter(dto.getCompanyTaxId(), dto.getCategory(), dto.getDateFrom())
                 .stream()
-                .map(this::toExperienceDTO)
+                .map(this::toExperienceResponseDTO)
                 .toList();
     }
 

@@ -26,6 +26,6 @@ public interface ExperienceService {
                                                                     List<String> taxIds,
                                                                     Pageable pageable);
 
-    List<ExperienceDTO> getAllByCompanyAndCategoryAndDateFrom(SearchExperienceByDTO dto);
+    List<ExperienceResponseDTO> getAllByCompanyAndCategoryAndDateFrom(SearchExperienceByDTO dto);
 
 }

@@ -40,8 +40,8 @@ public class ExperienceController {
     }
 
     @PostMapping("/get-by-company-category-date-from")
-    public ResponseEntity<List<ExperienceDTO>> getExperiencesByCompanyAndCategoryAndDateFrom(@RequestBody SearchExperienceByDTO dto) {
-        List<ExperienceDTO> response = experienceService.getAllByCompanyAndCategoryAndDateFrom(dto);
+    public ResponseEntity<List<ExperienceResponseDTO>> getExperiencesByCompanyAndCategoryAndDateFrom(@RequestBody SearchExperienceByDTO dto) {
+        List<ExperienceResponseDTO> response = experienceService.getAllByCompanyAndCategoryAndDateFrom(dto);
 
         return ResponseEntity.ok().body(response);
     }
