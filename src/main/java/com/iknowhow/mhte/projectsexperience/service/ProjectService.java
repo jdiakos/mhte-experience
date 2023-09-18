@@ -32,6 +32,7 @@ public interface ProjectService {
 
 	List<AuditHistoryDTO> getProjectAuditHistory(Long projectId);
 
-	ProjectDTO getProjectAuditByRevisionNumber(Integer revisionNumber);
+//	ProjectDTO getProjectAuditByRevisionNumber(Integer revisionNumber);
+	ProjectDTO getProjectAuditByRevisionNumber(Integer revisionNumber, Long projectId);
 
 }

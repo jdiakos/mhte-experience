@@ -117,9 +117,10 @@ public class ProjectController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/audit-version/{revision}")
-    private ResponseEntity<ProjectDTO> getProjectRevision(@PathVariable("revision") Integer revisionNumber) {
-        ProjectDTO response = projectService.getProjectAuditByRevisionNumber(revisionNumber);
+    @GetMapping("/audit-version/{projectId}/{revision}")
+    private ResponseEntity<ProjectDTO> getProjectRevision(@PathVariable("revision") Integer revisionNumber,
+                                                          @PathVariable("projectId") Long projectId) {
+        ProjectDTO response = projectService.getProjectAuditByRevisionNumber(revisionNumber, projectId);
 
         return ResponseEntity.ok().body(response);
     }
