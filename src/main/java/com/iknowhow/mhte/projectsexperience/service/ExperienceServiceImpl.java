@@ -63,6 +63,7 @@ public class ExperienceServiceImpl implements ExperienceService {
                         experience.setCategory(dto.getCategory());
                         experience.setCompanyTaxId(dto.getCompanyTaxId());
                         experience.setProject(project);
+                        experience.setExperienceType(dto.getExperienceType());
 
                         if (project.getId() != null) {
                             project.getExperiences().clear();
