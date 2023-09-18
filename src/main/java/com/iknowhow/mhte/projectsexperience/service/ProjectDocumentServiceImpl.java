@@ -5,6 +5,7 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.entities.ProjectDocument;
 import com.iknowhow.mhte.projectsexperience.domain.repository.ProjectDocumentRepository;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectDocumentsDTO;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,18 +13,22 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectDocumentServiceImpl implements ProjectDocumentService {
 
     private final FileNetService fileNetService;
     private final ProjectDocumentRepository documentRepository;
+    private final EntityManager entityManager;
 
     @Autowired
     public ProjectDocumentServiceImpl(FileNetService fileNetService,
-                                      ProjectDocumentRepository documentRepository) {
+                                      ProjectDocumentRepository documentRepository,
+                                      EntityManager entityManager) {
         this.fileNetService = fileNetService;
         this.documentRepository = documentRepository;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -32,9 +37,27 @@ public class ProjectDocumentServiceImpl implements ProjectDocumentService {
                                                           MhteUserPrincipal userPrincipal) {
 
         List<ProjectDocument> projectDocuments = new ArrayList<>();
+        // @TODO: Check why this fucking nonsense does not work (complains about detached entity)
+//        if(dtoList!=null && dtoList.size()!=0) {
+//            List<Long> list = dtoList.stream().map(d -> d.getId()).toList();
+//            list.forEach(item -> {
+//                ProjectDocument doc = documentRepository.findById(item).orElse(null);
+//                if(doc != null){
+//                    entityManager.merge(doc);
+//                }
+//                projectDocuments.add(doc);
+//            });
+//        	//projectDocuments.addAll(documentRepository.findAllByIdIn(list));
+//        }
+
         if(dtoList!=null && dtoList.size()!=0) {
-        	projectDocuments.addAll(documentRepository.findAllById(
-        			dtoList.stream().map(d -> d.getId()).toList()));
+            dtoList.stream()
+                    .map(dto -> documentRepository.findById(dto.getId()).orElse(null))
+                    .filter(projectDocument -> projectDocument != null)
+                    .forEach(doc -> {
+                        entityManager.merge(doc);
+                        projectDocuments.add(doc);
+                    });
         }
         
         if(documents!=null && documents.length>0) {
