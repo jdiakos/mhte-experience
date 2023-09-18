@@ -28,10 +28,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -240,7 +237,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDTO getProjectAuditByRevisionNumber(Integer revisionNumber, Long projectId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
-        Project project = auditReader.find(Project.class, projectId, revisionNumber);
+        Project project = (Project) auditReader.find(Project.class, projectId, revisionNumber);
 
         return toAuditProjectDTO(project, revisionNumber);
     }
@@ -325,6 +322,7 @@ public class ProjectServiceImpl implements ProjectService {
             List<ProjectContractor> contractors = (List<ProjectContractor>) auditReader
                     .createQuery()
                     .forEntitiesAtRevision(ProjectContractor.class, revisionNumber)
+                    .add(AuditEntity.revisionNumber().eq(revisionNumber))
                     .getResultList();
             List<ProjectContractorDTO> projectContractorDTOs = contractors
                     .stream()
@@ -339,6 +337,7 @@ public class ProjectServiceImpl implements ProjectService {
             List<ProjectSubcontractor> subcontractors = (List<ProjectSubcontractor>) auditReader
                     .createQuery()
                     .forEntitiesAtRevision(ProjectSubcontractor.class, revisionNumber)
+                    .add(AuditEntity.revisionNumber().eq(revisionNumber))
                     .getResultList();
             List<ProjectSubcontractorDTO> subcontractorDTOs = subcontractors
                     .stream()
@@ -353,6 +352,7 @@ public class ProjectServiceImpl implements ProjectService {
             List<Contract> contracts = (List<Contract>) auditReader
                     .createQuery()
                     .forEntitiesAtRevision(Contract.class, revisionNumber)
+                    .add(AuditEntity.revisionNumber().eq(revisionNumber))
                     .getResultList();
             List<ContractDTO> contractDTOs = contracts
                     .stream()
@@ -366,6 +366,7 @@ public class ProjectServiceImpl implements ProjectService {
             List<ProjectDocument> documents = (List<ProjectDocument>) auditReader
                     .createQuery()
                     .forEntitiesAtRevision(ProjectDocument.class, revisionNumber)
+                    .add(AuditEntity.revisionNumber().eq(revisionNumber))
                     .getResultList();
             List<ProjectDocumentsDTO> projectDocumentsDTOs = documents
                     .stream()
@@ -379,6 +380,7 @@ public class ProjectServiceImpl implements ProjectService {
             List<Experience> experiences = (List<Experience>) auditReader
                     .createQuery()
                     .forEntitiesAtRevision(Experience.class, revisionNumber)
+                    .add(AuditEntity.revisionNumber().eq(revisionNumber))
                     .getResultList();
             List<ExperienceDTO> experienceDTOs = experiences
                     .stream()
