@@ -34,7 +34,7 @@ public class Project implements Serializable {
     @Enumerated(EnumType.STRING)
     private ProjectsCategoryEnum projectCategory;
 
-    @Column(name = "adam", unique = true, nullable = true)
+    @Column(name = "adam", nullable = true)
     private String adam;
 
     @Column(name = "protocol_number", unique = true)
