@@ -21,5 +21,6 @@ public class ExperienceDTO {
     private ExperienceRole role;
     private ExperienceType experienceType;
     private Double value;
+    private String idForUpdate;
 
 }
