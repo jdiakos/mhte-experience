@@ -39,21 +39,21 @@ public class ProjectDocumentServiceImpl implements ProjectDocumentService {
         List<ProjectDocument> projectDocuments = new ArrayList<>();
         // @TODO: Check why this fucking nonsense does not work (complains about detached entity)
 //        if(dtoList!=null && dtoList.size()!=0) {
-//            List<Long> list = dtoList.stream().map(d -> d.getId()).toList();
+//            List<Long> list = dtoList.stream().map(d -> d.getId()).filter(k -> k!=null).toList();
 //            list.forEach(item -> {
 //                ProjectDocument doc = documentRepository.findById(item).orElse(null);
 //                if(doc != null){
 //                    entityManager.merge(doc);
+//                    projectDocuments.add(doc);
 //                }
-//                projectDocuments.add(doc);
 //            });
 //        	//projectDocuments.addAll(documentRepository.findAllByIdIn(list));
 //        }
 
         if(dtoList!=null && dtoList.size()!=0) {
-            dtoList.stream()
+        		dtoList.stream()
                     .map(dto -> documentRepository.findById(dto.getId()).orElse(null))
-                    .filter(projectDocument -> projectDocument != null)
+                    .filter(projectDocument -> (projectDocument != null && projectDocument.getId() != null))
                     .forEach(doc -> {
                         entityManager.merge(doc);
                         projectDocuments.add(doc);

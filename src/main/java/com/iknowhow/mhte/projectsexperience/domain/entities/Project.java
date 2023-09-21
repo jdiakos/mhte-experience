@@ -37,7 +37,7 @@ public class Project implements Serializable {
     @Column(name = "adam", nullable = true)
     private String adam;
 
-    @Column(name = "protocol_number", unique = true)
+    @Column(name = "protocol_number", nullable = true)
     private String protocolNumber;
 
     @Column(name = "title")
