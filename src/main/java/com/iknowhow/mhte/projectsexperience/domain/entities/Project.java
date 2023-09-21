@@ -54,6 +54,9 @@ public class Project implements Serializable {
 
     @Column(name = "head_authority")
     private String headAuthority;
+    
+    @Column(name = "file_net_folder_name")
+    private String filenetFolderName;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectContractor> projectContractors;

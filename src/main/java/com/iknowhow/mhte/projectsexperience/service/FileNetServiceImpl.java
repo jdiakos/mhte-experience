@@ -59,7 +59,7 @@ public class FileNetServiceImpl implements FileNetService {
             document.save(RefreshMode.REFRESH);
 
             // ASSIGN TO FOLDER - IF FOLDER DOES NOT EXIST, CREATE BASED ON PROJECT PROTOCOL NUMBER
-            Folder folder = fetchFolder(objectStore, project.getProtocolNumber());
+            Folder folder = fetchFolder(objectStore, project.getFilenetFolderName());
             ReferentialContainmentRelationship rcr = folder.file(
                     document, AutoUniqueName.AUTO_UNIQUE, "TEST", DefineSecurityParentage.DO_NOT_DEFINE_SECURITY_PARENTAGE
             );
