@@ -6,7 +6,6 @@ import com.iknowhow.mhte.projectsexperience.domain.entities.Project;
 import com.iknowhow.mhte.projectsexperience.domain.enums.ExperienceCategories;
 import com.iknowhow.mhte.projectsexperience.dto.ExperienceDTO;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import com.iknowhow.mhte.projectsexperience.dto.feign.ExperienceResponseDTO;
@@ -28,6 +27,6 @@ public interface ExperienceService {
 
     List<ExperienceResponseDTO> getAllByCompanyAndCategoryAndDateFrom(SearchExperienceByDTO dto);
 
-    List<ExperienceResponseDTO> getAllByCompanyId(String companyTaxId);
+    List<ExperienceResponseDTO> getAllByCompanyTaxId(String companyTaxId);
 
 }

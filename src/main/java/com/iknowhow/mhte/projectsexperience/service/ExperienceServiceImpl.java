@@ -106,7 +106,7 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
-    public List<ExperienceResponseDTO> getAllByCompanyId(String companyTaxId) {
+    public List<ExperienceResponseDTO> getAllByCompanyTaxId(String companyTaxId) {
         return experienceRepository.findAllByCompanyTaxId(companyTaxId)
                 .stream()
                 .map(this::toExperienceResponseDTO)

@@ -48,7 +48,7 @@ public class ExperienceController {
 
     @GetMapping("/get-by-company-tax-id/{companyTaxId}")
     public ResponseEntity<List<ExperienceResponseDTO>> getExperiencesByCompanyTaxId(@PathVariable("companyTaxId") String companyTaxId) {
-        List<ExperienceResponseDTO> response = experienceService.getAllByCompanyId(companyTaxId);
+        List<ExperienceResponseDTO> response = experienceService.getAllByCompanyTaxId(companyTaxId);
 
         return ResponseEntity.ok().body(response);
     }
