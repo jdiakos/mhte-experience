@@ -87,9 +87,11 @@ public class ProjectServiceImpl implements ProjectService {
         // PROJECT DETAILS
         dto.getProjectDescription().setId(null);
         Project project = utils.initModelMapperStrict().map(dto.getProjectDescription(), Project.class);
+        String uuid = UUID.randomUUID().toString();
         utils.initModelMapperStrict().map(dto.getProjectFinancialElements(), project);
         project.setDateCreated(LocalDateTime.now());
         project.setLastModifiedBy(userPrincipal.getUsername());
+        project.setFilenetFolderName(uuid);
 
         // DEPENDANT ENTITIES
         project.setProjectContractors(

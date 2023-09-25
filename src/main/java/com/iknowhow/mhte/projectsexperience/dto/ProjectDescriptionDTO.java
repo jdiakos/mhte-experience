@@ -12,7 +12,6 @@ public class ProjectDescriptionDTO {
     @NotNull
     private ProjectsCategoryEnum projectCategory;
     private String adam;
-    @NotBlank
     private String protocolNumber;
     @NotBlank
     private String title;
