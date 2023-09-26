@@ -113,6 +113,12 @@ public class ExperienceServiceImpl implements ExperienceService {
                 .toList();
     }
 
+    @Override
+    public Page<ExperienceDTO> getExperiencesByPerson(String taxId, Pageable pageable) {
+        return experienceRepository.findAllByPersonTaxId(taxId, pageable)
+                .map(this::toExperienceDTO);
+    }
+
     private ExperienceDTO toExperienceDTO(Experience experience) {
         ExperienceDTO dto = new ExperienceDTO();
         dto.setId(experience.getId());

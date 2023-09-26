@@ -29,4 +29,6 @@ public interface ExperienceService {
 
     List<ExperienceResponseDTO> getAllByCompanyTaxId(String companyTaxId);
 
+    Page<ExperienceDTO> getExperiencesByPerson(String taxId, Pageable pageable);
+
 }

@@ -2,6 +2,7 @@ package com.iknowhow.mhte.projectsexperience.service;
 
 import com.iknowhow.mhte.authsecurity.security.MhteUserPrincipal;
 import com.iknowhow.mhte.projectsexperience.dto.AuditHistoryDTO;
+import com.iknowhow.mhte.projectsexperience.dto.ExperienceDTO;
 import com.iknowhow.mhte.projectsexperience.dto.ProjectDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,6 @@ public interface ProjectService {
 
 	List<AuditHistoryDTO> getProjectAuditHistory(Long projectId);
 
-//	ProjectDTO getProjectAuditByRevisionNumber(Integer revisionNumber);
 	ProjectDTO getProjectAuditByRevisionNumber(Integer revisionNumber, Long projectId);
 
 }

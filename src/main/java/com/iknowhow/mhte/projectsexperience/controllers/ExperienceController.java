@@ -53,4 +53,12 @@ public class ExperienceController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/get-by-person-tax-id/{taxId}")
+    public ResponseEntity<Page<ExperienceDTO>> getExperienceByPersonTaxId(@PathVariable("taxId") String taxId,
+                                                                          Pageable pageable) {
+        Page<ExperienceDTO> response = experienceService.getExperiencesByPerson(taxId, pageable);
+
+        return ResponseEntity.ok().body(response);
+    }
+
 }
